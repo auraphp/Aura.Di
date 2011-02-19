@@ -11,4 +11,4 @@ require dirname(__DIR__) . "/src/Exception/ServiceNotFound.php";
 require dirname(__DIR__) . "/src/ForgeInterface.php";
 require dirname(__DIR__) . "/src/Forge.php";
 require dirname(__DIR__) . "/src/Lazy.php";
-return new Container(new Forge(new Config(new \ArrayObject)));
+return new Container(new Forge(new Config));

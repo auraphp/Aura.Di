@@ -69,19 +69,36 @@ class Forge implements ForgeInterface
      */
     public function newInstance($class, array $params = null)
     {
-        $params = array_merge($this->config->fetch($class), (array) $params);
+        list($config, $setter) = $this->config->fetch($class);
+        $params = array_merge($config, (array) $params);
         
-        // lazy-load objects as needed
+        // lazy-load params as needed
         foreach ($params as $key => $val) {
             if ($params[$key] instanceof Lazy) {
                 $params[$key] = $params[$key]();
             }
         }
         
-        // return a new instance
-        return call_user_func_array(
+        // create the new instance
+        $object = call_user_func_array(
             array($this->config->getReflect($class), 'newInstance'),
             $params
         );
+        
+        // call setters after creation
+        foreach ($setter as $method => $value) {
+            // does the specified setter method exist?
+            if (method_exists($object, $method)) {
+                // lazy-load values as needed
+                if ($value instanceof Lazy) {
+                    $value = $value();
+                }
+                // call the setter
+                $object->$method($value);
+            }
+        }
+        
+        // done!
+        return $object;
     }
 }

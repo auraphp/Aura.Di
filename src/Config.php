@@ -19,21 +19,13 @@ class Config implements ConfigInterface
 {
     /**
      * 
-     * Values loaded from external source.
+     * Constructor params from external configuration in the form 
+     * `$params[$class][$name] = $value`.
      * 
      * @var \ArrayObject
      * 
      */
-    protected $external;
-    
-    /**
-     * 
-     * Constructor values unified with external values.
-     * 
-     * @var array
-     * 
-     */
-    protected $unified = array();
+    protected $params;
     
     /**
      * 
@@ -47,47 +39,59 @@ class Config implements ConfigInterface
     
     /**
      * 
+     * Setter definitions in the form of `$setter[$class][$method] = $value`.
+     * 
+     * @var \ArrayObject
+     * 
+     */
+    protected $setter;
+    
+    /**
+     * 
+     * Constructor params and setter definitions, unified across class
+     * defaults, inheritance hierarchies, and external configurations.
+     * 
+     * @var array
+     * 
+     */
+    protected $unified = array();
+    
+    /**
+     * 
      * Constructor.
      * 
-     * @param \ArrayObject $external An ArrayObject to retain the external
-     * config values.
-     * 
      */
-    public function __construct(\ArrayObject $external)
+    public function __construct()
     {
-        $this->setExternal($external);
+        $this->params = new \ArrayObject;
+        $this->params['*'] = array();
+        
+        $this->setter = new \ArrayObject;
+        $this->setter['*'] = array();
     }
     
     /**
      * 
-     * Sets the $external property, adding a '*' entry if one does not
-     * already exist.
+     * Gets the $params property.
      * 
-     * @param \ArrayObject $external An ArrayObject to retain the external
-     * config values.
-     * 
-     * @return void
+     * @return \ArrayObject
      * 
      */
-    public function setExternal(\ArrayObject $external)
+    public function getParams()
     {
-        $this->external = $external;
-        if (! isset($this->external['*'])) {
-            $this->external['*'] = array();
-        }
-        $this->unified = array();
+        return $this->params;
     }
     
     /**
      * 
-     * Gets the $external property.
+     * Gets the $setter property.
      * 
-     * @param \ArrayObject
+     * @return \ArrayObject
      * 
      */
-    public function getExternal()
+    public function getSetter()
     {
-        return $this->external;
+        return $this->setter;
     }
     
     /**
@@ -109,11 +113,12 @@ class Config implements ConfigInterface
     
     /**
      * 
-     * Fetches the unified constructor values and external values.
+     * Fetches the unified constructor params and setter values for a class.
      * 
      * @param string $class The class name to fetch values for.
      * 
-     * @return array An associative array of constructor values for the class.
+     * @return array An array with two elements; 0 is the constructor values 
+     * for the class, and 1 is the setter methods and values for the class.
      * 
      */
     public function fetch($class)
@@ -123,18 +128,20 @@ class Config implements ConfigInterface
             return $this->unified[$class];
         }
         
-        // fetch the external values for parents so we can inherit them
+        // fetch the values for parents so we can inherit them
         $pclass = get_parent_class($class);
         if ($pclass) {
             // parent class values
-            $parent = $this->fetch($pclass);
+            list($parent_params, $parent_setter) = $this->fetch($pclass);
         } else {
             // no more parents; get top-level values for all classes
-            $parent = $this->external['*'];
+            $parent_params = $this->params['*'];
+            $parent_setter = $this->setter['*'];
         }
         
-        // stores the unified values
-        $unified = array();
+        // stores the unified config and setter values
+        $unified_params = array();
+        $unified_setter = array();
         
         // reflect on the class
         $rclass = $this->getReflect($class);
@@ -146,26 +153,34 @@ class Config implements ConfigInterface
             $params = $rctor->getParameters();
             foreach ($params as $param) {
                 $name = $param->name;
-                $explicit = $this->external->offsetExists($class)
-                         && isset($this->external[$class][$name]);
+                $explicit = $this->params->offsetExists($class)
+                         && isset($this->params[$class][$name]);
                 if ($explicit) {
                     // use the explicit value for this class
-                    $unified[$name] = $this->external[$class][$name];
-                } elseif (isset($parent[$name])) {
+                    $unified_params[$name] = $this->params[$class][$name];
+                } elseif (isset($parent_params[$name])) {
                     // use the implicit value for the parent class
-                    $unified[$name] = $parent[$name];
+                    $unified_params[$name] = $parent_params[$name];
                 } elseif ($param->isDefaultValueAvailable()) {
                     // use the external value from the constructor
-                    $unified[$name] = $param->getDefaultValue();
+                    $unified_params[$name] = $param->getDefaultValue();
                 } else {
                     // no value, use a null placeholder
-                    $unified[$name] = null;
+                    $unified_params[$name] = null;
                 }
             }
         }
         
+        // merge the setters
+        if (isset($this->setter[$class])) {
+            $unified_setter = array_merge($parent_setter, $this->setter[$class]);
+        } else {
+            $unified_setter = $parent_setter;
+        }
+        
         // done, return the unified values
-        $this->unified[$class] = $unified;
+        $this->unified[$class][0] = $unified_params;
+        $this->unified[$class][1] = $unified_setter;
         return $this->unified[$class];
     }
 }

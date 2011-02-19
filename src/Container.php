@@ -12,53 +12,6 @@ namespace aura\di;
  * 
  * Dependency injection container.
  * 
- * <?php
- *      // instantiate the container so we have it available for closures
- *      $di = new Container(new Forge(new Config(new \ArrayObject)));
- *      
- *      // define a service inside a closure; note that this will not create
- *      // any objects until you get the service from the container.
- *      $di->set('db', function() use ($di) {
- *          return new DatabaseConnection(
- *              'mysql:host=localhost;dbname=example',
- *              'username',
- *              'password'
- *          );
- *      });
- *      
- *      // use the container in another service; again, this service is
- *      // defined in a closure, so it is not loaded until you get it from
- *      // the container.
- *      $di->set('some_model', function() use ($di) {
- *          // ModelClass::__construct() needs a PDO instance;
- *          // get that instance from the container service
- *          $object = new ModelClass;
- *          $object->setDb($di->get('db'));
- *          return $object;
- *      });
- *      
- *      // it's preferable to use $di->newInstance() instead of new;
- *      // doing so lets you use keyword parameters for construction, and
- *      // merges parent param values as well.
- *      $di->set('another_model', function() use ($di) {
- *          $object = $di->newInstance('ModelClass', array(
- *              'db' => $di->get('db'),
- *          ));
- *          return $object;
- *      });
- *      
- *      // etc, etc, etc
- *      // if you want to define params to use each time a class is
- *      // instantiated, use $di->config.
- *      $di->config['vendor\package\Class'] = array(
- *          'foo' => 'bar',
- *          'zim' => $di->getLazy('service_name');
- *      );
- * 
- * DI is magical and weird if you're not used to it.  Essentially, you pre-
- * define all of your object-creation logic in the container, and then ask the 
- * container for a single object to kick off the process.
- * 
  * @package aura.di
  * 
  */
@@ -66,13 +19,23 @@ class Container
 {
     /**
      * 
-     * A convenient reference to the Config::$external object, which itself
+     * A convenient reference to the Config::$params object, which itself
      * is contained by the Forge object.
      * 
      * @var \ArrayObject
      * 
      */
-    protected $config;
+    protected $params;
+    
+    /**
+     * 
+     * A convenient reference to the Config::$setter object, which itself
+     * is contained by the Forge object.
+     * 
+     * @var \ArrayObject
+     * 
+     */
+    protected $setter;
     
     /**
      * 
@@ -105,8 +68,9 @@ class Container
         // retain for various uses
         $this->forge = $forge;
         
-        // convenience property
-        $this->config = $this->getForge()->getConfig()->getExternal();
+        // convenience properties
+        $this->params = $this->getForge()->getConfig()->getParams();
+        $this->setter = $this->getForge()->getConfig()->getSetter();
     }
     
     /**
@@ -121,7 +85,7 @@ class Container
      */
     public function __get($key)
     {
-        if ($key == 'config' || $key == 'forge') {
+        if ($key == 'params' || $key == 'setter' || $key == 'forge') {
             return $this->$key;
         }
         throw new \UnexpectedValueException($key);
@@ -224,20 +188,20 @@ class Container
      * Returns a Lazy that gets a service. This allows you to replace the
      * following idiom ...
      * 
-     *      $di->config['ClassName']['param_name'] = new Lazy(function() use ($di)) {
+     *      $di->params['ClassName']['param_name'] = new Lazy(function() use ($di)) {
      *          return $di->get('service');
      *      }
      * 
      * ... with the following:
      * 
-     *      $di->config['ClassName']['param_name'] = $di->getLazy('service');
+     *      $di->params['ClassName']['param_name'] = $di->lazyGet('service');
      * 
      * @param string $key The service name; it does not need to exist yet.
      * 
      * @return Lazy A lazy-load object that gets the named service.
      * 
      */
-    public function getLazy($key)
+    public function lazyGet($key)
     {
         $self = $this;
         return new Lazy(function() use ($self, $key) {
@@ -260,5 +224,33 @@ class Container
     public function newInstance($class, array $params = null)
     {
         return $this->forge->newInstance($class, (array) $params);
+    }
+    
+    /**
+     * 
+     * Returns a Lazy that creates a new instance. This allows you to replace
+     * the following idiom:
+     * 
+     *      $di->params['ClassName']['param_name'] = Lazy(function() use ($di)) {
+     *          return $di->newInstance('OtherClass', array(...));
+     *      }
+     * 
+     * ... with the following:
+     * 
+     *      $di->params['ClassName']['param_name'] = $di->lazyNew('OtherClass', array(...));
+     * 
+     * @param string $class The type of class of instantiate.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @return Lazy A lazy-load object that creates the new instance.
+     * 
+     */
+    public function lazyNew($class, array $params = null)
+    {
+        $forge = $this->getForge();
+        return new Lazy(function() use ($forge, $class, $params) {
+            return $forge->newInstance($class, $params);
+        });
     }
 }
