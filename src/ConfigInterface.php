@@ -30,6 +30,24 @@ interface ConfigInterface
     
     /**
      * 
+     * Gets the $params property.
+     * 
+     * @return \ArrayObject
+     * 
+     */
+    public function getParams();
+    
+    /**
+     * 
+     * Gets the $setter property.
+     * 
+     * @return \ArrayObject
+     * 
+     */
+    public function getSetter();
+    
+    /**
+     * 
      * Gets a retained ReflectionClass; if not already retained, creates and
      * retains one before returning it.
      * 
