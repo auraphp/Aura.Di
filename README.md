@@ -312,7 +312,7 @@ Now we can set up the DI container as follows:
     );
     
     // default params for page controllers
-    $di->params['example/package/PageController'] = array(
+    $di->params['example\package\PageController'] = array(
         'model_factory' => $di->lazyGet('model_factory'),
     );
     
