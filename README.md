@@ -22,7 +22,7 @@ The Aura DI package comes with a instance script that returns a new DI instance:
     <?php
     $di = require '/path/to/aura.di/scripts/instance.php';
 
-Alternatively, you can add the Aura DI `'src/'` directory to your autoloder, and then instantiate it yourself:
+Alternatively, you can add the Aura DI `'src/'` directory to your autoloader, and then instantiate it yourself:
 
     <?php
     use aura\di\Container;
