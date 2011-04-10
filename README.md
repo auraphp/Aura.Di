@@ -14,8 +14,8 @@ When combined with factory classes, you can completely separate object configura
 Fully describing the nature and benefits of dependency injection, while desirable, is beyond the scope of this document. For more information about "inversion of control" and "dependency injection" please consult <http://martinfowler.com/articles/injection.html> by Martin Fowler.
 
 
-Instantiating the Container
-===========================
+Instantiating the Manager
+=========================
 
 The Aura DI package comes with a instance script that returns a new DI instance:
 
@@ -25,18 +25,18 @@ The Aura DI package comes with a instance script that returns a new DI instance:
 Alternatively, you can add the Aura DI `'src/'` directory to your autoloader, and then instantiate it yourself:
 
     <?php
-    use aura\di\Container;
+    use aura\di\Manager;
     use aura\di\Forge;
     use aura\di\Config;
-    $di = new Container(new Forge(new Config));
+    $di = new Manager(new Forge(new Config));
 
-The `Container` is the DI container proper.  The support objects are:
+The `Manager` is the DI container proper.  The support objects are:
 
 - a `Config` object for collection, retrieval, and merging of setters and constructor params
 
 - a `Forge` for object creation using the unified `Config` values
 
-We will not need to use the support objects directly; we will get access to their behaviors through `Container` methods.
+We will not need to use the support objects directly; we will get access to their behaviors through `Manager` methods.
 
 
 Setting Services
@@ -386,7 +386,7 @@ Given the following example class ...
         return $di->newInstance('example\package\Foo');
     });
 
-Note that we use `lazyGet()` for the injection.  As with constructor params, we could tell the class to use a new `Database` object instead of the shared one in the `Container`:
+Note that we use `lazyGet()` for the injection.  As with constructor params, we could tell the class to use a new `Database` object instead of the shared one in the `Manager`:
 
     <?php
     // after construction, call Foo::setDb() and inject a service object.
@@ -411,6 +411,54 @@ Setter configurations are inherited.  If you have a class that extends `example\
     }
 
 ... you do not need to add a new setter value for it; the `Forge` reads all parent setters and applies them.  (If you do add a setter value for that class, it will override the parent setter.)
+
+Sub-Containers
+==============
+
+The `Manager` itself is a dependency injection container; however, you may wish to have sub-containers as services within the `Manager`.  This can be useful when you want a collection of objects to be able to refer to each other as if they are part of a registry or service locator, but you want to retain the benefits of dependency injection proper.
+
+You can add a sub-container as a service in two lines:
+
+    <?php
+    // create the new Container
+    $sub = $di->newContainer();
+    
+    // add it as a named service in the Manager
+    $di->set('sub_container', $sub);
+
+You can then use the following methods to work with the `$sub` container:
+
+- `has()`
+- `set()`
+- `get()`
+- `lazyGet()`
+
+These methods work exactly the same as with the `Manager`, except the services will be on the sub-container, not the `Manager`.  For example:
+
+    <?php
+    // create the sub-container
+    $sub = $di->newContainer();
+    
+    // add an alternative Database connection to the sub-container
+    $sub->set('alt_db', function() use ($di) {
+        return $di->newInstance('example\pacakage\Database', array(
+            'host' => 'alt-db.example.com',
+        ));
+    });
+    
+    // now set the sub-container as a service in the Manager
+    $di->set('sub_container', $sub);
+
+If you need to add more services later, you can retrieve the sub-container from the `Manager` and do so.
+
+    <?php
+    // get the sub-container
+    $sub = $di->get('sub_container');
+    
+    // add another service to it
+    $sub->set('other', function() use ($di) {
+        return $di->newInstance('example\package\Other');
+    });
 
 
 Conclusion

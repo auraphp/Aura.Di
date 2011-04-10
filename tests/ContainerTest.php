@@ -13,10 +13,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     protected $config;
     
-    protected $forge;
-    
-    protected $wrapper;
-    
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -24,8 +20,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->config    = new Config;
-        $this->forge     = new Forge($this->config);
         $this->container = new Container($this->forge);
     }
     
@@ -36,21 +30,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         parent::tearDown();
-    }
-    
-    public function testMagicGet()
-    {
-        $this->assertSame($this->container->forge, $this->forge);
-        $this->assertSame($this->container->params, $this->config->getParams());
-        $this->assertSame($this->container->setter, $this->config->getSetter());
-    }
-    
-    /**
-     * @expectedException \UnexpectedValueException
-     */
-    public function testMagicGetNoSuchProperty()
-    {
-        $actual = $this->container->no_such_property;
     }
     
     /**
@@ -88,7 +67,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $di = $this->container;
         $di->set('foo', function() use ($di) {
-            return $di->newInstance('aura\di\MockParentClass');
+            return new \aura\di\MockParentClass;
         });
         
         $actual = $this->container->get('foo');
@@ -109,31 +88,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    /**
-     * @todo Implement testNewInstance().
-     */
-    public function testNewInstanceWithDefaults()
-    {
-        $instance = $this->container->newInstance('aura\di\MockParentClass');
-        $expect = 'bar';
-        $actual = $instance->getFoo();
-        $this->assertSame($expect, $actual);
-    }
-    
-    public function testNewInstanceWithOverride()
-    {
-        $instance = $this->container->newInstance(
-            'aura\di\MockParentClass',
-            array(
-                'foo' => 'dib'
-            )
-        );
-        
-        $expect = 'dib';
-        $actual = $instance->getFoo();
-        $this->assertSame($expect, $actual);
-    }
-    
     public function testLazyGet()
     {
         $this->container->set('foo', function() {
@@ -146,14 +100,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $foo = $lazy();
         
-        $this->assertType('aura\di\MockOtherClass', $foo);
-    }
-    
-    public function testLazyNew()
-    {
-        $lazy = $this->container->lazyNew('aura\di\MockOtherClass');
-        $this->assertType('aura\di\Lazy', $lazy);
-        $foo = $lazy();
         $this->assertType('aura\di\MockOtherClass', $foo);
     }
 }
