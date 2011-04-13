@@ -9,9 +9,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Container
      */
-    protected $di;
+    protected $container;
     
     protected $config;
+    
+    protected $forge;
     
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -20,6 +22,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
+        $this->config  = new Config;
+        $this->forge   = new Forge($this->config);
         $this->container = new Container($this->forge);
     }
     
@@ -77,13 +81,18 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @todo Implement testGetServices().
      */
-    public function testGetServices()
+    public function testGetDefsAndServices()
     {
         $this->container->set('foo', new \StdClass);
         $this->container->set('bar', new \StdClass);
         $this->container->set('baz', new \StdClass);
         
         $expect = array('foo', 'bar', 'baz');
+        $actual = $this->container->getDefs();
+        $this->assertSame($expect, $actual);
+        
+        $service = $this->container->get('bar');
+        $expect = array('bar');
         $actual = $this->container->getServices();
         $this->assertSame($expect, $actual);
     }
@@ -101,5 +110,67 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $foo = $lazy();
         
         $this->assertType('aura\di\MockOtherClass', $foo);
+    }
+    
+    public function testMagicGet()
+    {
+        $this->assertSame($this->container->params, $this->config->getParams());
+        $this->assertSame($this->container->setter, $this->config->getSetter());
+    }
+    
+    /**
+     * @expectedException \UnexpectedValueException
+     */
+    public function testMagicGetNoSuchProperty()
+    {
+        $actual = $this->container->no_such_property;
+    }
+    
+    /**
+     * @todo Implement testNewInstance().
+     */
+    public function testNewInstanceWithDefaults()
+    {
+        $instance = $this->container->newInstance('aura\di\MockParentClass');
+        $expect = 'bar';
+        $actual = $instance->getFoo();
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testNewInstanceWithOverride()
+    {
+        $instance = $this->container->newInstance(
+            'aura\di\MockParentClass',
+            array(
+                'foo' => 'dib'
+            )
+        );
+        
+        $expect = 'dib';
+        $actual = $instance->getFoo();
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testLazyNew()
+    {
+        $lazy = $this->container->lazyNew('aura\di\MockOtherClass');
+        $this->assertType('aura\di\Lazy', $lazy);
+        $foo = $lazy();
+        $this->assertType('aura\di\MockOtherClass', $foo);
+    }
+    
+    public function testClone()
+    {
+        $clone = clone $this->container;
+        $this->assertNotSame($clone->getForge(), $this->container->getForge());
+    }
+    
+    /**
+     * @expectedException aura\di\Exception_ContainerLocked
+     */
+    public function testLock()
+    {
+        $this->container->lock();
+        $params = $this->container->params;
     }
 }

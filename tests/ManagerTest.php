@@ -1,24 +1,14 @@
 <?php
 namespace aura\di;
 
-/**
- * Test class for Dependency.
- */
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Manager
-     */
-    protected $manager;
-    
     protected $config;
     
     protected $forge;
     
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
+    protected $manager;
+    
     protected function setUp()
     {
         parent::setUp();
@@ -27,65 +17,80 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager = new Manager($this->forge);
     }
     
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
     protected function tearDown()
     {
         parent::tearDown();
     }
     
-    public function testMagicGet()
+    public function testNewAndGetContainer()
     {
-        $this->assertSame($this->manager->params, $this->config->getParams());
-        $this->assertSame($this->manager->setter, $this->config->getSetter());
-    }
-    
-    /**
-     * @expectedException \UnexpectedValueException
-     */
-    public function testMagicGetNoSuchProperty()
-    {
-        $actual = $this->manager->no_such_property;
-    }
-    
-    /**
-     * @todo Implement testNewInstance().
-     */
-    public function testNewInstanceWithDefaults()
-    {
-        $instance = $this->manager->newInstance('aura\di\MockParentClass');
-        $expect = 'bar';
-        $actual = $instance->getFoo();
-        $this->assertSame($expect, $actual);
-    }
-    
-    public function testNewInstanceWithOverride()
-    {
-        $instance = $this->manager->newInstance(
-            'aura\di\MockParentClass',
-            array(
-                'foo' => 'dib'
-            )
-        );
+        $this->manager->params['aura\di\MockParentClass']['foo'] = 'dib';
         
-        $expect = 'dib';
-        $actual = $instance->getFoo();
-        $this->assertSame($expect, $actual);
+        $mock = $this->manager->newContainer('mock');
+        $mock->params['aura\di\MockParentClass']['foo'] = 'zim';
+        
+        // make sure two containers give different objects
+        $a = $this->manager->newInstance('aura\di\MockParentClass');
+        $b = $mock->newInstance('aura\di\MockParentClass');
+        
+        $this->assertNotSame($a->getFoo(), $b->getFoo());
+        
+        // can we get the container?
+        $actual = $this->manager->getContainer('mock');
+        $this->assertSame($mock, $actual);
     }
     
-    public function testLazyNew()
+    /**
+     * @expectedException aura\di\Exception_ContainerExists
+     */
+    public function testNewContainerExists()
     {
-        $lazy = $this->manager->lazyNew('aura\di\MockOtherClass');
+        $mock = $this->manager->newContainer('mock');
+        $mock = $this->manager->newContainer('mock');
+    }
+    
+    /**
+     * @expectedException aura\di\Exception_ContainerNotFound
+     */
+    public function testGetContainerNotFound()
+    {
+        $mock = $this->manager->getContainer('mock');
+    }
+    
+    public function testLock()
+    {
+        $mock = $this->manager->newContainer('mock');
+        $this->manager->lock();
+        $this->assertTrue($this->manager->isLocked());
+        foreach ($this->manager->getContainers() as $name) {
+            $container = $this->manager->getContainer($name);
+            $this->assertTrue($container->isLocked());
+        }
+    }
+    
+    public function testCloneContainer()
+    {
+        $mock = $this->manager->newContainer('mock');
+        $mock->set('parent', function() use ($mock) {
+            return $mock->newInstance('aura\di\MockParentClass');
+        });
+        
+        $clone = $this->manager->cloneContainer('mock');
+        
+        $this->assertNotSame($mock, $clone);
+        $this->assertNotSame($mock->get('parent'), $clone->get('parent'));
+    }
+    
+    public function testLazyCloneContainer()
+    {
+        $mock = $this->manager->newContainer('mock');
+        $mock->set('parent', function() use ($mock) {
+            return $mock->newInstance('aura\di\MockParentClass');
+        });
+        
+        $lazy = $this->manager->lazyCloneContainer('mock');
         $this->assertType('aura\di\Lazy', $lazy);
-        $foo = $lazy();
-        $this->assertType('aura\di\MockOtherClass', $foo);
-    }
-    
-    public function testNewContainer()
-    {
-        $container = $this->manager->newContainer();
-        $this->assertType('aura\di\Container', $container);
+        $mock = $lazy();
+        $this->assertType('aura\di\Container', $mock);
     }
 }

@@ -100,4 +100,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $expect = array('setFake' => 'fake2');
         $this->assertSame($expect, $actual_setter);
     }
+    
+    public function testClone()
+    {
+        $this->config = new Config;
+        $clone = clone $this->config;
+        
+        $this->assertNotSame($clone, $this->config);
+        $this->assertNotSame($clone->getParams(), $this->config->getParams());
+        $this->assertNotSame($clone->getSetter(), $this->config->getSetter());
+    }
 }

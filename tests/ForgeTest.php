@@ -10,7 +10,9 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
      * @var Forge
      */
     protected $forge;
-
+    
+    protected $config;
+    
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -21,7 +23,7 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $this->config = new Config;
         $this->forge = new Forge($this->config);
     }
-
+    
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
@@ -94,5 +96,12 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         ));
         
         $this->assertType('aura\di\MockOtherClass', $actual->getFake());
+    }
+    
+    public function testClone()
+    {
+        $clone = clone $this->forge;
+        $this->assertNotSame($clone, $this->forge);
+        $this->assertNotSame($clone->getConfig(), $this->forge->getConfig());
     }
 }

@@ -39,6 +39,11 @@ class Forge implements ForgeInterface
         $this->config = $config;
     }
     
+    public function __clone()
+    {
+        $this->config = clone $this->config;
+    }
+    
     /**
      * 
      * Gets the injected Config object.

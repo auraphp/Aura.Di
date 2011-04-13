@@ -19,16 +19,122 @@ class Container implements ContainerInterface
 {
     /**
      * 
-     * Retains named services.
+     * A Forge object to create classes through reflection.
      * 
      * @var array
      * 
      */
-    protected $service = array();
+    protected $forge;
     
     /**
      * 
-     * Does a particular service exist?
+     * A convenient reference to the Config::$params object, which itself
+     * is contained by the Forge object.
+     * 
+     * @var \ArrayObject
+     * 
+     */
+    protected $params;
+    
+    /**
+     * 
+     * A convenient reference to the Config::$setter object, which itself
+     * is contained by the Forge object.
+     * 
+     * @var \ArrayObject
+     * 
+     */
+    protected $setter;
+    
+    /**
+     * 
+     * Retains named service definitions.
+     * 
+     * @var array
+     * 
+     */
+    protected $defs = array();
+    
+    /**
+     * 
+     * Retains the actual service objects.
+     * 
+     * @var array
+     * 
+     */
+    protected $services = array();
+    
+    protected $locked = false;
+    
+    /**
+     * 
+     * Constructor.
+     * 
+     * @param ForgeInterface $forge A forge for creating objects using
+     * keyword parameter configuration.
+     * 
+     */
+    public function __construct(ForgeInterface $forge)
+    {
+        $this->forge  = $forge;
+        $this->params = $this->getForge()->getConfig()->getParams();
+        $this->setter = $this->getForge()->getConfig()->getSetter();
+    }
+    
+    /**
+     * 
+     * Magic get to provide access to the Config::$params and $setter
+     * objects.
+     * 
+     * @param string $key The property to retrieve ('params' or 'setter').
+     * 
+     * @return mixed
+     * 
+     */
+    public function __get($key)
+    {
+        if ($this->isLocked()) {
+            throw new Exception_ContainerLocked;
+        }
+        
+        if ($key == 'params' || $key == 'setter') {
+            return $this->$key;
+        }
+        
+        throw new \UnexpectedValueException($key);
+    }
+    
+    public function __clone()
+    {
+        $this->services = array();
+        $this->forge = clone $this->forge;
+    }
+    
+    public function lock()
+    {
+        $this->locked = true;
+    }
+    
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+    
+    /**
+     * 
+     * Gets the Forge object used for creating new instances.
+     * 
+     * @return array
+     * 
+     */
+    public function getForge()
+    {
+        return $this->forge;
+    }
+    
+    /**
+     * 
+     * Does a particular service definition exist?
      * 
      * @param string $key The service key to look up.
      * 
@@ -37,12 +143,12 @@ class Container implements ContainerInterface
      */
     public function has($key)
     {
-        return isset($this->service[$key]);
+        return isset($this->defs[$key]);
     }
     
     /**
      * 
-     * Sets a service object by name.
+     * Sets a service definition by name.
      * 
      * If you set a service as a closure, it is automatically treated as a 
      * Lazy.
@@ -63,7 +169,7 @@ class Container implements ContainerInterface
             $val = new Lazy($val);
         }
         
-        $this->service[$key] = $val;
+        $this->defs[$key] = $val;
     }
     
     /**
@@ -80,30 +186,49 @@ class Container implements ContainerInterface
      */
     public function get($key)
     {
-        // does the key exist?
+        // does the definition exist?
         if (! $this->has($key)) {
             throw new Exception_ServiceNotFound($key);
         }
         
-        // invoke lazy-loading as needed
-        if ($this->service[$key] instanceof Lazy) {
-            $this->service[$key] = $this->service[$key]();
+        // has it been instantiated?
+        if (! isset($this->services[$key])) {
+            // instantiate it from its definition.
+            $service = $this->defs[$key];
+            // lazy-load as needed
+            if ($service instanceof Lazy) {
+                $service = $service();
+            }
+            // retain
+            $this->services[$key] = $service;
         }
         
         // done
-        return $this->service[$key];
+        return $this->services[$key];
     }
     
     /**
      * 
-     * Gets the list of services provided.
+     * Gets the list of instantiated services.
      * 
      * @return array
      * 
      */
     public function getServices()
     {
-        return array_keys($this->service);
+        return array_keys($this->services);
+    }
+    
+    /**
+     * 
+     * Gets the list of service definitions.
+     * 
+     * @return array
+     * 
+     */
+    public function getDefs()
+    {
+        return array_keys($this->defs);
     }
     
     /**
@@ -129,6 +254,51 @@ class Container implements ContainerInterface
         $self = $this;
         return new Lazy(function() use ($self, $key) {
            return $self->get($key); 
+        });
+    }
+    
+    /**
+     * 
+     * Returns a new instance of the specified class, optionally 
+     * with additional override parameters.
+     * 
+     * @param string $class The type of class of instantiate.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @return object An instance of the requested class.
+     * 
+     */
+    public function newInstance($class, array $params = null)
+    {
+        return $this->forge->newInstance($class, (array) $params);
+    }
+    
+    /**
+     * 
+     * Returns a Lazy that creates a new instance. This allows you to replace
+     * the following idiom:
+     * 
+     *      $di->params['ClassName']['param_name'] = Lazy(function() use ($di)) {
+     *          return $di->newInstance('OtherClass', array(...));
+     *      }
+     * 
+     * ... with the following:
+     * 
+     *      $di->params['ClassName']['param_name'] = $di->lazyNew('OtherClass', array(...));
+     * 
+     * @param string $class The type of class of instantiate.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @return Lazy A lazy-load object that creates the new instance.
+     * 
+     */
+    public function lazyNew($class, array $params = null)
+    {
+        $forge = $this->getForge();
+        return new Lazy(function() use ($forge, $class, $params) {
+            return $forge->newInstance($class, $params);
         });
     }
 }

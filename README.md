@@ -420,45 +420,65 @@ The `Manager` itself is a dependency injection container; however, you may wish 
 You can add a sub-container as a service in two lines:
 
     <?php
-    // create the new Container
-    $sub = $di->newContainer();
-    
-    // add it as a named service in the Manager
-    $di->set('sub_container', $sub);
+    // create a new Container
+    $sub = $di->newContainer('sub_name');
 
-You can then use the following methods to work with the `$sub` container:
+
+Because the sub-container is a separate container from the `Manager`, you will need to configure `$params` and `$setters` for it separately as well.
+
+    <?php
+    // get a previously-created Container
+    $sub = $di->getContainer('sub_name');
+
+You can use the following methods to work with the sub-container (the same as with any `Container`):
 
 - `has()`
 - `set()`
 - `get()`
 - `lazyGet()`
+- `newInstance()`
+- `lazyNew()`
 
 These methods work exactly the same as with the `Manager`, except the services will be on the sub-container, not the `Manager`.  For example:
 
     <?php
     // create the sub-container
-    $sub = $di->newContainer();
+    $sub = $di->newContainer('sub_name');
+    
+    // configure params for objects in the sub-container
+    $sub->params['example\pacakage\Database']['host'] = 'alt-db.example.com';
     
     // add an alternative Database connection to the sub-container
-    $sub->set('alt_db', function() use ($di) {
-        return $di->newInstance('example\pacakage\Database', array(
-            'host' => 'alt-db.example.com',
-        ));
+    $sub->set('alt_db', function() use ($sub) {
+        return $sub->newInstance('example\package\Database');
     });
-    
-    // now set the sub-container as a service in the Manager
-    $di->set('sub_container', $sub);
 
-If you need to add more services later, you can retrieve the sub-container from the `Manager` and do so.
+If you need to add more services later, or modify configuration params and setters, you can retrieve the sub-container from the `Manager` and do so.
 
     <?php
     // get the sub-container
-    $sub = $di->get('sub_container');
+    $sub = $di->get('sub_name');
     
     // add another service to it
-    $sub->set('other', function() use ($di) {
-        return $di->newInstance('example\package\Other');
+    $sub->set('other', function() use ($sub) {
+        return $sub->newInstance('example\package\Other');
     });
+
+Finally, you can clone sub-containers. This will create a copy of the container with its configuration and service definitions, but it clears out any serfice objects that are stored in the container.  The clone will create new service objects for each of its services when they are called.  This allows you to have multiple DI containers that act as independent registries or service locators.
+
+    <?php
+    // clone 1 will have a set of service definitions and object instances...
+    // definitions ...
+    $clone1 = $di->cloneContainer('sub_name');
+    
+    // ... and clone 2 will have the same service definitions, but the object   
+    // instances will be different and independent from the ones in clone 1
+    $clone2 = $di->cloneContainer('sub_name');
+
+If you need to pass a sub-container clone as a param to another object, you can use the `lazyCloneContainer()` method.
+
+    <?php
+    $di->params['example\package\NeedsContainer']['container'] = $di->lazyCloneContainer('sub_name');
 
 
 Conclusion

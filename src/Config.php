@@ -63,9 +63,18 @@ class Config implements ConfigInterface
      */
     public function __construct()
     {
+        $this->reset();
+    }
+    
+    public function __clone()
+    {
+        $this->reset();
+    }
+    
+    protected function reset()
+    {
         $this->params = new \ArrayObject;
         $this->params['*'] = array();
-        
         $this->setter = new \ArrayObject;
         $this->setter['*'] = array();
     }
