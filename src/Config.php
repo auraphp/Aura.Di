@@ -10,7 +10,7 @@ namespace aura\di;
 
 /**
  * 
- * Retains and unifies class constructor parameter values with external values.
+ * Retains and unifies class configurations.
  * 
  * @package aura.di
  * 
@@ -66,11 +66,26 @@ class Config implements ConfigInterface
         $this->reset();
     }
     
+    /**
+     * 
+     * When cloning this object, reset the params and setter values (but
+     * leave the reflection values in place).
+     * 
+     * @return void
+     * 
+     */
     public function __clone()
     {
         $this->reset();
     }
     
+    /**
+     * 
+     * Resets the params and setter values.
+     * 
+     * @return void
+     * 
+     */
     protected function reset()
     {
         $this->params = new \ArrayObject;

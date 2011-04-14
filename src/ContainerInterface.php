@@ -19,6 +19,34 @@ interface ContainerInterface
 {
     /**
      * 
+     * Lock the Container so that configuration cannot be accessed externally,
+     * and no new service definitions can be added.
+     * 
+     * @return void
+     * 
+     */
+    public function lock();
+    
+    /**
+     * 
+     * Is the Container locked?
+     * 
+     * @return bool
+     * 
+     */
+    public function isLocked();
+    
+    /**
+     * 
+     * Gets the Forge object used for creating new instances.
+     * 
+     * @return array
+     * 
+     */
+    public function getForge();
+    
+    /**
+     * 
      * Does a particular service exist?
      * 
      * @param string $key The service key to look up.
@@ -64,6 +92,15 @@ interface ContainerInterface
     
     /**
      * 
+     * Gets the list of service definitions.
+     * 
+     * @return array
+     * 
+     */
+    public function getDefs();
+    
+    /**
+     * 
      * Returns a Lazy that gets a service.
      * 
      * @param string $key The service name; it does not need to exist yet.
@@ -72,4 +109,31 @@ interface ContainerInterface
      * 
      */
     public function lazyGet($key);
+    
+    /**
+     * 
+     * Returns a new instance of the specified class, optionally 
+     * with additional override parameters.
+     * 
+     * @param string $class The type of class of instantiate.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @return object An instance of the requested class.
+     * 
+     */
+    public function newInstance($class, array $params = null);
+    
+    /**
+     * 
+     * Returns a Lazy that creates a new instance.
+     * 
+     * @param string $class The type of class of instantiate.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @return Lazy A lazy-load object that creates the new instance.
+     * 
+     */
+    public function lazyNew($class, array $params = null);
 }

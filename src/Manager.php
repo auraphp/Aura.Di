@@ -10,7 +10,8 @@ namespace aura\di;
 
 /**
  * 
- * Manager for all dependency injections: params, setters, services, etc.
+ * Manager for multiple DI containers; the Manager is itself the main
+ * container, and it provides access to sub-containers.
  * 
  * @package aura.di
  * 
@@ -26,6 +27,14 @@ class Manager extends Container
      */
     protected $containers = array();
     
+    /**
+     * 
+     * Locks the main container and all sub-containers; once locked, they
+     * cannot be unlocked.
+     * 
+     * @return void
+     * 
+     */
     public function lock()
     {
         parent::lock();
@@ -34,6 +43,17 @@ class Manager extends Container
         }
     }
     
+    /**
+     * 
+     * Creates and retains a new sub-container.  The new container does not
+     * inherit configuration from the main container in any way; you will have
+     * to add params, setters, etc. on the new container.
+     * 
+     * @param string $name The sub-container name.
+     * 
+     * @return Container The new sub-container.
+     * 
+     */
     public function newContainer($name)
     {
         if (isset($this->containers[$name])) {
@@ -42,9 +62,18 @@ class Manager extends Container
         
         $forge = clone $this->forge;
         $this->containers[$name] = new Container($forge);
-        return $this->containers[$name];
+        return $this->getContainer($name);
     }
     
+    /**
+     * 
+     * Gets a sub-container by name.
+     * 
+     * @param string $name The sub-container name.
+     * 
+     * @return Container The sub-container.
+     * 
+     */
     public function getContainer($name)
     {
         if (! isset($this->containers[$name])) {
@@ -54,17 +83,42 @@ class Manager extends Container
         return $this->containers[$name];
     }
     
+    /**
+     * 
+     * Gets the names of all sub-containers.
+     * 
+     * @return array The names of all sub-containers.
+     * 
+     */
     public function getContainers()
     {
         return array_keys($this->containers);
     }
     
+    /**
+     * 
+     * Returns a clone of a sub-container.  The clone will have all the
+     * configuration and service definitions of the origin container, but it
+     * will not have any of the service objects.  Calling get() will create
+     * new services that are independent and separate from the origin
+     * container services.
+     * 
+     * @return Container A clone of the named sub-container.
+     * 
+     */
     public function cloneContainer($name)
     {
         $container = $this->getContainer($name);
         return clone $container;
     }
     
+    /**
+     * 
+     * Returns a Lazy that, when invoked, will return sub-container clone
+     * 
+     * @return Lazy
+     * 
+     */
     public function lazyCloneContainer($name)
     {
         $self = $this;

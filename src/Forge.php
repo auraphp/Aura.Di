@@ -39,6 +39,13 @@ class Forge implements ForgeInterface
         $this->config = $config;
     }
     
+    /**
+     * 
+     * When cloning this Forge, create a separate Config object for the clone.
+     * 
+     * @return void
+     * 
+     */
     public function __clone()
     {
         $this->config = clone $this->config;

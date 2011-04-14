@@ -168,9 +168,18 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException aura\di\Exception_ContainerLocked
      */
-    public function testLock()
+    public function testLockedConfig()
     {
         $this->container->lock();
         $params = $this->container->params;
+    }
+    
+    /**
+     * @expectedException aura\di\Exception_ContainerLocked
+     */
+    public function testLockedSet()
+    {
+        $this->container->lock();
+        $this->container->set('foo', function() { return new StdClass; });
     }
 }

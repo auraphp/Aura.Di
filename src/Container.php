@@ -64,6 +64,18 @@ class Container implements ContainerInterface
      */
     protected $services = array();
     
+    /**
+     * 
+     * Is the Container locked?  (When locked, you cannot access configuration
+     * properties from outside the object, and cannot set services.)
+     * 
+     * @var bool
+     * 
+     * @see __get()
+     * 
+     * @see set()
+     * 
+     */
     protected $locked = false;
     
     /**
@@ -104,17 +116,40 @@ class Container implements ContainerInterface
         throw new \UnexpectedValueException($key);
     }
     
+    /**
+     * 
+     * When cloning this Container, *do not* make a copy of the service
+     * objects.  Leave the configuration and definitions intact.
+     * 
+     * @return void
+     * 
+     */
     public function __clone()
     {
         $this->services = array();
         $this->forge = clone $this->forge;
     }
     
+    /**
+     * 
+     * Lock the Container so that configuration cannot be accessed externally,
+     * and no new service definitions can be added.
+     * 
+     * @return void
+     * 
+     */
     public function lock()
     {
         $this->locked = true;
     }
     
+    /**
+     * 
+     * Is the Container locked?
+     * 
+     * @return bool
+     * 
+     */
     public function isLocked()
     {
         return $this->locked;
@@ -158,9 +193,16 @@ class Container implements ContainerInterface
      * @param object $val The service object; if a Closure, is treated as a
      * Lazy.
      * 
+     * @throws Exception_ContainerLocked when the Container is locked.
+     * 
+     * @throws Exception_Service
      */
     public function set($key, $val)
     {
+        if ($this->isLocked()) {
+            throw new Exception_ContainerLocked;
+        }
+        
         if (! is_object($val)) {
             throw new Exception_ServiceInvalid($key);
         }
@@ -180,7 +222,7 @@ class Container implements ContainerInterface
      * 
      * @return object
      * 
-     * @throws \aura\di\Exception_ServiceNotFound when the requested service
+     * @throws Exception_ServiceNotFound when the requested service
      * does not exist.
      * 
      */
