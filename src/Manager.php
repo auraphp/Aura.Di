@@ -6,14 +6,14 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Manager for multiple DI containers; the Manager is itself the main
  * container, and it provides access to sub-containers.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 class Manager extends Container

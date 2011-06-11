@@ -6,13 +6,13 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Dependency injection container.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 class Container implements ContainerInterface
