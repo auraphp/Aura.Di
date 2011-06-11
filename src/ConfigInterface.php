@@ -6,13 +6,13 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Retains and unifies class constructor parameter values with external values.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 interface ConfigInterface

@@ -6,13 +6,13 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Interface for dependency injection containers.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 interface ContainerInterface
@@ -75,7 +75,7 @@ interface ContainerInterface
      * 
      * @return object
      * 
-     * @throws \aura\di\Exception_ServiceNotFound when the requested service
+     * @throws \Aura\Di\Exception_ServiceNotFound when the requested service
      * does not exist.
      * 
      */
