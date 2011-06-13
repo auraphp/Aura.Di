@@ -1,3 +1,3 @@
 <?php
-namespace Aura\Di;
-class Exception_ServiceNotFound extends Exception {}
+namespace Aura\Di\Exception;
+class ServiceNotFound extends \Aura\Di\Exception {}

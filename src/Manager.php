@@ -57,7 +57,7 @@ class Manager extends Container
     public function newContainer($name)
     {
         if (isset($this->containers[$name])) {
-            throw new Exception_ContainerExists($name);
+            throw new Exception\ContainerExists($name);
         }
         
         $forge = clone $this->forge;
@@ -77,7 +77,7 @@ class Manager extends Container
     public function getContainer($name)
     {
         if (! isset($this->containers[$name])) {
-            throw new Exception_ContainerNotFound($name);
+            throw new Exception\ContainerNotFound($name);
         }
         
         return $this->containers[$name];

@@ -1,3 +1,3 @@
 <?php
-namespace Aura\Di;
-class Exception_ContainerNotFound extends Exception {}
+namespace Aura\Di\Exception;
+class ContainerNotFound extends \Aura\Di\Exception {}

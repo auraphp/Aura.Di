@@ -41,7 +41,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception_ContainerExists
+     * @expectedException Aura\Di\Exception\ContainerExists
      */
     public function testNewContainerExists()
     {
@@ -50,7 +50,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception_ContainerNotFound
+     * @expectedException Aura\Di\Exception\ContainerNotFound
      */
     public function testGetContainerNotFound()
     {

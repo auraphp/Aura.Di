@@ -75,7 +75,7 @@ interface ContainerInterface
      * 
      * @return object
      * 
-     * @throws \Aura\Di\Exception_ServiceNotFound when the requested service
+     * @throws \Aura\Di\Exception\ServiceNotFound when the requested service
      * does not exist.
      * 
      */

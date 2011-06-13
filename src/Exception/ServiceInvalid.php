@@ -1,3 +1,3 @@
 <?php
-namespace Aura\Di;
-class Exception_ServiceInvalid extends Exception {}
+namespace Aura\Di\Exception;
+class ServiceInvalid extends \Aura\Di\Exception {}

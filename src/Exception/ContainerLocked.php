@@ -1,3 +1,3 @@
 <?php
-namespace Aura\Di;
-class Exception_ContainerLocked extends Exception {}
+namespace Aura\Di\Exception;
+class ContainerLocked extends \Aura\Di\Exception {}

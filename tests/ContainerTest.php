@@ -52,7 +52,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception_ServiceInvalid
+     * @expectedException Aura\Di\Exception\ServiceInvalid
      */
     public function testInitInvalidService()
     {
@@ -60,7 +60,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception_ServiceNotFound
+     * @expectedException Aura\Di\Exception\ServiceNotFound
      */
     public function testGetNoSuchService()
     {
@@ -166,7 +166,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception_ContainerLocked
+     * @expectedException Aura\Di\Exception\ContainerLocked
      */
     public function testLockedConfig()
     {
@@ -175,7 +175,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception_ContainerLocked
+     * @expectedException Aura\Di\Exception\ContainerLocked
      */
     public function testLockedSet()
     {

@@ -106,7 +106,7 @@ class Container implements ContainerInterface
     public function __get($key)
     {
         if ($this->isLocked()) {
-            throw new Exception_ContainerLocked;
+            throw new Exception\ContainerLocked;
         }
         
         if ($key == 'params' || $key == 'setter') {
@@ -193,18 +193,18 @@ class Container implements ContainerInterface
      * @param object $val The service object; if a Closure, is treated as a
      * Lazy.
      * 
-     * @throws Exception_ContainerLocked when the Container is locked.
+     * @throws Exception\ContainerLocked when the Container is locked.
      * 
-     * @throws Exception_Service
+     * @throws Exception\Service
      */
     public function set($key, $val)
     {
         if ($this->isLocked()) {
-            throw new Exception_ContainerLocked;
+            throw new Exception\ContainerLocked;
         }
         
         if (! is_object($val)) {
-            throw new Exception_ServiceInvalid($key);
+            throw new Exception\ServiceInvalid($key);
         }
         
         if ($val instanceof \Closure) {
@@ -222,7 +222,7 @@ class Container implements ContainerInterface
      * 
      * @return object
      * 
-     * @throws Exception_ServiceNotFound when the requested service
+     * @throws Exception\ServiceNotFound when the requested service
      * does not exist.
      * 
      */
@@ -230,7 +230,7 @@ class Container implements ContainerInterface
     {
         // does the definition exist?
         if (! $this->has($key)) {
-            throw new Exception_ServiceNotFound($key);
+            throw new Exception\ServiceNotFound($key);
         }
         
         // has it been instantiated?
