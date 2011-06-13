@@ -1,5 +1,5 @@
 <?php
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * Test class for Config.
@@ -17,7 +17,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testFetchReadsConstructorDefaults()
     {
         $expect = array('foo' => 'bar');
-        list($actual_params, $actual_setter) = $this->config->fetch('aura\di\MockParentClass');
+        list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual_params);
     }
     
@@ -26,8 +26,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testFetchTwiceForMerge()
     {
-        $expect = $this->config->fetch('aura\di\MockParentClass');
-        $actual = $this->config->fetch('aura\di\MockParentClass');
+        $expect = $this->config->fetch('Aura\Di\MockParentClass');
+        $actual = $this->config->fetch('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual);
     }
     
@@ -38,7 +38,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'zim' => null,
         );
         
-        list($actual_params, $actual_setter) = $this->config->fetch('aura\di\MockChildClass');
+        list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
         $this->assertSame($expect, $actual_params);
     }
     
@@ -46,10 +46,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $this->config = new Config;
         $params = $this->config->getParams();
-        $params['aura\di\MockParentClass'] = array('foo' => 'zim');
+        $params['Aura\Di\MockParentClass'] = array('foo' => 'zim');
         
         $expect = array('foo' => 'zim');
-        list($actual_params, $actual_setter) = $this->config->fetch('aura\di\MockParentClass');
+        list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual_params);
     }
     
@@ -57,34 +57,34 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $this->config = new Config;
         $params = $this->config->getParams();
-        $params['aura\di\MockParentClass'] = array('foo' => 'dib');
+        $params['Aura\Di\MockParentClass'] = array('foo' => 'dib');
         
         $expect = array(
             'foo' => 'dib',
             'zim' => null,
         );
         
-        list($actual_params, $actual_setter) = $this->config->fetch('aura\di\MockChildClass');
+        list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
         $this->assertSame($expect, $actual_params);
         
         // for test coverage of the mock class
-        $child = new \aura\di\MockChildClass('bar', new \aura\di\MockOtherClass);
+        $child = new \Aura\Di\MockChildClass('bar', new \Aura\Di\MockOtherClass);
     }
     
     public function testGetReflection()
     {
-        $actual = $this->config->getReflect('aura\di\MockOtherClass');
+        $actual = $this->config->getReflect('Aura\Di\MockOtherClass');
         $this->assertType('ReflectionClass', $actual);
-        $this->assertSame('aura\di\MockOtherClass', $actual->getName());
-        $actual = $this->config->getReflect('aura\di\MockOtherClass');
+        $this->assertSame('Aura\Di\MockOtherClass', $actual->getName());
+        $actual = $this->config->getReflect('Aura\Di\MockOtherClass');
     }
     
     public function testFetchCapturesParentSetter()
     {
         $setter = $this->config->getSetter();
-        $setter['aura\di\MockParentClass']['setFake'] = 'fake1';
+        $setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';
         
-        list($actual_config, $actual_setter) = $this->config->fetch('aura\di\MockChildClass');
+        list($actual_config, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
         $expect = array('setFake' => 'fake1');
         $this->assertSame($expect, $actual_setter);
         
@@ -93,10 +93,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testFetchCapturesOverrideSetter()
     {
         $setter = $this->config->getSetter();
-        $setter['aura\di\MockParentClass']['setFake'] = 'fake1';
-        $setter['aura\di\MockChildClass']['setFake'] = 'fake2';
+        $setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';
+        $setter['Aura\Di\MockChildClass']['setFake'] = 'fake2';
         
-        list($actual_config, $actual_setter) = $this->config->fetch('aura\di\MockChildClass');
+        list($actual_config, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
         $expect = array('setFake' => 'fake2');
         $this->assertSame($expect, $actual_setter);
     }

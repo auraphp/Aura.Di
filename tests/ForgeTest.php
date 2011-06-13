@@ -1,5 +1,5 @@
 <?php
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * Test class for Forge.
@@ -46,8 +46,8 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
      */
     public function testNewInstance()
     {
-        $actual = $this->forge->newInstance('aura\di\MockOtherClass');
-        $this->assertType('aura\di\MockOtherClass', $actual);
+        $actual = $this->forge->newInstance('Aura\Di\MockOtherClass');
+        $this->assertType('Aura\Di\MockOtherClass', $actual);
     }
     
     public function testNewInstanceWithLazyParam()
@@ -56,23 +56,23 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
             return new MockOtherClass;
         });
         
-        $class = 'aura\di\MockParentClass';
+        $class = 'Aura\Di\MockParentClass';
         
         $actual = $this->forge->newInstance($class, array(
             'foo' => $lazy,
         ));
         
         $this->assertType($class, $actual);
-        $this->assertType('aura\di\MockOtherClass', $actual->getFoo());
+        $this->assertType('Aura\Di\MockOtherClass', $actual->getFoo());
     }
     
     public function testNewInstanceWithSetter()
     {
-        $class = 'aura\di\MockChildClass';
+        $class = 'Aura\Di\MockChildClass';
         $setter = $this->config->getSetter();
-        $setter['aura\di\MockChildClass']['setFake'] = 'fake_value';
+        $setter['Aura\Di\MockChildClass']['setFake'] = 'fake_value';
         
-        $actual = $this->forge->newInstance('aura\di\MockChildClass', array(
+        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', array(
             'foo' => 'gir',
             'zim' => new MockOtherClass,
         ));
@@ -86,16 +86,16 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
             return new MockOtherClass;
         });
         
-        $class = 'aura\di\MockChildClass';
+        $class = 'Aura\Di\MockChildClass';
         $setter = $this->config->getSetter();
-        $setter['aura\di\MockChildClass']['setFake'] = $lazy;
+        $setter['Aura\Di\MockChildClass']['setFake'] = $lazy;
         
-        $actual = $this->forge->newInstance('aura\di\MockChildClass', array(
+        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', array(
             'foo' => 'gir',
             'zim' => new MockOtherClass,
         ));
         
-        $this->assertType('aura\di\MockOtherClass', $actual->getFake());
+        $this->assertType('Aura\Di\MockOtherClass', $actual->getFake());
     }
     
     public function testClone()

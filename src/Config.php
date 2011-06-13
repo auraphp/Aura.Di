@@ -6,13 +6,13 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Retains and unifies class configurations.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 class Config implements ConfigInterface

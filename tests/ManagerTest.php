@@ -1,5 +1,5 @@
 <?php
-namespace aura\di;
+namespace Aura\Di;
 
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,14 +24,14 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     
     public function testNewAndGetContainer()
     {
-        $this->manager->params['aura\di\MockParentClass']['foo'] = 'dib';
+        $this->manager->params['Aura\Di\MockParentClass']['foo'] = 'dib';
         
         $mock = $this->manager->newContainer('mock');
-        $mock->params['aura\di\MockParentClass']['foo'] = 'zim';
+        $mock->params['Aura\Di\MockParentClass']['foo'] = 'zim';
         
         // make sure two containers give different objects
-        $a = $this->manager->newInstance('aura\di\MockParentClass');
-        $b = $mock->newInstance('aura\di\MockParentClass');
+        $a = $this->manager->newInstance('Aura\Di\MockParentClass');
+        $b = $mock->newInstance('Aura\Di\MockParentClass');
         
         $this->assertNotSame($a->getFoo(), $b->getFoo());
         
@@ -41,7 +41,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException aura\di\Exception_ContainerExists
+     * @expectedException Aura\Di\Exception_ContainerExists
      */
     public function testNewContainerExists()
     {
@@ -50,7 +50,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException aura\di\Exception_ContainerNotFound
+     * @expectedException Aura\Di\Exception_ContainerNotFound
      */
     public function testGetContainerNotFound()
     {
@@ -72,7 +72,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $mock = $this->manager->newContainer('mock');
         $mock->set('parent', function() use ($mock) {
-            return $mock->newInstance('aura\di\MockParentClass');
+            return $mock->newInstance('Aura\Di\MockParentClass');
         });
         
         $clone = $this->manager->cloneContainer('mock');
@@ -85,12 +85,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $mock = $this->manager->newContainer('mock');
         $mock->set('parent', function() use ($mock) {
-            return $mock->newInstance('aura\di\MockParentClass');
+            return $mock->newInstance('Aura\Di\MockParentClass');
         });
         
         $lazy = $this->manager->lazyCloneContainer('mock');
-        $this->assertType('aura\di\Lazy', $lazy);
+        $this->assertType('Aura\Di\Lazy', $lazy);
         $mock = $lazy();
-        $this->assertType('aura\di\Container', $mock);
+        $this->assertType('Aura\Di\Container', $mock);
     }
 }

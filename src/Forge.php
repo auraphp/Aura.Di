@@ -6,13 +6,13 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Creates objects using reflection and the specified configuration values.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 class Forge implements ForgeInterface

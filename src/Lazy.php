@@ -6,13 +6,13 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace aura\di;
+namespace Aura\Di;
 
 /**
  * 
  * Wraps a closure specifically for the purpose of lazy-loading an object.
  * 
- * @package aura.di
+ * @package Aura.Di
  * 
  */
 class Lazy
