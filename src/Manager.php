@@ -103,6 +103,8 @@ class Manager extends Container
      * new services that are independent and separate from the origin
      * container services.
      * 
+     * @param string $name The sub-container name.
+     * 
      * @return Container A clone of the named sub-container.
      * 
      */
@@ -114,7 +116,9 @@ class Manager extends Container
     
     /**
      * 
-     * Returns a Lazy that, when invoked, will return sub-container clone
+     * Returns a Lazy that, when invoked, will return a sub-container clone.
+     * 
+     * @param string $name The sub-container name.
      * 
      * @return Lazy
      * 
