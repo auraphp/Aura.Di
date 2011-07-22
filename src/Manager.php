@@ -67,7 +67,8 @@ class Manager extends Container
     
     /**
      * 
-     * Gets a sub-container by name.
+     * Gets a sub-container by name, throwing an exception if it does not
+     * exist.
      * 
      * @param string $name The sub-container name.
      * 
@@ -76,11 +77,30 @@ class Manager extends Container
      */
     public function getContainer($name)
     {
-        if (! isset($this->containers[$name])) {
-            throw new Exception\ContainerNotFound($name);
+        if (isset($this->containers[$name])) {
+            return $this->containers[$name];
         }
         
-        return $this->containers[$name];
+        throw new Exception\ContainerNotFound($name);
+    }
+    
+    /**
+     * 
+     * Gets a sub-container by name if it exists, or creates a new one under
+     * that name if it does not.
+     * 
+     * @param string $name The sub-container name.
+     * 
+     * @return Container The sub-container.
+     * 
+     */
+    public function subContainer($name)
+    {
+        if (isset($this->containers[$name])) {
+            return $this->containers[$name];
+        } else {
+            return $this->newContainer($name);
+        }
     }
     
     /**

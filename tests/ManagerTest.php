@@ -93,4 +93,11 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $mock = $lazy();
         $this->assertType('Aura\Di\Container', $mock);
     }
+    
+    public function testSubContainer()
+    {
+        $expect = $this->manager->subContainer('mock');
+        $actual = $this->manager->subContainer('mock');
+        $this->assertSame($expect, $actual);
+    }
 }
