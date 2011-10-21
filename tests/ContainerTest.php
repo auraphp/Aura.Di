@@ -75,7 +75,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         });
         
         $actual = $this->container->get('foo');
-        $this->assertType('Aura\Di\MockParentClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockParentClass', $actual);
     }
     
     /**
@@ -105,11 +105,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $lazy = $this->container->lazyGet('foo');
         
-        $this->assertType('Aura\Di\Lazy', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
         
         $foo = $lazy();
         
-        $this->assertType('Aura\Di\MockOtherClass', $foo);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $foo);
     }
     
     public function testMagicGet()
@@ -154,9 +154,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazyNew()
     {
         $lazy = $this->container->lazyNew('Aura\Di\MockOtherClass');
-        $this->assertType('Aura\Di\Lazy', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
         $foo = $lazy();
-        $this->assertType('Aura\Di\MockOtherClass', $foo);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $foo);
     }
     
     public function testClone()

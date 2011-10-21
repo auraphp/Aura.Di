@@ -47,7 +47,7 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
     public function testNewInstance()
     {
         $actual = $this->forge->newInstance('Aura\Di\MockOtherClass');
-        $this->assertType('Aura\Di\MockOtherClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual);
     }
     
     public function testNewInstanceWithLazyParam()
@@ -62,8 +62,8 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
             'foo' => $lazy,
         ));
         
-        $this->assertType($class, $actual);
-        $this->assertType('Aura\Di\MockOtherClass', $actual->getFoo());
+        $this->assertInstanceOf($class, $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFoo());
     }
     
     public function testNewInstanceWithSetter()
@@ -95,7 +95,7 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
             'zim' => new MockOtherClass,
         ));
         
-        $this->assertType('Aura\Di\MockOtherClass', $actual->getFake());
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFake());
     }
     
     public function testClone()

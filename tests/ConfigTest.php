@@ -74,7 +74,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testGetReflection()
     {
         $actual = $this->config->getReflect('Aura\Di\MockOtherClass');
-        $this->assertType('ReflectionClass', $actual);
+        $this->assertInstanceOf('ReflectionClass', $actual);
         $this->assertSame('Aura\Di\MockOtherClass', $actual->getName());
         $actual = $this->config->getReflect('Aura\Di\MockOtherClass');
     }

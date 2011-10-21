@@ -89,9 +89,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         });
         
         $lazy = $this->manager->lazyCloneContainer('mock');
-        $this->assertType('Aura\Di\Lazy', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
         $mock = $lazy();
-        $this->assertType('Aura\Di\Container', $mock);
+        $this->assertInstanceOf('Aura\Di\Container', $mock);
     }
     
     public function testSubContainer()
