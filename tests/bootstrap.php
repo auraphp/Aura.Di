@@ -12,6 +12,6 @@ spl_autoload_register(function($class) {
         require $tests;
         return true;
     }
-    
+
     return false;
 });

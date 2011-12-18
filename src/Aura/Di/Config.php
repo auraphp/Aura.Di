@@ -1,90 +1,90 @@
 <?php
 /**
- * 
+ *
  * This file is part of the Aura Project for PHP.
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Di;
 
 /**
- * 
+ *
  * Retains and unifies class configurations.
- * 
+ *
  * @package Aura.Di
- * 
+ *
  */
 class Config implements ConfigInterface
 {
     /**
-     * 
-     * Constructor params from external configuration in the form 
+     *
+     * Constructor params from external configuration in the form
      * `$params[$class][$name] = $value`.
-     * 
+     *
      * @var \ArrayObject
-     * 
+     *
      */
     protected $params;
-    
+
     /**
-     * 
+     *
      * An array of retained ReflectionClass instances; this is as much for
      * the Forge as it is for Config.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $reflect = array();
-    
+
     /**
-     * 
+     *
      * Setter definitions in the form of `$setter[$class][$method] = $value`.
-     * 
+     *
      * @var \ArrayObject
-     * 
+     *
      */
     protected $setter;
-    
+
     /**
-     * 
+     *
      * Constructor params and setter definitions, unified across class
      * defaults, inheritance hierarchies, and external configurations.
-     * 
+     *
      * @var array
-     * 
+     *
      */
     protected $unified = array();
-    
+
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      */
     public function __construct()
     {
         $this->reset();
     }
-    
+
     /**
-     * 
+     *
      * When cloning this object, reset the params and setter values (but
      * leave the reflection values in place).
-     * 
+     *
      * @return void
-     * 
+     *
      */
     public function __clone()
     {
         $this->reset();
     }
-    
+
     /**
-     * 
+     *
      * Resets the params and setter values.
-     * 
+     *
      * @return void
-     * 
+     *
      */
     protected function reset()
     {
@@ -93,39 +93,39 @@ class Config implements ConfigInterface
         $this->setter = new \ArrayObject;
         $this->setter['*'] = array();
     }
-    
+
     /**
-     * 
+     *
      * Gets the $params property.
-     * 
+     *
      * @return \ArrayObject
-     * 
+     *
      */
     public function getParams()
     {
         return $this->params;
     }
-    
+
     /**
-     * 
+     *
      * Gets the $setter property.
-     * 
+     *
      * @return \ArrayObject
-     * 
+     *
      */
     public function getSetter()
     {
         return $this->setter;
     }
-    
+
     /**
-     * 
+     *
      * Returns a \ReflectionClass for a named class.
-     * 
+     *
      * @param string $class The class to reflect on.
-     * 
+     *
      * @return \ReflectionClass
-     * 
+     *
      */
     public function getReflect($class)
     {
@@ -134,16 +134,16 @@ class Config implements ConfigInterface
         }
         return $this->reflect[$class];
     }
-    
+
     /**
-     * 
+     *
      * Fetches the unified constructor params and setter values for a class.
-     * 
+     *
      * @param string $class The class name to fetch values for.
-     * 
-     * @return array An array with two elements; 0 is the constructor values 
+     *
+     * @return array An array with two elements; 0 is the constructor values
      * for the class, and 1 is the setter methods and values for the class.
-     * 
+     *
      */
     public function fetch($class)
     {
@@ -151,7 +151,7 @@ class Config implements ConfigInterface
         if (isset($this->unified[$class])) {
             return $this->unified[$class];
         }
-        
+
         // fetch the values for parents so we can inherit them
         $pclass = get_parent_class($class);
         if ($pclass) {
@@ -162,14 +162,14 @@ class Config implements ConfigInterface
             $parent_params = $this->params['*'];
             $parent_setter = $this->setter['*'];
         }
-        
+
         // stores the unified config and setter values
         $unified_params = array();
         $unified_setter = array();
-        
+
         // reflect on the class
         $rclass = $this->getReflect($class);
-        
+
         // does it have a constructor?
         $rctor = $rclass->getConstructor();
         if ($rctor) {
@@ -194,14 +194,14 @@ class Config implements ConfigInterface
                 }
             }
         }
-        
+
         // merge the setters
         if (isset($this->setter[$class])) {
             $unified_setter = array_merge($parent_setter, $this->setter[$class]);
         } else {
             $unified_setter = $parent_setter;
         }
-        
+
         // done, return the unified values
         $this->unified[$class][0] = $unified_params;
         $this->unified[$class][1] = $unified_setter;
