@@ -196,6 +196,9 @@ class Container implements ContainerInterface
      * @throws Exception\ContainerLocked when the Container is locked.
      * 
      * @throws Exception\Service
+     * 
+     * @return $this
+     * 
      */
     public function set($key, $val)
     {
@@ -212,6 +215,8 @@ class Container implements ContainerInterface
         }
         
         $this->defs[$key] = $val;
+        
+        return $this;
     }
     
     /**
