@@ -2,4 +2,4 @@
 /**
  * Package prefix for autoloader.
  */
-$loader->addPrefix('Aura\Di\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+$loader->add('Aura\Di\\', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
