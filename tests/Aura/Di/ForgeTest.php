@@ -58,9 +58,9 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         
         $class = 'Aura\Di\MockParentClass';
         
-        $actual = $this->forge->newInstance($class, array(
+        $actual = $this->forge->newInstance($class, [
             'foo' => $lazy,
-        ));
+        ]);
         
         $this->assertInstanceOf($class, $actual);
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFoo());
@@ -72,10 +72,10 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $setter = $this->config->getSetter();
         $setter['Aura\Di\MockChildClass']['setFake'] = 'fake_value';
         
-        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', array(
+        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', [
             'foo' => 'gir',
             'zim' => new MockOtherClass,
-        ));
+        ]);
         
         $this->assertSame('fake_value', $actual->getFake());
     }
@@ -90,10 +90,10 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $setter = $this->config->getSetter();
         $setter['Aura\Di\MockChildClass']['setFake'] = $lazy;
         
-        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', array(
+        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', [
             'foo' => 'gir',
             'zim' => new MockOtherClass,
-        ));
+        ]);
         
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFake());
     }

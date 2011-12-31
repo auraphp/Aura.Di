@@ -16,7 +16,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     
     public function testFetchReadsConstructorDefaults()
     {
-        $expect = array('foo' => 'bar');
+        $expect = ['foo' => 'bar'];
         list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual_params);
     }
@@ -33,10 +33,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     
     public function testFetchCapturesParentParams()
     {
-        $expect = array(
+        $expect = [
             'foo' => 'bar',
             'zim' => null,
-        );
+        ];
         
         list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
         $this->assertSame($expect, $actual_params);
@@ -46,9 +46,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $this->config = new Config;
         $params = $this->config->getParams();
-        $params['Aura\Di\MockParentClass'] = array('foo' => 'zim');
+        $params['Aura\Di\MockParentClass'] = ['foo' => 'zim'];
         
-        $expect = array('foo' => 'zim');
+        $expect = ['foo' => 'zim'];
         list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual_params);
     }
@@ -57,12 +57,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $this->config = new Config;
         $params = $this->config->getParams();
-        $params['Aura\Di\MockParentClass'] = array('foo' => 'dib');
+        $params['Aura\Di\MockParentClass'] = ['foo' => 'dib'];
         
-        $expect = array(
+        $expect = [
             'foo' => 'dib',
             'zim' => null,
-        );
+        ];
         
         list($actual_params, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
         $this->assertSame($expect, $actual_params);
@@ -85,7 +85,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';
         
         list($actual_config, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
-        $expect = array('setFake' => 'fake1');
+        $expect = ['setFake' => 'fake1'];
         $this->assertSame($expect, $actual_setter);
         
     }
@@ -97,7 +97,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $setter['Aura\Di\MockChildClass']['setFake'] = 'fake2';
         
         list($actual_config, $actual_setter) = $this->config->fetch('Aura\Di\MockChildClass');
-        $expect = array('setFake' => 'fake2');
+        $expect = ['setFake' => 'fake2'];
         $this->assertSame($expect, $actual_setter);
     }
     

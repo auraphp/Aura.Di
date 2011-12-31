@@ -25,7 +25,7 @@ class Manager extends Container
      * @var array
      * 
      */
-    protected $containers = array();
+    protected $containers = [];
     
     /**
      * 

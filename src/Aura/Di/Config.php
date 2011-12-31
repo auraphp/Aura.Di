@@ -35,7 +35,7 @@ class Config implements ConfigInterface
      * @var array
      * 
      */
-    protected $reflect = array();
+    protected $reflect = [];
     
     /**
      * 
@@ -54,7 +54,7 @@ class Config implements ConfigInterface
      * @var array
      * 
      */
-    protected $unified = array();
+    protected $unified = [];
     
     /**
      * 
@@ -89,9 +89,9 @@ class Config implements ConfigInterface
     protected function reset()
     {
         $this->params = new \ArrayObject;
-        $this->params['*'] = array();
+        $this->params['*'] = [];
         $this->setter = new \ArrayObject;
-        $this->setter['*'] = array();
+        $this->setter['*'] = [];
     }
     
     /**
@@ -164,8 +164,8 @@ class Config implements ConfigInterface
         }
         
         // stores the unified config and setter values
-        $unified_params = array();
-        $unified_setter = array();
+        $unified_params = [];
+        $unified_setter = [];
         
         // reflect on the class
         $rclass = $this->getReflect($class);

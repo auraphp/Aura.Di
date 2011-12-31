@@ -87,12 +87,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('bar', new \StdClass);
         $this->container->set('baz', new \StdClass);
         
-        $expect = array('foo', 'bar', 'baz');
+        $expect = ['foo', 'bar', 'baz'];
         $actual = $this->container->getDefs();
         $this->assertSame($expect, $actual);
         
         $service = $this->container->get('bar');
-        $expect = array('bar');
+        $expect = ['bar'];
         $actual = $this->container->getServices();
         $this->assertSame($expect, $actual);
     }
@@ -141,9 +141,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $instance = $this->container->newInstance(
             'Aura\Di\MockParentClass',
-            array(
-                'foo' => 'dib'
-            )
+            ['foo' => 'dib']
         );
         
         $expect = 'dib';
