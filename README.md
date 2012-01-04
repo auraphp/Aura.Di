@@ -14,7 +14,7 @@ When combined with factory classes, you can completely separate object configura
 Fully describing the nature and benefits of dependency injection, while desirable, is beyond the scope of this document. For more information about "inversion of control" and "dependency injection" please consult <http://martinfowler.com/articles/injection.html> by Martin Fowler.
 
 
-Instantiating the Manager
+Instantiating the Container
 =========================
 
 The Aura DI package comes with a instance script that returns a new DI instance:
@@ -25,18 +25,18 @@ The Aura DI package comes with a instance script that returns a new DI instance:
 Alternatively, you can add the Aura DI `'src/'` directory to your autoloader, and then instantiate it yourself:
 
     <?php
-    use Aura\Di\Manager;
+    use Aura\Di\Container;
     use Aura\Di\Forge;
     use Aura\Di\Config;
-    $di = new Manager(new Forge(new Config));
+    $di = new Container(new Forge(new Config));
 
-The `Manager` is the DI container proper.  The support objects are:
+The `Container` is the DI container proper.  The support objects are:
 
 - a `Config` object for collection, retrieval, and merging of setters and constructor params
 
 - a `Forge` for object creation using the unified `Config` values
 
-We will not need to use the support objects directly; we will get access to their behaviors through `Manager` methods.
+We will not need to use the support objects directly; we will get access to their behaviors through `Container` methods.
 
 
 Setting Services
@@ -386,7 +386,7 @@ Given the following example class ...
         return $di->newInstance('Example\Package\Foo');
     });
 
-Note that we use `lazyGet()` for the injection.  As with constructor params, we could tell the class to use a new `Database` object instead of the shared one in the `Manager`:
+Note that we use `lazyGet()` for the injection.  As with constructor params, we could tell the class to use a new `Database` object instead of the shared one in the `Container`:
 
     <?php
     // after construction, call Foo::setDb() and inject a service object.
@@ -411,84 +411,6 @@ Setter configurations are inherited.  If you have a class that extends `Example\
     }
 
 ... you do not need to add a new setter value for it; the `Forge` reads all parent setters and applies them.  (If you do add a setter value for that class, it will override the parent setter.)
-
-Sub-Containers
-==============
-
-The `Manager` itself is a dependency injection container; however, you may wish to have sub-containers as services within the `Manager`.  This can be useful when you want a collection of objects to be able to refer to each other as if they are part of a registry or service locator, but you want to retain the benefits of dependency injection proper.
-
-You can add a sub-container as a service in two lines:
-
-    <?php
-    // create a new Container
-    $sub = $di->newContainer('sub_name');
-
-
-Because the sub-container is a separate container from the `Manager`, you will need to configure `$params` and `$setters` for it separately as well.
-
-    <?php
-    // get a previously-created Container
-    $sub = $di->getContainer('sub_name');
-
-If you are trying to get the container by `$di->getContainer('sub_name')` and if there is no container found it throws an exception.
-
-The best way to create the container if its not created and return the container if its found we can use 
-
-    <?php
-    //Gets a sub-container by name if it exists, or creates a new one under that name if it does not.
-    $sub = $di->subContainer('sub_name');
-
-What the above function does is create a new container `$sub = $di->newContainer('sub_name');` if its not already created and lastly returns `$di->getContainer('sub_name');`
-
-You can use the following methods to work with the sub-container (the same as with any `Container`):
-
-- `has()`
-- `set()`
-- `get()`
-- `lazyGet()`
-- `newInstance()`
-- `lazyNew()`
-
-These methods work exactly the same as with the `Manager`, except the services will be on the sub-container, not the `Manager`.  For example:
-
-    <?php
-    //Gets a sub-container by name if it exists, or creates a new one under that name if it does not.
-    $sub = $di->subContainer('sub_name');
-    
-    // configure params for objects in the sub-container
-    $sub->params['Example\Package\Database']['host'] = 'alt-db.example.com';
-    
-    // add an alternative Database connection to the sub-container
-    $sub->set('alt_db', function() use ($sub) {
-        return $sub->newInstance('Example\Package\Database');
-    });
-
-If you need to add more services later, or modify configuration params and setters, you can retrieve the sub-container from the `Manager` and do so.
-
-    <?php
-    //Gets a sub-container by name if it exists, or creates a new one under that name if it does not.
-    $sub = $di->subContainer('sub_name');
-    
-    // add another service to it
-    $sub->set('other', function() use ($sub) {
-        return $sub->newInstance('Example\Package\Other');
-    });
-
-Finally, you can clone sub-containers. This will create a copy of the container with its configuration and service definitions, but it clears out any serfice objects that are stored in the container.  The clone will create new service objects for each of its services when they are called.  This allows you to have multiple DI containers that act as independent registries or service locators.
-
-    <?php
-    // clone 1 will have a set of service definitions and object instances...
-    // definitions ...
-    $clone1 = $di->cloneContainer('sub_name');
-    
-    // ... and clone 2 will have the same service definitions, but the object   
-    // instances will be different and independent from the ones in clone 1
-    $clone2 = $di->cloneContainer('sub_name');
-
-If you need to pass a sub-container clone as a param to another object, you can use the `lazyCloneContainer()` method.
-
-    <?php
-    $di->params['Example\Package\NeedsContainer']['container'] = $di->lazyCloneContainer('sub_name');
 
 
 Conclusion

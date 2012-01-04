@@ -9,4 +9,3 @@ require_once __DIR__ . '/src/Aura/Di/Exception/ServiceNotFound.php';
 require_once __DIR__ . '/src/Aura/Di/ForgeInterface.php';
 require_once __DIR__ . '/src/Aura/Di/Forge.php';
 require_once __DIR__ . '/src/Aura/Di/Lazy.php';
-require_once __DIR__ . '/src/Aura/Di/Manager.php';
