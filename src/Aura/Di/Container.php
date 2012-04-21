@@ -108,11 +108,11 @@ class Container implements ContainerInterface
         if ($this->isLocked()) {
             throw new Exception\ContainerLocked;
         }
-
+        
         if ($key == 'params' || $key == 'setter') {
             return $this->$key;
         }
-
+        
         throw new \UnexpectedValueException($key);
     }
     

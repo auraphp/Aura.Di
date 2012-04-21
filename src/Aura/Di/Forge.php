@@ -87,7 +87,7 @@ class Forge implements ForgeInterface
     {
         list($config, $setter) = $this->config->fetch($class);
         $params = array_merge($config, (array) $params);
-
+        
         // lazy-load params as needed
         foreach ($params as $key => $val) {
             if ($params[$key] instanceof Lazy) {
