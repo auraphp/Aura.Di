@@ -25,7 +25,7 @@ class Container implements ContainerInterface
      * 
      */
     protected $forge;
-
+    
     /**
      * 
      * A convenient reference to the Config::$params object, which itself
@@ -35,7 +35,7 @@ class Container implements ContainerInterface
      * 
      */
     protected $params;
-
+    
     /**
      * 
      * A convenient reference to the Config::$setter object, which itself
@@ -45,7 +45,7 @@ class Container implements ContainerInterface
      * 
      */
     protected $setter;
-
+    
     /**
      * 
      * Retains named service definitions.
@@ -54,7 +54,7 @@ class Container implements ContainerInterface
      * 
      */
     protected $defs = [];
-
+    
     /**
      * 
      * Retains the actual service objects.
@@ -63,7 +63,7 @@ class Container implements ContainerInterface
      * 
      */
     protected $services = [];
-
+    
     /**
      * 
      * Is the Container locked?  (When locked, you cannot access configuration
@@ -77,7 +77,7 @@ class Container implements ContainerInterface
      * 
      */
     protected $locked = false;
-
+    
     /**
      * 
      * Constructor.
@@ -92,7 +92,7 @@ class Container implements ContainerInterface
         $this->params = $this->getForge()->getConfig()->getParams();
         $this->setter = $this->getForge()->getConfig()->getSetter();
     }
-
+    
     /**
      * 
      * Magic get to provide access to the Config::$params and $setter
@@ -115,7 +115,7 @@ class Container implements ContainerInterface
 
         throw new \UnexpectedValueException($key);
     }
-
+    
     /**
      * 
      * When cloning this Container, *do not* make a copy of the service
@@ -129,7 +129,7 @@ class Container implements ContainerInterface
         $this->services = [];
         $this->forge = clone $this->forge;
     }
-
+    
     /**
      * 
      * Lock the Container so that configuration cannot be accessed externally,
@@ -142,7 +142,7 @@ class Container implements ContainerInterface
     {
         $this->locked = true;
     }
-
+    
     /**
      * 
      * Is the Container locked?
@@ -154,7 +154,7 @@ class Container implements ContainerInterface
     {
         return $this->locked;
     }
-
+    
     /**
      * 
      * Gets the Forge object used for creating new instances.
@@ -166,7 +166,7 @@ class Container implements ContainerInterface
     {
         return $this->forge;
     }
-
+    
     /**
      * 
      * Does a particular service definition exist?
@@ -180,7 +180,7 @@ class Container implements ContainerInterface
     {
         return isset($this->defs[$key]);
     }
-
+    
     /**
      * 
      * Sets a service definition by name. If you set a service as a Closure,
@@ -206,20 +206,20 @@ class Container implements ContainerInterface
         if ($this->isLocked()) {
             throw new Exception\ContainerLocked;
         }
-
+        
         if (! is_object($val)) {
             throw new Exception\ServiceInvalid($key);
         }
-
+        
         if ($val instanceof \Closure) {
             $val = new Lazy($val);
         }
-
+        
         $this->defs[$key] = $val;
-
+        
         return $this;
     }
-
+    
     /**
      * 
      * Gets a service object by key, lazy-loading it as needed.
@@ -238,7 +238,7 @@ class Container implements ContainerInterface
         if (! $this->has($key)) {
             throw new Exception\ServiceNotFound($key);
         }
-
+        
         // has it been instantiated?
         if (! isset($this->services[$key])) {
             // instantiate it from its definition.
@@ -250,11 +250,11 @@ class Container implements ContainerInterface
             // retain
             $this->services[$key] = $service;
         }
-
+        
         // done
         return $this->services[$key];
     }
-
+    
     /**
      * 
      * Gets the list of instantiated services.
@@ -266,7 +266,7 @@ class Container implements ContainerInterface
     {
         return array_keys($this->services);
     }
-
+    
     /**
      * 
      * Gets the list of service definitions.
@@ -278,7 +278,7 @@ class Container implements ContainerInterface
     {
         return array_keys($this->defs);
     }
-
+    
     /**
      * 
      * Returns a Lazy that gets a service. This allows you to replace the
@@ -304,7 +304,7 @@ class Container implements ContainerInterface
            return $self->get($key);
         });
     }
-
+    
     /**
      * 
      * Returns a new instance of the specified class, optionally
@@ -323,7 +323,7 @@ class Container implements ContainerInterface
     {
         return $this->forge->newInstance($class, $params, $setters);
     }
-
+    
     /**
      * 
      * Returns a Lazy that creates a new instance. This allows you to replace

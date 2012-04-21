@@ -26,7 +26,7 @@ interface ContainerInterface
      * 
      */
     public function lock();
-
+    
     /**
      * 
      * Is the Container locked?
@@ -35,7 +35,7 @@ interface ContainerInterface
      * 
      */
     public function isLocked();
-
+    
     /**
      * 
      * Gets the Forge object used for creating new instances.
@@ -44,7 +44,7 @@ interface ContainerInterface
      * 
      */
     public function getForge();
-
+    
     /**
      * 
      * Does a particular service exist?
@@ -55,7 +55,7 @@ interface ContainerInterface
      * 
      */
     public function has($key);
-
+    
     /**
      * 
      * Sets a service object by name.
@@ -66,7 +66,7 @@ interface ContainerInterface
      * 
      */
     public function set($key, $val);
-
+    
     /**
      * 
      * Gets a service object by key, lazy-loading it as needed.
@@ -80,7 +80,7 @@ interface ContainerInterface
      * 
      */
     public function get($key);
-
+    
     /**
      * 
      * Gets the list of services provided.
@@ -89,7 +89,7 @@ interface ContainerInterface
      * 
      */
     public function getServices();
-
+    
     /**
      * 
      * Gets the list of service definitions.
@@ -98,7 +98,7 @@ interface ContainerInterface
      * 
      */
     public function getDefs();
-
+    
     /**
      * 
      * Returns a Lazy that gets a service.
@@ -109,7 +109,7 @@ interface ContainerInterface
      * 
      */
     public function lazyGet($key);
-
+    
     /**
      * 
      * Returns a new instance of the specified class, optionally
@@ -125,7 +125,7 @@ interface ContainerInterface
      * 
      */
     public function newInstance($class, array $params = [], array $setters = []);
-
+    
     /**
      * 
      * Returns a Lazy that creates a new instance.

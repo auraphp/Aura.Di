@@ -25,7 +25,7 @@ interface ForgeInterface
      * 
      */
     public function getConfig();
-
+    
     /**
      * 
      * Creates and returns a new instance of a class using reflection and
