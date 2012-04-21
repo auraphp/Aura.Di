@@ -73,13 +73,17 @@ class Forge implements ForgeInterface
      * @param string $class The class to instantiate.
      * 
      * @param array $params An associative array of override parameters where
-     * the key the name of the constructor parameter and the value is the
+     * the key is the name of the constructor parameter and the value is the
      * parameter value to use.
+     * 
+     * @param array $setters An associative array of override setters where
+     * the key is the name of the setter method to call and the value is the
+     * value to be passed to the setter method.
      * 
      * @return object
      * 
      */
-    public function newInstance($class, array $params = null)
+    public function newInstance($class, array $params = [], array $setters = [])
     {
         list($config, $setter) = $this->config->fetch($class);
         $params = array_merge($config, (array) $params);
@@ -91,12 +95,15 @@ class Forge implements ForgeInterface
             }
         }
         
+        // merge the setters
+        $setters = array_merge($setter, $setters);
+        
         // create the new instance
         $call = [$this->config->getReflect($class), 'newInstance'];
         $object = call_user_func_array($call, $params);
         
         // call setters after creation
-        foreach ($setter as $method => $value) {
+        foreach ($setters as $method => $value) {
             // does the specified setter method exist?
             if (method_exists($object, $method)) {
                 // lazy-load values as needed
