@@ -183,10 +183,10 @@ class Container implements ContainerInterface
     
     /**
      * 
-     * Sets a service definition by name. If you set a service as a Closure, 
-     * it is automatically treated as a Lazy. (Note that is has to be a 
-     * Closure, not just any callable, to be treated as a Lazy; this is 
-     * because the actual service object itself might be callable via an 
+     * Sets a service definition by name. If you set a service as a Closure,
+     * it is automatically treated as a Lazy. (Note that is has to be a
+     * Closure, not just any callable, to be treated as a Lazy; this is
+     * because the actual service object itself might be callable via an
      * __invoke() method.)
      * 
      * @param string $key The service key.
@@ -301,25 +301,27 @@ class Container implements ContainerInterface
     {
         $self = $this;
         return new Lazy(function() use ($self, $key) {
-           return $self->get($key); 
+           return $self->get($key);
         });
     }
     
     /**
      * 
-     * Returns a new instance of the specified class, optionally 
+     * Returns a new instance of the specified class, optionally
      * with additional override parameters.
      * 
      * @param string $class The type of class of instantiate.
      * 
      * @param array $params Override parameters for the instance.
      * 
+     * @param array $setters Override setters for the instance.
+     * 
      * @return object An instance of the requested class.
      * 
      */
-    public function newInstance($class, array $params = null)
+    public function newInstance($class, array $params = [], array $setters = [])
     {
-        return $this->forge->newInstance($class, (array) $params);
+        return $this->forge->newInstance($class, $params, $setters);
     }
     
     /**
@@ -339,14 +341,16 @@ class Container implements ContainerInterface
      * 
      * @param array $params Override parameters for the instance.
      * 
+     * @param array $setters Override setters for the instance
+     * 
      * @return Lazy A lazy-load object that creates the new instance.
      * 
      */
-    public function lazyNew($class, array $params = null)
+    public function lazyNew($class, array $params = [], array $setters = [])
     {
         $forge = $this->getForge();
-        return new Lazy(function() use ($forge, $class, $params) {
-            return $forge->newInstance($class, $params);
+        return new Lazy(function() use ($forge, $class, $params, $setters) {
+            return $forge->newInstance($class, $params, $setters);
         });
     }
 }

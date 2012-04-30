@@ -112,17 +112,19 @@ interface ContainerInterface
     
     /**
      * 
-     * Returns a new instance of the specified class, optionally 
+     * Returns a new instance of the specified class, optionally
      * with additional override parameters.
      * 
      * @param string $class The type of class of instantiate.
      * 
      * @param array $params Override parameters for the instance.
      * 
+     * @param array $setters Override setters for the instance.
+     * 
      * @return object An instance of the requested class.
      * 
      */
-    public function newInstance($class, array $params = null);
+    public function newInstance($class, array $params = [], array $setters = []);
     
     /**
      * 
@@ -132,8 +134,10 @@ interface ContainerInterface
      * 
      * @param array $params Override parameters for the instance.
      * 
+     * @param array $setters Override setters for the instance.
+     * 
      * @return Lazy A lazy-load object that creates the new instance.
      * 
      */
-    public function lazyNew($class, array $params = null);
+    public function lazyNew($class, array $params = [], array $setters = []);
 }
