@@ -4,6 +4,7 @@ require_once __DIR__ . '/src/Aura/Di/Config.php';
 require_once __DIR__ . '/src/Aura/Di/ContainerInterface.php';
 require_once __DIR__ . '/src/Aura/Di/Container.php';
 require_once __DIR__ . '/src/Aura/Di/Exception.php';
+require_once __DIR__ . '/src/Aura/Di/Exception/ContainerLocked.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ServiceInvalid.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ServiceNotFound.php';
 require_once __DIR__ . '/src/Aura/Di/ForgeInterface.php';
