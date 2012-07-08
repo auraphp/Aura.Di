@@ -29,7 +29,7 @@ interface ConfigInterface
      * 
      */
     public function fetch($class);
-    
+
     /**
      * 
      * Gets the $params property.
@@ -38,7 +38,7 @@ interface ConfigInterface
      * 
      */
     public function getParams();
-    
+
     /**
      * 
      * Gets the $setter property.
@@ -47,7 +47,7 @@ interface ConfigInterface
      * 
      */
     public function getSetter();
-    
+
     /**
      * 
      * Gets a retained ReflectionClass; if not already retained, creates and
@@ -60,3 +60,4 @@ interface ConfigInterface
      */
     public function getReflect($class);
 }
+ 

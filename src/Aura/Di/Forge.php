@@ -28,7 +28,7 @@ class Forge implements ForgeInterface
      * 
      */
     protected $config;
-    
+
     /**
      * 
      * Constructor.
@@ -40,7 +40,7 @@ class Forge implements ForgeInterface
     {
         $this->config = $config;
     }
-    
+
     /**
      * 
      * When cloning this Forge, create a separate Config object for the clone.
@@ -52,7 +52,7 @@ class Forge implements ForgeInterface
     {
         $this->config = clone $this->config;
     }
-    
+
     /**
      * 
      * Gets the injected Config object.
@@ -64,7 +64,7 @@ class Forge implements ForgeInterface
     {
         return $this->config;
     }
-    
+
     /**
      * 
      * Creates and returns a new instance of a class using reflection and
@@ -89,21 +89,21 @@ class Forge implements ForgeInterface
     {
         list($config, $setter) = $this->config->fetch($class);
         $params = array_merge($config, (array) $params);
-        
+
         // lazy-load params as needed
         foreach ($params as $key => $val) {
             if ($params[$key] instanceof Lazy) {
                 $params[$key] = $params[$key]();
             }
         }
-        
+
         // merge the setters
         $setters = array_merge($setter, $setters);
-        
+
         // create the new instance
         $call = [$this->config->getReflect($class), 'newInstance'];
         $object = call_user_func_array($call, $params);
-        
+
         // call setters after creation
         foreach ($setters as $method => $value) {
             // does the specified setter method exist?
@@ -116,8 +116,9 @@ class Forge implements ForgeInterface
                 $object->$method($value);
             }
         }
-        
+
         // done!
         return $object;
     }
 }
+ 

@@ -27,7 +27,7 @@ interface ForgeInterface
      * 
      */
     public function getConfig();
-    
+
     /**
      * 
      * Creates and returns a new instance of a class using reflection and
@@ -48,3 +48,4 @@ interface ForgeInterface
      */
     public function newInstance($class, array $params = [], array $setters = []);
 }
+ 
