@@ -10,6 +10,7 @@
  */
 namespace Aura\Di\Exception;
 
+use Aura\Di\Exception;
 /**
  * 
  * The named DI container was not found.
@@ -17,4 +18,7 @@ namespace Aura\Di\Exception;
  * @package Aura.Di
  * 
  */
-class ContainerNotFound extends \Aura\Di\Exception {}
+class ContainerNotFound extends Exception
+{
+}
+ 

@@ -27,7 +27,7 @@ class Lazy
      * 
      */
     protected $callable;
-    
+
     /**
      * 
      * Constructor.
@@ -41,7 +41,7 @@ class Lazy
     {
         $this->callable = $callable;
     }
-    
+
     /**
      * 
      * Invokes the closure to create the instance.
@@ -55,3 +55,4 @@ class Lazy
         return $callable();
     }
 }
+ 

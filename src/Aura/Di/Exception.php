@@ -17,4 +17,7 @@ namespace Aura\Di;
  * @package Aura.Di
  * 
  */
-class Exception extends \Exception {}
+class Exception extends \Exception
+{
+}
+ 

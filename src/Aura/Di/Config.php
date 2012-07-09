@@ -28,7 +28,7 @@ class Config implements ConfigInterface
      * 
      */
     protected $params;
-    
+
     /**
      * 
      * An array of retained ReflectionClass instances; this is as much for
@@ -38,7 +38,7 @@ class Config implements ConfigInterface
      * 
      */
     protected $reflect = [];
-    
+
     /**
      * 
      * Setter definitions in the form of `$setter[$class][$method] = $value`.
@@ -47,7 +47,7 @@ class Config implements ConfigInterface
      * 
      */
     protected $setter;
-    
+
     /**
      * 
      * Constructor params and setter definitions, unified across class
@@ -57,7 +57,7 @@ class Config implements ConfigInterface
      * 
      */
     protected $unified = [];
-    
+
     /**
      * 
      * Constructor.
@@ -67,7 +67,7 @@ class Config implements ConfigInterface
     {
         $this->reset();
     }
-    
+
     /**
      * 
      * When cloning this object, reset the params and setter values (but
@@ -80,7 +80,7 @@ class Config implements ConfigInterface
     {
         $this->reset();
     }
-    
+
     /**
      * 
      * Resets the params and setter values.
@@ -95,7 +95,7 @@ class Config implements ConfigInterface
         $this->setter = new \ArrayObject;
         $this->setter['*'] = [];
     }
-    
+
     /**
      * 
      * Gets the $params property.
@@ -107,7 +107,7 @@ class Config implements ConfigInterface
     {
         return $this->params;
     }
-    
+
     /**
      * 
      * Gets the $setter property.
@@ -119,7 +119,7 @@ class Config implements ConfigInterface
     {
         return $this->setter;
     }
-    
+
     /**
      * 
      * Returns a \ReflectionClass for a named class.
@@ -136,7 +136,7 @@ class Config implements ConfigInterface
         }
         return $this->reflect[$class];
     }
-    
+
     /**
      * 
      * Fetches the unified constructor params and setter values for a class.
@@ -153,7 +153,7 @@ class Config implements ConfigInterface
         if (isset($this->unified[$class])) {
             return $this->unified[$class];
         }
-        
+
         // fetch the values for parents so we can inherit them
         $pclass = get_parent_class($class);
         if ($pclass) {
@@ -164,14 +164,14 @@ class Config implements ConfigInterface
             $parent_params = $this->params['*'];
             $parent_setter = $this->setter['*'];
         }
-        
+
         // stores the unified config and setter values
         $unified_params = [];
         $unified_setter = [];
-        
+
         // reflect on the class
         $rclass = $this->getReflect($class);
-        
+
         // does it have a constructor?
         $rctor = $rclass->getConstructor();
         if ($rctor) {
@@ -196,17 +196,18 @@ class Config implements ConfigInterface
                 }
             }
         }
-        
+
         // merge the setters
         if (isset($this->setter[$class])) {
             $unified_setter = array_merge($parent_setter, $this->setter[$class]);
         } else {
             $unified_setter = $parent_setter;
         }
-        
+
         // done, return the unified values
         $this->unified[$class][0] = $unified_params;
         $this->unified[$class][1] = $unified_setter;
         return $this->unified[$class];
     }
 }
+ 

@@ -10,6 +10,7 @@
  */
 namespace Aura\Di\Exception;
 
+use Aura\Di\Exception;
 /**
  * 
  * The named DI container already exists.
@@ -17,4 +18,7 @@ namespace Aura\Di\Exception;
  * @package Aura.Di
  * 
  */
-class ContainerExists extends \Aura\Di\Exception {}
+class ContainerExists extends Exception
+{
+}
+ 
