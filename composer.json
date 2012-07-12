@@ -18,6 +18,7 @@
             "homepage": "https://github.com/auraphp/Aura.Di/contributors"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0"
     }
