@@ -160,8 +160,8 @@ Getting Services
 To get a service object from the container, call `$di->get()`.
 
 ```php
-    <?php
-    $db = $di->get('database');
+<?php
+$db = $di->get('database');
 ```
 
 This will retrieve the service object from the container; if it was set using a closure, the closure will be invoked to create the object at that time.  Once the object is created, it is retained in the container for future use; getting the same service multiple times will return the exact same object instance.
