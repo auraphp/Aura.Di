@@ -440,12 +440,12 @@ $di->set('foo_service', function() use ($di) {
 Setter configurations are inherited.  If you have a class that extends `Example\Package\Foo` like so ...
 
 ```php
-    <?php
-    namespace Example\Package;
-    class Bar extends Foo
-    {
-        // ...
-    }
+<?php
+namespace Example\Package;
+class Bar extends Foo
+{
+    // ...
+}
 ```
 
 ... you do not need to add a new setter value for it; the `Forge` reads all parent setters and applies them.  (If you do add a setter value for that class, it will override the parent setter.)
