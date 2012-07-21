@@ -15,7 +15,7 @@ Fully describing the nature and benefits of dependency injection, while desirabl
 
 
 Instantiating the Container
-=========================
+===========================
 
 The Aura DI package comes with a instance script that returns a new DI instance:
 
