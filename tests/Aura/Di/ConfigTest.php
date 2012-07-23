@@ -101,6 +101,29 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual_setter);
     }
     
+    public function testFetchCapturesTraitSetter()
+    {
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockTrait']['setFake'] = 'fake1';
+        
+        list($actual_config, $actual_setter) = $this->config->fetch('Aura\Di\MockClassWithTrait');
+        $expect = ['setFake' => 'fake1'];
+        $this->assertSame($expect, $actual_setter);
+        
+    }
+
+    public function testFetchCapturesOverrideTraitSetter()
+    {
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockTrait']['setFake'] = 'fake1';
+        $setter['Aura\Di\MockClassWithTrait']['setFake'] = 'fake2';
+        
+        list($actual_config, $actual_setter) = $this->config->fetch('Aura\Di\MockClassWithTrait');
+        $expect = ['setFake' => 'fake2'];
+        $this->assertSame($expect, $actual_setter);
+        
+    }
+    
     public function testClone()
     {
         $this->config = new Config;

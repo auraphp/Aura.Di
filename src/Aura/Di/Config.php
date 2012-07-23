@@ -203,6 +203,14 @@ class Config implements ConfigInterface
         } else {
             $unified_setter = $parent_setter;
         }
+        
+        // look for setters inside traits
+        $uses = class_uses($class);
+        foreach ($uses as $use) {
+            if (isset($this->setter[$use])) {
+                $unified_setter = array_merge($this->setter[$use], $unified_setter);
+            }
+        }
 
         // done, return the unified values
         $this->unified[$class][0] = $unified_params;
