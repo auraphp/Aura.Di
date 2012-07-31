@@ -1,3 +1,2 @@
-- Remove Manager. The only reason for it was for sub-containers, and the only
-  reason for sub-containers was the view helper system. Since view helpers are
-  now accessed via service locator, the raison d'etre has disappeared.
+- The Forge::newInstance() method now has a third param, $setters, to allow
+  passing of setter injection values.

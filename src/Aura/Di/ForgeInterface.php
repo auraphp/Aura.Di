@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura Project for PHP.
  * 
+ * @package Aura.Di
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -25,7 +27,7 @@ interface ForgeInterface
      * 
      */
     public function getConfig();
-    
+
     /**
      * 
      * Creates and returns a new instance of a class using reflection and
@@ -46,3 +48,4 @@ interface ForgeInterface
      */
     public function newInstance($class, array $params = [], array $setters = []);
 }
+ 

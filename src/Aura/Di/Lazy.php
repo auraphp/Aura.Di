@@ -3,6 +3,8 @@
  * 
  * This file is part of the Aura Project for PHP.
  * 
+ * @package Aura.Di
+ * 
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
@@ -25,7 +27,7 @@ class Lazy
      * 
      */
     protected $callable;
-    
+
     /**
      * 
      * Constructor.
@@ -39,7 +41,7 @@ class Lazy
     {
         $this->callable = $callable;
     }
-    
+
     /**
      * 
      * Invokes the closure to create the instance.
@@ -53,3 +55,4 @@ class Lazy
         return $callable();
     }
 }
+ 
