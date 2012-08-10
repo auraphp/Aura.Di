@@ -302,9 +302,11 @@ class Container implements ContainerInterface
     public function lazyGet($key)
     {
         $self = $this;
-        return new Lazy(function() use ($self, $key) {
-            return $self->get($key);
-        });
+        return new Lazy(
+            function () use ($self, $key) {
+                return $self->get($key);
+            }
+        );
     }
 
     /**
@@ -351,9 +353,10 @@ class Container implements ContainerInterface
     public function lazyNew($class, array $params = [], array $setters = [])
     {
         $forge = $this->getForge();
-        return new Lazy(function() use ($forge, $class, $params, $setters) {
-            return $forge->newInstance($class, $params, $setters);
-        });
+        return new Lazy(
+            function () use ($forge, $class, $params, $setters) {
+                return $forge->newInstance($class, $params, $setters);
+            }
+        );
     }
 }
- 
