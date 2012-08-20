@@ -11,6 +11,7 @@
 namespace Aura\Di\Exception;
 
 use Aura\Di\Exception;
+
 /**
  * 
  * The DI container is locked.
@@ -21,4 +22,4 @@ use Aura\Di\Exception;
 class ContainerLocked extends Exception
 {
 }
- 
+
