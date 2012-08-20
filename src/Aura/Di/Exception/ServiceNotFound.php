@@ -11,6 +11,7 @@
 namespace Aura\Di\Exception;
 
 use Aura\Di\Exception;
+
 /**
  * 
  * The named service was not found.
@@ -21,4 +22,4 @@ use Aura\Di\Exception;
 class ServiceNotFound extends Exception
 {
 }
- 
+

@@ -11,6 +11,7 @@
 namespace Aura\Di\Exception;
 
 use Aura\Di\Exception;
+
 /**
  * 
  * The service definition is not valid.
@@ -21,4 +22,4 @@ use Aura\Di\Exception;
 class ServiceInvalid extends Exception
 {
 }
- 
+
