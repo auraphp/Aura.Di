@@ -121,4 +121,3 @@ class Forge implements ForgeInterface
         return $object;
     }
 }
- 

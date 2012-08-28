@@ -218,4 +218,3 @@ class Config implements ConfigInterface
         return $this->unified[$class];
     }
 }
-

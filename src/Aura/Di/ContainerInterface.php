@@ -143,4 +143,3 @@ interface ContainerInterface
      */
     public function lazyNew($class, array $params = [], array $setters = []);
 }
- 

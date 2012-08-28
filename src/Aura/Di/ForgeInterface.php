@@ -48,4 +48,3 @@ interface ForgeInterface
      */
     public function newInstance($class, array $params = [], array $setters = []);
 }
- 

@@ -22,4 +22,3 @@ use Aura\Di\Exception;
 class ContainerExists extends Exception
 {
 }
-
