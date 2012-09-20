@@ -21,6 +21,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
-        "aura/default-installer": "*"
+        "aura/installer-default": "*"
     }
 }
