@@ -5,7 +5,7 @@
     "keywords": [ "container", "dependency injection", "di", "di container", "dependency injection container" ],
     "homepage": "http://auraphp.github.com/Aura.Di",
     "version": "1.0.0-dev",
-    "license": "BSD",
+    "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "Aura Contributors",
