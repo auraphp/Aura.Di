@@ -42,7 +42,7 @@ interface ContainerInterface
      * 
      * Gets the Forge object used for creating new instances.
      * 
-     * @return array
+     * @return ForgeInterface
      * 
      */
     public function getForge();
