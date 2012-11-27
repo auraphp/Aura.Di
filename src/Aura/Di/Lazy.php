@@ -55,4 +55,3 @@ class Lazy
         return $callable();
     }
 }
- 

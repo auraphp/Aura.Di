@@ -60,4 +60,3 @@ interface ConfigInterface
      */
     public function getReflect($class);
 }
- 

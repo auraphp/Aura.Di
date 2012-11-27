@@ -11,6 +11,7 @@
 namespace Aura\Di\Exception;
 
 use Aura\Di\Exception;
+
 /**
  * 
  * The named DI container already exists.
@@ -21,4 +22,3 @@ use Aura\Di\Exception;
 class ContainerExists extends Exception
 {
 }
- 

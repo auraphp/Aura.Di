@@ -203,7 +203,7 @@ class Config implements ConfigInterface
         } else {
             $unified_setter = $parent_setter;
         }
-        
+
         // look for setters inside traits
         $uses = class_uses($class);
         foreach ($uses as $use) {
@@ -218,4 +218,3 @@ class Config implements ConfigInterface
         return $this->unified[$class];
     }
 }
- 

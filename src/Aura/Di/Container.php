@@ -280,13 +280,33 @@ class Container implements ContainerInterface
     {
         return array_keys($this->defs);
     }
+    
+    /**
+     * 
+     * Returns a Lazy containing a general-purpose callable. Use this when you
+     * have complex logic or heavy overhead when creating a param that may or 
+     * may not need to be loaded.
+     * 
+     *      $di->params['ClassName']['param_name'] = Lazy(function () {
+     *          return include 'filename.php';
+     *      });
+     * 
+     * @param callable $callable The callable functionality.
+     * 
+     * @return Lazy A lazy-load object that contains the calllable.
+     * 
+     */
+    public function lazy(callable $callable)
+    {
+        return new Lazy($callable);
+    }
 
     /**
      * 
      * Returns a Lazy that gets a service. This allows you to replace the
      * following idiom ...
      * 
-     *      $di->params['ClassName']['param_name'] = new Lazy(function() use ($di)) {
+     *      $di->params['ClassName']['param_name'] = new \Aura\Di\Lazy(function() use ($di)) {
      *          return $di->get('service');
      *      }
      * 
@@ -302,9 +322,11 @@ class Container implements ContainerInterface
     public function lazyGet($key)
     {
         $self = $this;
-        return new Lazy(function() use ($self, $key) {
-            return $self->get($key);
-        });
+        return $this->lazy(
+            function () use ($self, $key) {
+                return $self->get($key);
+            }
+        );
     }
 
     /**
@@ -331,9 +353,9 @@ class Container implements ContainerInterface
      * Returns a Lazy that creates a new instance. This allows you to replace
      * the following idiom:
      * 
-     *      $di->params['ClassName']['param_name'] = Lazy(function() use ($di)) {
+     *      $di->params['ClassName']['param_name'] = new \Aura\Di\Lazy(function () use ($di)) {
      *          return $di->newInstance('OtherClass', [...]);
-     *      }
+     *      });
      * 
      * ... with the following:
      * 
@@ -351,9 +373,10 @@ class Container implements ContainerInterface
     public function lazyNew($class, array $params = [], array $setters = [])
     {
         $forge = $this->getForge();
-        return new Lazy(function() use ($forge, $class, $params, $setters) {
-            return $forge->newInstance($class, $params, $setters);
-        });
+        return $this->lazy(
+            function () use ($forge, $class, $params, $setters) {
+                return $forge->newInstance($class, $params, $setters);
+            }
+        );
     }
 }
- 
