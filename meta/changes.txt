@@ -1,2 +1,10 @@
-- The Forge::newInstance() method now has a third param, $setters, to allow
-  passing of setter injection values.
+(This change log includes notes from in release 1.0.0, which failed to specify
+them.)
+
+- [ADD] Config now honors setters on trait methods.
+
+- [ADD] Method Container::lazy() for general-purpose lazy params (i.e.,
+  any param can now be lazy, not just services and class instantiations.)
+
+Special thanks to Yuya Takeyama for working on the documentation, along with
+Akihito Koriyama and Michal Amerek.
