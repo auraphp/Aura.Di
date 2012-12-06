@@ -280,7 +280,7 @@ class Container implements ContainerInterface
     {
         return array_keys($this->defs);
     }
-    
+
     /**
      * 
      * Returns a Lazy containing a general-purpose callable. Use this when you
@@ -293,7 +293,7 @@ class Container implements ContainerInterface
      * 
      * @param callable $callable The callable functionality.
      * 
-     * @return Lazy A lazy-load object that contains the calllable.
+     * @return Lazy A lazy-load object that contains the callable.
      * 
      */
     public function lazy(callable $callable)

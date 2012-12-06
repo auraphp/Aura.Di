@@ -428,7 +428,7 @@ echo $blog_controller->exec();
 ```
 
 ... a series of events occurs to fulfill all the dependencies in two steps.
-The first step is the instantation of the `BlogController`:
+The first step is the instantiation of the `BlogController`:
 
 - The `BlogController` instance inherits its params from `PageController`
 
