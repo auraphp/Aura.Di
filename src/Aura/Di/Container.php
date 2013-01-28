@@ -379,4 +379,87 @@ class Container implements ContainerInterface
             }
         );
     }
+    
+    /**
+     * 
+     * Returns a lazy that requires a file.  This replaces the idiom ...
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazy(function () {
+     *         return require "/path/to/file.php";
+     *     };
+     * 
+     * ... with:
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazyRequire("/path/to/file.php");
+     * 
+     * @param string $file The file to require.
+     * 
+     * @return Lazy
+     * 
+     */
+    public function lazyRequire($file)
+    {
+        return $this->lazy(function () use ($file) {
+            return require $file;
+        });
+    }
+
+    /**
+     * 
+     * Returns a lazy that includes a file.  This replaces the idiom ...
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazy(function () {
+     *         return include "/path/to/file.php";
+     *     };
+     * 
+     * ... with:
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazyRequire("/path/to/file.php");
+     * 
+     * @param string $file The file to include.
+     * 
+     * @return Lazy
+     * 
+     */
+    public function lazyInclude($file)
+    {
+        return $this->lazy(function () use ($file) {
+            return include $file;
+        });
+    }
+
+    // we can't necessarily typehint this as callable, because if we use a
+    // Lazy, it won't have the method on the object it's wrapped around.
+    public function lazyCall($callable)
+    {
+        // get params, if any, after removing $callable
+        $params = func_get_args();
+        array_shift($params);
+    
+        // create the closure to invoke the callable
+        $call = function () use ($callable, $params) {
+            
+            // convert Lazy objects in the callable
+            if (is_array($callable)) {
+                foreach ($callable as $key => $val) {
+                    if ($val instanceof Lazy) {
+                        $callable[$key] = $val();
+                    }
+                }
+            }
+            
+            // convert Lazy objects in the params
+            foreach ($params as $key => $val) {
+                if ($val instanceof Lazy) {
+                    $params[$key] = $val();
+                }
+            }
+            
+            // make the call
+            return call_user_func_array($callable, $params);
+        };
+        
+        // return wrapped in a Lazy, and done
+        return $this->lazy($call);
+    }
 }
