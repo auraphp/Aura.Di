@@ -4,7 +4,6 @@
     "description": "The Aura DI package provides a dependency injection container system with native support for constructor- and setter-based injection, lazy-loading of services, and inheritable configuration of setters and constructor params.",
     "keywords": [ "container", "dependency injection", "di", "di container", "dependency injection container" ],
     "homepage": "http://auraphp.github.com/Aura.Di",
-    "version": "1.0.0-dev",
     "license": "BSD-2-Clause",
     "authors": [
         {
