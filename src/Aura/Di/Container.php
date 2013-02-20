@@ -465,7 +465,6 @@ class Container implements ContainerInterface
     
     // returns a factory that creates an object over and over again (as vs
     // creating it one time like the lazyNew() or newInstance() methods).
-    // this is good for complex objects that need setup after creation.
     // we don't want this to be a Lazy because we don't want the Forge to
     // recognize and invoke it when passed as a param or setter value.
     public function newFactory($class, array $params = [], array $setters = [])
