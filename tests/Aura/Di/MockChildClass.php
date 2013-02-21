@@ -21,4 +21,9 @@ class MockChildClass extends MockParentClass
     {
         return $this->fake;
     }
+    
+    public function getZim()
+    {
+        return $this->zim;
+    }
 }

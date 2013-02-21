@@ -68,47 +68,43 @@ class Forge implements ForgeInterface
     /**
      * 
      * Creates and returns a new instance of a class using reflection and
-     * the configuration parameters, optionally with overriding params.
-     * 
-     * Parameters that are Lazy are invoked before instantiation.
+     * the configuration parameters, optionally with overrides, invoking Lazy
+     * values along the way.
      * 
      * @param string $class The class to instantiate.
      * 
-     * @param array $params An associative array of override parameters where
-     * the key is the name of the constructor parameter and the value is the
-     * parameter value to use.
+     * @param array $merge_params An array of override parameters; the key may
+     * be the name *or* the numeric position of the constructor parameter, and
+     * the value is the parameter value to use.
      * 
-     * @param array $setters An associative array of override setters where
-     * the key is the name of the setter method to call and the value is the
-     * value to be passed to the setter method.
+     * @param array $merge_setter An array of override setters; the key is the
+     * name of the setter method to call and the value is the value to be 
+     * passed to the setter method.
      * 
      * @return object
      * 
      */
-    public function newInstance($class, array $params = [], array $setters = [])
-    {
-        list($config, $setter) = $this->config->fetch($class);
-        $params = array_merge($config, (array) $params);
-
-        // lazy-load params as needed
-        foreach ($params as $key => $val) {
-            if ($params[$key] instanceof Lazy) {
-                $params[$key] = $params[$key]();
-            }
-        }
-
-        // merge the setters
-        $setters = array_merge($setter, $setters);
+    public function newInstance(
+        $class,
+        array $merge_params = [],
+        array $merge_setter = []
+    ) {
+        // base configs
+        list($params, $setter) = $this->config->fetch($class);
+        
+        // merge configs
+        $params = $this->mergeParams($params, $merge_params);
+        $setter = array_merge($setter, $merge_setter);
 
         // create the new instance
-        $call = [$this->config->getReflect($class), 'newInstance'];
-        $object = call_user_func_array($call, $params);
+        $rclass = $this->config->getReflect($class);
+        $object = $rclass->newInstanceArgs($params);
 
         // call setters after creation
-        foreach ($setters as $method => $value) {
+        foreach ($setter as $method => $value) {
             // does the specified setter method exist?
             if (method_exists($object, $method)) {
-                // lazy-load values as needed
+                // lazy-load setter values as needed
                 if ($value instanceof Lazy) {
                     $value = $value();
                 }
@@ -119,5 +115,49 @@ class Forge implements ForgeInterface
 
         // done!
         return $object;
+    }
+    
+    /**
+     * 
+     * Returns the params after merging with overides; also invokes Lazy param
+     * values.
+     * 
+     * @param array $params The constructor parameters.
+     * 
+     * @param array $merge_params An array of override parameters; the key may
+     * be the name *or* the numeric position of the constructor parameter, and
+     * the value is the parameter value to use.
+     * 
+     * @return array
+     * 
+     */
+    protected function mergeParams($params, array $merge_params = [])
+    {
+        $pos = 0;
+        foreach ($params as $key => $val) {
+            
+            // positional overrides take precedence over named overrides
+            if (array_key_exists($pos, $merge_params)) {
+                // positional override
+                $val = $merge_params[$pos];
+            } elseif (array_key_exists($key, $merge_params)) {
+                // named override
+                $val = $merge_params[$key];
+            }
+            
+            // invoke Lazy values
+            if ($val instanceof Lazy) {
+                $val = $val();
+            }
+            
+            // retain the merged value
+            $params[$key] = $val;
+            
+            // next position
+            $pos += 1;
+        }
+        
+        // done
+        return $params;
     }
 }

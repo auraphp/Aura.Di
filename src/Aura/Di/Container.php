@@ -287,7 +287,7 @@ class Container implements ContainerInterface
      * have complex logic or heavy overhead when creating a param that may or 
      * may not need to be loaded.
      * 
-     *      $di->params['ClassName']['param_name'] = Lazy(function () {
+     *      $di->params['ClassName']['param_name'] = $di->lazy(function () {
      *          return include 'filename.php';
      *      });
      * 
@@ -306,7 +306,7 @@ class Container implements ContainerInterface
      * Returns a Lazy that gets a service. This allows you to replace the
      * following idiom ...
      * 
-     *      $di->params['ClassName']['param_name'] = new \Aura\Di\Lazy(function() use ($di)) {
+     *      $di->params['ClassName']['param_name'] = $di->lazy(function() use ($di)) {
      *          return $di->get('service');
      *      }
      * 
@@ -353,7 +353,7 @@ class Container implements ContainerInterface
      * Returns a Lazy that creates a new instance. This allows you to replace
      * the following idiom:
      * 
-     *      $di->params['ClassName']['param_name'] = new \Aura\Di\Lazy(function () use ($di)) {
+     *      $di->params['ClassName']['param_name'] = $di->lazy(function () use ($di)) {
      *          return $di->newInstance('OtherClass', [...]);
      *      });
      * 
@@ -461,5 +461,14 @@ class Container implements ContainerInterface
         
         // return wrapped in a Lazy, and done
         return $this->lazy($call);
+    }
+    
+    // returns a factory that creates an object over and over again (as vs
+    // creating it one time like the lazyNew() or newInstance() methods).
+    // we don't want this to be a Lazy because we don't want the Forge to
+    // recognize and invoke it when passed as a param or setter value.
+    public function newFactory($class, array $params = [], array $setters = [])
+    {
+        return new Factory($this->forge, $class, $params, $setters);
     }
 }
