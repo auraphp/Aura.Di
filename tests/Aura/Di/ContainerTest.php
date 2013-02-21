@@ -213,4 +213,32 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $expect = 'mirror';
         $this->assertSame($expect, $actual);
     }
+    
+    public function testNewFactory()
+    {
+        $other = $this->forge->newInstance('Aura\Di\MockOtherClass');
+        
+        $factory = $this->container->newFactory(
+            'Aura\Di\MockChildClass',
+            [
+                'foo' => 'foofoo',
+                'zim' => $other,
+            ],
+            [
+                'setFake' => 'fakefake',
+            ]
+        );
+        
+        $actual = $factory();
+        
+        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertSame('foofoo', $actual->getFoo());
+        $this->assertSame('fakefake', $actual->getFake());
+        
+        
+        // create another one, should not be the same
+        $extra = $factory();
+        $this->assertNotSame($actual, $extra);
+    }
 }

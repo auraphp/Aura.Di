@@ -104,4 +104,29 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($clone, $this->forge);
         $this->assertNotSame($clone->getConfig(), $this->forge->getConfig());
     }
+    
+    public function testNewInstanceWithPositionalParams()
+    {
+        $other = $this->forge->newInstance('Aura\Di\MockOtherClass');
+        
+        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', [
+            'foofoo',
+            $other,
+        ]);
+        
+        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertSame('foofoo', $actual->getFoo());
+        
+        // positional overrides names
+        $actual = $this->forge->newInstance('Aura\Di\MockChildClass', [
+            0 => 'keepme',
+            'foo' => 'bad',
+            $other,
+        ]);
+        
+        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertSame('keepme', $actual->getFoo());
+    }
 }
