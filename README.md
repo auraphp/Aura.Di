@@ -216,16 +216,16 @@ the same service multiple times will return the exact same object instance.
 Constructor Params Inheritance
 ==============================
 
-For the following examples, we will add an abstract `Model` class and two
+For the following examples, we will add an `AbstractModel` class and two
 concrete classes called `BlogModel` and `WikiModel`. The idea is that all
-`Model` classes need a `Database` connection to interact with one or more
-tables in the database.
+`AbstractModel` classes need a `Database` connection to interact with one or
+more tables in the database.
 
 ```php
 <?php
 namespace Example\Package;
 
-abstract class Model
+abstract class AbstractModel
 {
     protected $db;
 
@@ -235,12 +235,12 @@ abstract class Model
     }
 }
 
-class BlogModel extends Model
+class BlogModel extends AbstractModel
 {
     // ...
 }
 
-class WikiModel extends Model
+class WikiModel extends AbstractModel
 {
     // ...
 }
@@ -290,8 +290,8 @@ $di->params['Example\Package\Database'] = [
     'password' => 'passwd',
 ];
 
-// default params for the Model class
-$di->params['Example\Package\Model'] = [
+// default params for the AbstractModel class
+$di->params['Example\Package\AbstractModel'] = [
     'db' => $di->lazyGet('database'),
 ];
 
@@ -312,7 +312,7 @@ $di->set('wiki_model', function() use ($di) {
 ```
 
 We no longer need to set the value of `'db'` at instantiation time. Instead,
-the params for the parent `Model` class are automatically inherited by the
+the params for the `AbstractModel` class are automatically inherited by the
 child `BlogModel` and `WikiModel` classes, so the `'db'` constructor param for
 all `Model` classes automatically gets the `'database'` service. (We can
 override that at instantiation time if we like.)
@@ -342,13 +342,15 @@ Factories and Dependency Fulfillment
 Creating a service for each of the model objects in our application can become
 tiresome. We may need to create other models, and we don't want to have to
 create a separate service for each one. In addition, we may need to create
-model objects from within another object. This is where we can make use of
+model objects from within another object. Finally, we don't want to create
+model objects until we actually need them. This is where we can make use of
 factories.
 
 Below, we will define three new classes: a factory to create model objects for
 us, an abstract `PageController` class that uses the model factory, and a
-`BlogController` class that needs an instance of a blog model. They are
-defined as follows.
+`BlogController` class that needs an instance of a blog model. We will
+populate the `ModelFactory` with a map of model names to factory objects that
+will create the mapped objects.
 
 ```php
 <?php
@@ -356,17 +358,19 @@ namespace Example\Package;
 
 class ModelFactory
 {
-    protected $db;
+    // a map of model names to factory closures
+    protected $map = [];
     
-    public function __construct(Database $db)
+    public function __construct($map = [])
     {
-        $this->db = $db;
+        $this->map = $map;
     }
     
     public function newInstance($model_name)
     {
-        $class = 'Example\Package\Model' . ucfirst($model_name);
-        return new $class($this->db);
+        $factory = $this->map($model_name);
+        $model = $factory();
+        return $model;
     }
 }
 
@@ -401,9 +405,18 @@ $di->params['Example\Package\Database'] = [
     'password' => 'passwd',
 ];
 
+// default params for the AbstractModel class
+$di->params['Example\Package\AbstractModel'] = [
+    'db' => $di->lazyGet('database'),
+];
+
 // default params for the model factory
 $di->params['Example\Package\ModelFactory'] = [
-    'db' => $di->lazyGet('database'),
+    // a map of model names to model factories
+    'map' => [
+        'blog' => $di->newFactory('Example\Package\BlogModel'),
+        'wiki' => $di->newFactory('Example\Package\WikiModel'),
+    ],
 ];
 
 // default params for page controllers
