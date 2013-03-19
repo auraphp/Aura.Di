@@ -368,7 +368,7 @@ class ModelFactory
     
     public function newInstance($model_name)
     {
-        $factory = $this->map($model_name);
+        $factory = $this->map[$model_name];
         $model = $factory();
         return $model;
     }
