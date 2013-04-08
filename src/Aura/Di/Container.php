@@ -428,8 +428,17 @@ class Container implements ContainerInterface
         });
     }
 
-    // we can't necessarily typehint this as callable, because if we use a
-    // Lazy, it won't have the method on the object it's wrapped around.
+    /**
+     * 
+     * Returns a Lazy that invokes a callable (e.g., to call a method on an
+     * object).
+     * 
+     * @param callable The callable.  Params after this one are treated as
+     * params for the call.
+     * 
+     * @return Lazy
+     * 
+     */
     public function lazyCall($callable)
     {
         // get params, if any, after removing $callable
@@ -463,10 +472,20 @@ class Container implements ContainerInterface
         return $this->lazy($call);
     }
     
-    // returns a factory that creates an object over and over again (as vs
-    // creating it one time like the lazyNew() or newInstance() methods).
-    // we don't want this to be a Lazy because we don't want the Forge to
-    // recognize and invoke it when passed as a param or setter value.
+    /**
+     * 
+     * Returns a Factory that creates an object over and over again (as vs
+     * creating it one time like the lazyNew() or newInstance() methods).
+     * 
+     * @param string $class THe factory will create an instance of this class.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @param array $setters Override setters for the instance.
+     * 
+     * @return Factory
+     * 
+     */
     public function newFactory($class, array $params = [], array $setters = [])
     {
         return new Factory($this->forge, $class, $params, $setters);
