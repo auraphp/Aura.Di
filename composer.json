@@ -10,9 +10,8 @@
         "dependency injection container"
     ],
     "homepage": "http://auraphp.github.com/Aura.Di",
-    "version": "1.0.1",
-    "time": "2012-11-28",
-    "license": "BSD",
+    "time": "2013-04-07",
+    "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "Aura.Di Contributors",
