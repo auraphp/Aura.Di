@@ -180,4 +180,65 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->lock();
         $this->container->set('foo', function() { return new StdClass; });
     }
+    
+    public function testLazyInclude()
+    {
+        $file = __DIR__ . DIRECTORY_SEPARATOR . 'lazy_array.php';
+        $lazy = $this->container->lazyInclude($file);
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
+        $actual = $lazy();
+        $expect = ['foo' => 'bar'];
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testLazyRequire()
+    {
+        $file = __DIR__ . DIRECTORY_SEPARATOR . 'lazy_array.php';
+        $lazy = $this->container->lazyRequire($file);
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
+        $actual = $lazy();
+        $expect = ['foo' => 'bar'];
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testLazyCall()
+    {
+        $lazy = $this->container->lazyCall(
+            [$this->container->lazyNew('Aura\Di\MockParentClass'), 'mirror'],
+            $this->container->lazy(function () { return 'mirror'; })
+        );
+        
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
+        $actual = $lazy();
+        $expect = 'mirror';
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testNewFactory()
+    {
+        $other = $this->forge->newInstance('Aura\Di\MockOtherClass');
+        
+        $factory = $this->container->newFactory(
+            'Aura\Di\MockChildClass',
+            [
+                'foo' => 'foofoo',
+                'zim' => $other,
+            ],
+            [
+                'setFake' => 'fakefake',
+            ]
+        );
+        
+        $actual = $factory();
+        
+        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertSame('foofoo', $actual->getFoo());
+        $this->assertSame('fakefake', $actual->getFake());
+        
+        
+        // create another one, should not be the same
+        $extra = $factory();
+        $this->assertNotSame($actual, $extra);
+    }
 }

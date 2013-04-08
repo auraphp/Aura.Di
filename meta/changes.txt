@@ -1,10 +1,13 @@
-(This change log includes notes from in release 1.0.0, which failed to specify
-them.)
+- [ADD] Container::lazyInclude() and lazyRequire() to lazily include or
+  require files
 
-- [ADD] Config now honors setters on trait methods.
+- [ADD] Container::lazyCall() to lazily make a call to any callable, with
+  sequential (not named) parameters, just like with call_user_func()
 
-- [ADD] Method Container::lazy() for general-purpose lazy params (i.e.,
-  any param can now be lazy, not just services and class instantiations.)
+- [ADD] Container::newFactory() method
 
-Special thanks to Yuya Takeyama for working on the documentation, along with
-Akihito Koriyama and Michal Amerek.
+- [NEW] Factory class, to create new class instances using the Forge
+
+- [REF] Refactor Forge::newInstance() extract method mergeParams(), and make
+  allowance for positional override params (these take precedence over named
+  override params)

@@ -280,20 +280,20 @@ class Container implements ContainerInterface
     {
         return array_keys($this->defs);
     }
-    
+
     /**
      * 
      * Returns a Lazy containing a general-purpose callable. Use this when you
      * have complex logic or heavy overhead when creating a param that may or 
      * may not need to be loaded.
      * 
-     *      $di->params['ClassName']['param_name'] = Lazy(function () {
+     *      $di->params['ClassName']['param_name'] = $di->lazy(function () {
      *          return include 'filename.php';
      *      });
      * 
      * @param callable $callable The callable functionality.
      * 
-     * @return Lazy A lazy-load object that contains the calllable.
+     * @return Lazy A lazy-load object that contains the callable.
      * 
      */
     public function lazy(callable $callable)
@@ -306,7 +306,7 @@ class Container implements ContainerInterface
      * Returns a Lazy that gets a service. This allows you to replace the
      * following idiom ...
      * 
-     *      $di->params['ClassName']['param_name'] = new \Aura\Di\Lazy(function() use ($di)) {
+     *      $di->params['ClassName']['param_name'] = $di->lazy(function() use ($di)) {
      *          return $di->get('service');
      *      }
      * 
@@ -353,7 +353,7 @@ class Container implements ContainerInterface
      * Returns a Lazy that creates a new instance. This allows you to replace
      * the following idiom:
      * 
-     *      $di->params['ClassName']['param_name'] = new \Aura\Di\Lazy(function () use ($di)) {
+     *      $di->params['ClassName']['param_name'] = $di->lazy(function () use ($di)) {
      *          return $di->newInstance('OtherClass', [...]);
      *      });
      * 
@@ -378,5 +378,116 @@ class Container implements ContainerInterface
                 return $forge->newInstance($class, $params, $setters);
             }
         );
+    }
+    
+    /**
+     * 
+     * Returns a lazy that requires a file.  This replaces the idiom ...
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazy(function () {
+     *         return require "/path/to/file.php";
+     *     };
+     * 
+     * ... with:
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazyRequire("/path/to/file.php");
+     * 
+     * @param string $file The file to require.
+     * 
+     * @return Lazy
+     * 
+     */
+    public function lazyRequire($file)
+    {
+        return $this->lazy(function () use ($file) {
+            return require $file;
+        });
+    }
+
+    /**
+     * 
+     * Returns a lazy that includes a file.  This replaces the idiom ...
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazy(function () {
+     *         return include "/path/to/file.php";
+     *     };
+     * 
+     * ... with:
+     * 
+     *     $di->params['ClassName']['foo'] = $di->lazyRequire("/path/to/file.php");
+     * 
+     * @param string $file The file to include.
+     * 
+     * @return Lazy
+     * 
+     */
+    public function lazyInclude($file)
+    {
+        return $this->lazy(function () use ($file) {
+            return include $file;
+        });
+    }
+
+    /**
+     * 
+     * Returns a Lazy that invokes a callable (e.g., to call a method on an
+     * object).
+     * 
+     * @param callable The callable.  Params after this one are treated as
+     * params for the call.
+     * 
+     * @return Lazy
+     * 
+     */
+    public function lazyCall($callable)
+    {
+        // get params, if any, after removing $callable
+        $params = func_get_args();
+        array_shift($params);
+    
+        // create the closure to invoke the callable
+        $call = function () use ($callable, $params) {
+            
+            // convert Lazy objects in the callable
+            if (is_array($callable)) {
+                foreach ($callable as $key => $val) {
+                    if ($val instanceof Lazy) {
+                        $callable[$key] = $val();
+                    }
+                }
+            }
+            
+            // convert Lazy objects in the params
+            foreach ($params as $key => $val) {
+                if ($val instanceof Lazy) {
+                    $params[$key] = $val();
+                }
+            }
+            
+            // make the call
+            return call_user_func_array($callable, $params);
+        };
+        
+        // return wrapped in a Lazy, and done
+        return $this->lazy($call);
+    }
+    
+    /**
+     * 
+     * Returns a Factory that creates an object over and over again (as vs
+     * creating it one time like the lazyNew() or newInstance() methods).
+     * 
+     * @param string $class THe factory will create an instance of this class.
+     * 
+     * @param array $params Override parameters for the instance.
+     * 
+     * @param array $setters Override setters for the instance.
+     * 
+     * @return Factory
+     * 
+     */
+    public function newFactory($class, array $params = [], array $setters = [])
+    {
+        return new Factory($this->forge, $class, $params, $setters);
     }
 }

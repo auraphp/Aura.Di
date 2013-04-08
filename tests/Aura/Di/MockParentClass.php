@@ -13,4 +13,9 @@ class MockParentClass
     {
         return $this->foo;
     }
+    
+    public function mirror($value)
+    {
+        return $value;
+    }
 }
