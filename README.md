@@ -109,7 +109,7 @@ using the `new` operator.
 
 ```php
 <?php
-$di->set('database', function() {
+$di->set('database', function () {
     return new \Example\Package\Database('localhost', 'user', 'passwd');
 });
 ```
@@ -129,7 +129,7 @@ closure for lazy-loading.
 
 ```php
 <?php
-$di->set('database', function() use ($di) {
+$di->set('database', function () use ($di) {
     return $di->newInstance('Example\Package\Database', [
         'hostname' => 'localhost',
         'username' => 'user',
@@ -158,7 +158,7 @@ $di->params['Example\Package\Database'] = [
     'password' => 'passwd',
 ];
 
-$di->set('database', function() use ($di) {
+$di->set('database', function () use ($di) {
     return $di->newInstance('Example\Package\Database');
 });
 ```
@@ -173,10 +173,11 @@ At this point, we have successfully separated object configuration from object
 instantiation, and allow for lazy-loading of service objects from the
 container.
 
-Variation 4a: Override Class Constructor Params
------------------------------------------------
+Variation 5: Call The lazyNew() Method
+-------------------------------------
 
-In this variation, we override the `$di->params` value at instantiation time.
+In this variation, we call the `lazyNew()` method, which encapsulates the
+"use a closure to return a new instance" idiom.
 
 ```php
 <?php
@@ -186,11 +187,27 @@ $di->params['Example\Package\Database'] = [
     'password' => 'passwd',
 ];
 
-$di->set('database', function() use ($di) {
-    return $di->newInstance('Example\Package\Database', [
-        'hostname' => 'example.com',
-    ]);
-});
+$di->set('database', $di->lazyNew('Example\Package\Database'));
+```
+
+
+Variation 5a: Override Class Constructor Params
+-----------------------------------------------
+
+In this variation, we override the `$di->params` values that will be used at
+instantiation time.
+
+```php
+<?php
+$di->params['Example\Package\Database'] = [
+    'hostname' => 'localhost',
+    'username' => 'user',
+    'password' => 'passwd',
+];
+
+$di->set('database', $di->lazyNew('Example\Package\Database', [
+    'hostname' => 'example.com',
+);
 ```
 
 The instantiation-time values take precedence over the configuration values,
@@ -247,39 +264,9 @@ class WikiModel extends AbstractModel
 ```
 
 We will create services for the `BlogModel` and `WikiModel`, and inject the
-database service into them as part of the service definition.
-
-```php
-<?php
-// default config for the Database class
-$di->params['Example\Package\Database'] = [
-    'hostname' => 'localhost',
-    'username' => 'user',
-    'password' => 'passwd',
-];
-
-// a database service
-$di->set('database', function() use ($di) {
-    return $di->newInstance('Example\Package\Database');
-});
-
-// a blog-model service
-$di->set('blog_model', function() use ($di) {
-    return $di->newInstance('Example\Package\BlogModel', [
-        'db' => $di->get('database'),
-    ]);
-});
-
-// a wiki-model service
-$di->set('wiki_model', function() use ($di) {
-    return $di->newInstance('Example\Package\WikiModel', [
-        'db' => $di->get('database'),
-    ]);
-});
-```
-
-However, using config inheritance provided by the DI container, we can define
-the database service injection through class configuration.
+database service into them as part of the service definition. Using config
+inheritance provided by the DI container, we can define the database service
+injection through class configuration.
 
 ```php
 <?php
@@ -296,22 +283,16 @@ $di->params['Example\Package\AbstractModel'] = [
 ];
 
 // define the database service
-$di->set('database', function() use ($di) {
-    return $di->newInstance('Example\Package\Database');
-});
+$di->set('database', $di->lazyNew('Example\Package\Database'));
 
 // define the blog_model service
-$di->set('blog_model', function() use ($di) {
-    return $di->newInstance('Example\Package\BlogModel');
-});
+$di->set('blog_model', $di->lazyNew('Example\Package\BlogModel'));
 
 // define the wiki_model service
-$di->set('wiki_model', function() use ($di) {
-    return $di->newInstance('Example\Package\WikiModel');
-});
+$di->set('wiki_model', $di->lazyNew('Example\Package\WikiModel'));
 ```
 
-We no longer need to set the value of `'db'` at instantiation time. Instead,
+We do need to set the value of the `'db'` param at instantiation time. Instead,
 the params for the `AbstractModel` class are automatically inherited by the
 child `BlogModel` and `WikiModel` classes, so the `'db'` constructor param for
 all `Model` classes automatically gets the `'database'` service. (We can
@@ -323,12 +304,6 @@ instantiate the service at that time. However, using `$di->lazyGet()` allows
 the service to be instantiated only when the object being configured is
 instantiated. Think of it as a lazy-loading wrapper around the service (which
 itself may be lazy-loaded).
-
-There is a corollary method called `lazyNew()`, which creates a new instance
-of a class instead of getting a service. The benefit of `lazyNew()` over
-`newInstance()` is the same as that of `lazyGet()` over `get()`; with
-`lazyNew()`, the object creation happens only when the configured class is
-actually created, instead of at the moment of setting.
 
 We do not need to write our classes in any special way to get the benefit of
 this configuration system. Any class with constructor params will be
@@ -497,9 +472,7 @@ $di->setter['Example\Package\Foo']['setDb'] = $di->lazyGet('database');
 
 // create a foo_service; on get('foo_service'), the Forge will create the
 // Foo object, then call setDb() on it per the setter specification above.
-$di->set('foo_service', function() use ($di) {
-    return $di->newInstance('Example\Package\Foo');
-});
+$di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
 ```
 
 Note that we use `lazyGet()` for the injection. As with constructor params, we
@@ -516,9 +489,7 @@ $di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew('Example\Package\Data
 
 // create a foo_service; on get('foo_service'), the Forge will create the
 // Foo object, then call setDb() on it per the setter specification above.
-$di->set('foo_service', function() use ($di) {
-    return $di->newInstance('Example\Package\Foo');
-});
+$di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
 ```
 
 Setter configurations are inherited. If you have a class that extends
