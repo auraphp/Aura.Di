@@ -308,7 +308,7 @@ itself may be lazy-loaded).
 We do not need to write our classes in any special way to get the benefit of
 this configuration system. Any class with constructor params will be
 recognized by the configuration system, so long as we instantiate it via
-`$di->newInstance()`.
+`$di->newInstance()`or `$di->lazyNew()`.
 
 
 Factories and Dependency Fulfillment
