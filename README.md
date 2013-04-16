@@ -207,7 +207,7 @@ $di->params['Example\Package\Database'] = [
 
 $di->set('database', $di->lazyNew('Example\Package\Database', [
     'hostname' => 'example.com',
-);
+]);
 ```
 
 The instantiation-time values take precedence over the configuration values,
