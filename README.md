@@ -292,11 +292,11 @@ $di->set('blog_model', $di->lazyNew('Example\Package\BlogModel'));
 $di->set('wiki_model', $di->lazyNew('Example\Package\WikiModel'));
 ```
 
-We do need to set the value of the `'db'` param at instantiation time. Instead,
-the params for the `AbstractModel` class are automatically inherited by the
-child `BlogModel` and `WikiModel` classes, so the `'db'` constructor param for
-all `Model` classes automatically gets the `'database'` service. (We can
-override that at instantiation time if we like.)
+We do not need to set the value of the `'db'` param for the `BlogModel` and
+`WikiModel` directly. Instead, the params for the `AbstractModel` class are
+automatically inherited by the child `BlogModel` and `WikiModel` classes, so
+the `'db'` constructor param for all `Model` classes automatically gets the
+`'database'` service. (We can override that at instantiation time if we like.)
 
 Note the use of the `lazyGet()` method. This is a special method intended for
 use with params and setters. If we used `$di->get()`, the container would
