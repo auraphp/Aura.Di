@@ -1,40 +1,40 @@
 <?php
 /**
- * 
+ *
  * This file is part of the Aura Project for PHP.
- * 
+ *
  * @package Aura.Di
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Di;
 
 /**
- * 
+ *
  * Creates objects using reflection and the specified configuration values.
- * 
+ *
  * @package Aura.Di
- * 
+ *
  */
 class Forge implements ForgeInterface
 {
     /**
-     * 
+     *
      * A Config object to get parameters for object instantiation and
      * \ReflectionClass instances.
-     * 
+     *
      * @var Config
-     * 
+     *
      */
     protected $config;
 
     /**
-     * 
+     *
      * Constructor.
-     * 
+     *
      * @param ConfigInterface $config A configuration object.
-     * 
+     *
      */
     public function __construct(ConfigInterface $config)
     {
@@ -42,11 +42,11 @@ class Forge implements ForgeInterface
     }
 
     /**
-     * 
+     *
      * When cloning this Forge, create a separate Config object for the clone.
-     * 
+     *
      * @return void
-     * 
+     *
      */
     public function __clone()
     {
@@ -54,11 +54,11 @@ class Forge implements ForgeInterface
     }
 
     /**
-     * 
+     *
      * Gets the injected Config object.
-     * 
+     *
      * @return ConfigInterface
-     * 
+     *
      */
     public function getConfig()
     {
@@ -66,23 +66,23 @@ class Forge implements ForgeInterface
     }
 
     /**
-     * 
+     *
      * Creates and returns a new instance of a class using reflection and
      * the configuration parameters, optionally with overrides, invoking Lazy
      * values along the way.
-     * 
+     *
      * @param string $class The class to instantiate.
-     * 
+     *
      * @param array $merge_params An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
-     * 
+     *
      * @param array $merge_setter An array of override setters; the key is the
-     * name of the setter method to call and the value is the value to be 
+     * name of the setter method to call and the value is the value to be
      * passed to the setter method.
-     * 
+     *
      * @return object
-     * 
+     *
      */
     public function newInstance(
         $class,
@@ -91,7 +91,7 @@ class Forge implements ForgeInterface
     ) {
         // base configs
         list($params, $setter) = $this->config->fetch($class);
-        
+
         // merge configs
         $params = $this->mergeParams($params, $merge_params);
         $setter = array_merge($setter, $merge_setter);
@@ -110,32 +110,34 @@ class Forge implements ForgeInterface
                 }
                 // call the setter
                 $object->$method($value);
+            } else {
+                throw new Exception\SetterMethodNotFound("Method {$method} not found in class {$class}");
             }
         }
 
         // done!
         return $object;
     }
-    
+
     /**
-     * 
+     *
      * Returns the params after merging with overides; also invokes Lazy param
      * values.
-     * 
+     *
      * @param array $params The constructor parameters.
-     * 
+     *
      * @param array $merge_params An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
-     * 
+     *
      * @return array
-     * 
+     *
      */
     protected function mergeParams($params, array $merge_params = [])
     {
         $pos = 0;
         foreach ($params as $key => $val) {
-            
+
             // positional overrides take precedence over named overrides
             if (array_key_exists($pos, $merge_params)) {
                 // positional override
@@ -144,19 +146,19 @@ class Forge implements ForgeInterface
                 // named override
                 $val = $merge_params[$key];
             }
-            
+
             // invoke Lazy values
             if ($val instanceof Lazy) {
                 $val = $val();
             }
-            
+
             // retain the merged value
             $params[$key] = $val;
-            
+
             // next position
             $pos += 1;
         }
-        
+
         // done
         return $params;
     }
