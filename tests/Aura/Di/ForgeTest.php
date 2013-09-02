@@ -105,6 +105,15 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($clone->getConfig(), $this->forge->getConfig());
     }
     
+    public function testNewInstanceWithNonExistentSetter()
+    {
+        $class = 'Aura\Di\MockOtherClass';
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockOtherClass']['setFakeNotExists'] = 'fake_value';
+        $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
+        $actual = $this->forge->newInstance('Aura\Di\MockOtherClass');
+    }
+    
     public function testNewInstanceWithPositionalParams()
     {
         $other = $this->forge->newInstance('Aura\Di\MockOtherClass');

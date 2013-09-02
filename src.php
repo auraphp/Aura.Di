@@ -7,6 +7,7 @@ require_once __DIR__ . '/src/Aura/Di/Exception.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ContainerLocked.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ServiceInvalid.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ServiceNotFound.php';
+require_once __DIR__ . '/src/Aura/Di/Exception/SetterMethodNotFound.php';
 require_once __DIR__ . '/src/Aura/Di/Factory.php';
 require_once __DIR__ . '/src/Aura/Di/ForgeInterface.php';
 require_once __DIR__ . '/src/Aura/Di/Forge.php';

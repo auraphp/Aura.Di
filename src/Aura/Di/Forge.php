@@ -110,9 +110,11 @@ class Forge implements ForgeInterface
                 }
                 // call the setter
                 $object->$method($value);
+            } else {
+                throw new Exception\SetterMethodNotFound("$class::$method");
             }
         }
-
+        
         // done!
         return $object;
     }
