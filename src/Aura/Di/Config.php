@@ -10,6 +10,10 @@
  */
 namespace Aura\Di;
 
+use ArrayObject;
+use ReflectionClass;
+use ReflectionException;
+
 /**
  * 
  * Retains and unifies class configurations.
@@ -24,7 +28,7 @@ class Config implements ConfigInterface
      * Constructor params from external configuration in the form 
      * `$params[$class][$name] = $value`.
      * 
-     * @var \ArrayObject
+     * @var ArrayObject
      * 
      */
     protected $params;
@@ -43,7 +47,7 @@ class Config implements ConfigInterface
      * 
      * Setter definitions in the form of `$setter[$class][$method] = $value`.
      * 
-     * @var \ArrayObject
+     * @var ArrayObject
      * 
      */
     protected $setter;
@@ -90,9 +94,9 @@ class Config implements ConfigInterface
      */
     protected function reset()
     {
-        $this->params = new \ArrayObject;
+        $this->params = new ArrayObject;
         $this->params['*'] = [];
-        $this->setter = new \ArrayObject;
+        $this->setter = new ArrayObject;
         $this->setter['*'] = [];
     }
 
@@ -100,7 +104,7 @@ class Config implements ConfigInterface
      * 
      * Gets the $params property.
      * 
-     * @return \ArrayObject
+     * @return ArrayObject
      * 
      */
     public function getParams()
@@ -112,7 +116,7 @@ class Config implements ConfigInterface
      * 
      * Gets the $setter property.
      * 
-     * @return \ArrayObject
+     * @return ArrayObject
      * 
      */
     public function getSetter()
@@ -122,22 +126,22 @@ class Config implements ConfigInterface
 
     /**
      * 
-     * Returns a \ReflectionClass for a named class.
+     * Returns a ReflectionClass for a named class.
      *
-     * @throws Exception\ServiceInvalid In case reflection could not reflect a class
-     * 
      * @param string $class The class to reflect on.
      * 
-     * @return \ReflectionClass
+     * @return ReflectionClass
+     * 
+     * @throws Exception\ReflectionFailure Could not reflect on the class.
      * 
      */
     public function getReflect($class)
     {
         if (! isset($this->reflect[$class])) {
             try {
-                $this->reflect[$class] = new \ReflectionClass($class);
-            } catch (\ReflectionException $exception) {
-                throw new Exception\ServiceInvalid("Service class {$class} is invalid", 0, $exception);
+                $this->reflect[$class] = new ReflectionClass($class);
+            } catch (ReflectionException $e) {
+                throw new Exception\ReflectionFailure($class, 0, $e);
             }
         }
         return $this->reflect[$class];

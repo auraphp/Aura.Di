@@ -198,7 +198,7 @@ class Container implements ContainerInterface
      * 
      * @throws Exception\ContainerLocked when the Container is locked.
      * 
-     * @throws Exception\Service
+     * @throws Exception\ServiceNotObject
      * 
      * @return $this
      * 
@@ -210,7 +210,7 @@ class Container implements ContainerInterface
         }
 
         if (! is_object($val)) {
-            throw new Exception\ServiceInvalid($key);
+            throw new Exception\ServiceNotObject($key);
         }
 
         if ($val instanceof \Closure) {

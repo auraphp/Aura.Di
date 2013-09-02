@@ -53,7 +53,7 @@ interface ConfigInterface
      * Gets a retained ReflectionClass; if not already retained, creates and
      * retains one before returning it.
      *
-     * @throws Exception\ServiceInvalid In case reflection could not reflect a class
+     * @throws Exception\ServiceNotObject In case reflection could not reflect a class
      * 
      * @param string $class The class to reflect on.
      * 

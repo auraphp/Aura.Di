@@ -135,12 +135,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        Aura\Di\Exception\ServiceInvalid
-     * @expectedExceptionMessage Service class No such class is invalid
-     * @expectedExceptionCode    0
+     * @expectedException        Aura\Di\Exception\ReflectionFailure
      */
     public function testExceptionOnGetReflect()
     {
-        $this->config->getReflect('No such class');
+        $this->config->getReflect('NoSuchClass');
     }
 }

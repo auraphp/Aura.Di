@@ -19,6 +19,6 @@ use Aura\Di\Exception;
  * @package Aura.Di
  * 
  */
-class ServiceInvalid extends Exception
+class ServiceNotObject extends Exception
 {
 }

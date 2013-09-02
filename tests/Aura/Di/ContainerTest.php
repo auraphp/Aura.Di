@@ -52,7 +52,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @expectedException Aura\Di\Exception\ServiceInvalid
+     * @expectedException Aura\Di\Exception\ServiceNotObject
      */
     public function testInitInvalidService()
     {
