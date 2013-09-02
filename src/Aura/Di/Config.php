@@ -123,6 +123,8 @@ class Config implements ConfigInterface
     /**
      * 
      * Returns a \ReflectionClass for a named class.
+     *
+     * @throws Exception\ServiceInvalid In case reflection could not reflect a class
      * 
      * @param string $class The class to reflect on.
      * 
@@ -132,7 +134,11 @@ class Config implements ConfigInterface
     public function getReflect($class)
     {
         if (! isset($this->reflect[$class])) {
-            $this->reflect[$class] = new \ReflectionClass($class);
+            try {
+                $this->reflect[$class] = new \ReflectionClass($class);
+            } catch (\ReflectionException $exception) {
+                throw new Exception\ServiceInvalid("Service class {$class} is invalid", 0, $exception);
+            }
         }
         return $this->reflect[$class];
     }
