@@ -7,3 +7,5 @@
 - [CHG] Config now throws Exception\ReflectionFailure when reflection fails.
 
 - [DOC] Typo fixes and clarifications; add PHP 5.5 to Travis build
+
+- [DEL] Remove unused exceptions ContainerExists and ContainerNotFound
