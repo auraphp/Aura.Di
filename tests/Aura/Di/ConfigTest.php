@@ -133,4 +133,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($clone->getParams(), $this->config->getParams());
         $this->assertNotSame($clone->getSetter(), $this->config->getSetter());
     }
+
+    /**
+     * @expectedException        Aura\Di\Exception\ReflectionFailure
+     */
+    public function testExceptionOnGetReflect()
+    {
+        $this->config->getReflect('NoSuchClass');
+    }
 }

@@ -1,13 +1,11 @@
-- [ADD] Container::lazyInclude() and lazyRequire() to lazily include or
-  require files
+- [CHG] Config now throws Exception\SetterMethodNotFound when a setter method
+  is configured but does not exist on the class
 
-- [ADD] Container::lazyCall() to lazily make a call to any callable, with
-  sequential (not named) parameters, just like with call_user_func()
+- [CHG] Container::set() now throws Exception\ServiceNotObject when the
+  service being set is not an object.
 
-- [ADD] Container::newFactory() method
+- [CHG] Config now throws Exception\ReflectionFailure when reflection fails.
 
-- [NEW] Factory class, to create new class instances using the Forge
+- [DOC] Typo fixes and clarifications; add PHP 5.5 to Travis build
 
-- [REF] Refactor Forge::newInstance() extract method mergeParams(), and make
-  allowance for positional override params (these take precedence over named
-  override params)
+- [DEL] Remove unused exceptions ContainerExists and ContainerNotFound

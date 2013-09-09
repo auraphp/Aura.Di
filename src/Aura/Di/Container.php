@@ -198,7 +198,7 @@ class Container implements ContainerInterface
      * 
      * @throws Exception\ContainerLocked when the Container is locked.
      * 
-     * @throws Exception\Service
+     * @throws Exception\ServiceNotObject
      * 
      * @return $this
      * 
@@ -210,7 +210,7 @@ class Container implements ContainerInterface
         }
 
         if (! is_object($val)) {
-            throw new Exception\ServiceInvalid($key);
+            throw new Exception\ServiceNotObject($key);
         }
 
         if ($val instanceof \Closure) {
@@ -433,8 +433,8 @@ class Container implements ContainerInterface
      * Returns a Lazy that invokes a callable (e.g., to call a method on an
      * object).
      * 
-     * @param callable The callable.  Params after this one are treated as
-     * params for the call.
+     * @param $callable callable The callable.  Params after this one are
+     * treated as params for the call.
      * 
      * @return Lazy
      * 
@@ -444,7 +444,7 @@ class Container implements ContainerInterface
         // get params, if any, after removing $callable
         $params = func_get_args();
         array_shift($params);
-    
+        
         // create the closure to invoke the callable
         $call = function () use ($callable, $params) {
             

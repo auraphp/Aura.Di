@@ -14,11 +14,11 @@ use Aura\Di\Exception;
 
 /**
  * 
- * The service definition is not valid.
+ * There was a failure when reflecting on a class.
  * 
  * @package Aura.Di
  * 
  */
-class ServiceInvalid extends Exception
+class ReflectionFailure extends Exception
 {
 }

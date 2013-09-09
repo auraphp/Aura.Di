@@ -14,11 +14,11 @@ use Aura\Di\Exception;
 
 /**
  * 
- * The named DI container already exists.
+ * The service definition is not valid.
  * 
  * @package Aura.Di
  * 
  */
-class ContainerExists extends Exception
+class ServiceNotObject extends Exception
 {
 }
