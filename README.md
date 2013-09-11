@@ -1,7 +1,7 @@
 Aura DI
 =======
 
-[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png)](https://travis-ci.org/auraphp/Aura.Di)
+[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=develop)](https://travis-ci.org/auraphp/Aura.Di)
 
 The Aura DI package provides a dependency injection container system with the
 following features:
