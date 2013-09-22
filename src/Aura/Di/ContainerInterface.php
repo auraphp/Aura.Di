@@ -74,14 +74,17 @@ interface ContainerInterface
      * Gets a service object by key, lazy-loading it as needed.
      * 
      * @param string $key The service to get.
+     * @param string $type The expected type by the requester.
      * 
      * @return object
      * 
      * @throws \Aura\Di\Exception\ServiceNotFound when the requested service
      * does not exist.
+     * @throws \Aura\Di\Exception\TypeHintFailed when the type hint does not
+     * match the provided value.
      * 
      */
-    public function get($key);
+    public function get($key, $type = null);
 
     /**
      * 

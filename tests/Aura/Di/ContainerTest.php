@@ -97,6 +97,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
+    public function testGetWithTypehint() {
+        $this->container->set('foo', new \StdClass);
+        
+        $foo = $this->container->get('foo', '\StdClass');
+        $this->assertTrue($foo instanceof \StdClass);
+    }
+    
+    /**
+     * @expectedException Aura\Di\Exception\TypeHintFailed
+     */
+    public function testGetTypehintFailureException() {
+        $this->container->set('foo', new \StdClass);
+        $this->container->get('foo', 'This\Doesnt\Exist');
+    }
+    
     public function testLazyGet()
     {
         $this->container->set('foo', function() {

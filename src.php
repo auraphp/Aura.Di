@@ -9,6 +9,7 @@ require_once __DIR__ . '/src/Aura/Di/Exception/ReflectionFailure.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ServiceNotObject.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/ServiceNotFound.php';
 require_once __DIR__ . '/src/Aura/Di/Exception/SetterMethodNotFound.php';
+require_once __DIR__ . '/src/Aura/Di/Exception/TypeHintFailed.php';
 require_once __DIR__ . '/src/Aura/Di/Factory.php';
 require_once __DIR__ . '/src/Aura/Di/ForgeInterface.php';
 require_once __DIR__ . '/src/Aura/Di/Forge.php';
