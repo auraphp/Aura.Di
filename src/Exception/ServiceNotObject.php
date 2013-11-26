@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * This file is part of the Aura Project for PHP.
+ * This file is part of the Aura for PHP.
  * 
  * @package Aura.Di
  * 
@@ -14,11 +14,11 @@ use Aura\Di\Exception;
 
 /**
  * 
- * The DI container is locked.
+ * The service definition is not valid.
  * 
  * @package Aura.Di
  * 
  */
-class ContainerLocked extends Exception
+class ServiceNotObject extends Exception
 {
 }

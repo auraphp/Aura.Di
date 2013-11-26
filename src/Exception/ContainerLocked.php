@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * This file is part of the Aura Project for PHP.
+ * This file is part of the Aura for PHP.
  * 
  * @package Aura.Di
  * 
@@ -14,11 +14,11 @@ use Aura\Di\Exception;
 
 /**
  * 
- * There was a failure when reflecting on a class.
+ * The DI container is locked.
  * 
  * @package Aura.Di
  * 
  */
-class ReflectionFailure extends Exception
+class ContainerLocked extends Exception
 {
 }
