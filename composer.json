@@ -16,5 +16,13 @@
     },
     "autoload": {
         "files": ["autoload.php"]
+    },
+    "extra": {
+        "aura": {
+            "type": "library"
+        },
+        "branch-alias": {
+            "dev-develop-2": "2.x-dev"
+        }
     }
 }
