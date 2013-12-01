@@ -1,7 +1,4 @@
-Aura DI
-=======
-
-[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png)](https://travis-ci.org/auraphp/Aura.Di)
+# Aura DI
 
 The Aura DI package provides a dependency injection container system with the
 following features:
@@ -21,27 +18,46 @@ desirable, is beyond the scope of this document. For more information about
 "inversion of control" and "dependency injection" please consult
 <http://martinfowler.com/articles/injection.html> by Martin Fowler.
 
-This package is compliant with [PSR-0][], [PSR-1][], and [PSR-2][]. If you
-notice compliance oversights, please send a patch via pull request.
+## Foreword
 
-[PSR-0]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-0.md
+### Requirements
+
+This library requires PHP 5.4 or later, and has no userland dependencies.
+
+### Installation
+
+This library is installable and autoloadable via Composer with the following
+`require` element in your `composer.json` file:
+
+    "require": {
+        "aura/di": "2.*@dev"
+    }
+    
+Alternatively, download or clone this repository, then require or include its
+_autoload.php_ file.
+
+### Tests
+
+[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Di)
+
+This library has 100% code coverage with [PHPUnit][]. To run the tests at the
+command line, go to the _tests_ directory and issue `phpunit`.
+
+[phpunit]: http://phpunit.de/manual/
+
+### PSR Compliance
+
+This library attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If
+you notice compliance oversights, please send a patch via pull request.
+
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
+[PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
 
 
-Instantiating the Container
-===========================
+## Getting Started
 
-The Aura DI package comes with a instance script that returns a new DI
-instance:
-
-```php
-<?php
-$di = require '/path/to/Aura.Di/scripts/instance.php';
-```
-
-Alternatively, you can add the Aura DI `'src/'` directory to your autoloader,
-and then instantiate it yourself:
+You can instantiate `Aura\Di\Container` as below
 
 ```php
 <?php
