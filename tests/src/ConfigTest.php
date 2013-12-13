@@ -103,6 +103,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     
     public function testFetchCapturesTraitSetter()
     {
+        if (phpversion() < '5.4') {
+            $this->markTestSkipped("No traits before PHP 5.4");
+        }
+        
         $setter = $this->config->getSetter();
         $setter['Aura\Di\MockTrait']['setFake'] = 'fake1';
         
@@ -114,6 +118,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testFetchCapturesOverrideTraitSetter()
     {
+        if (phpversion() < '5.4') {
+            $this->markTestSkipped("No traits before PHP 5.4");
+        }
+        
         $setter = $this->config->getSetter();
         $setter['Aura\Di\MockTrait']['setFake'] = 'fake1';
         $setter['Aura\Di\MockClassWithTrait']['setFake'] = 'fake2';
