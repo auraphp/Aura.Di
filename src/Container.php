@@ -120,20 +120,6 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * When cloning this Container, *do not* make a copy of the service
-     * objects.  Leave the configuration and definitions intact.
-     * 
-     * @return null
-     * 
-     */
-    public function __clone()
-    {
-        $this->services = [];
-        $this->forge = clone $this->forge;
-    }
-
-    /**
-     * 
      * Lock the Container so that configuration cannot be accessed externally,
      * and no new service definitions can be added.
      * 

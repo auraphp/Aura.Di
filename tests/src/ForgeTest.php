@@ -98,13 +98,6 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFake());
     }
     
-    public function testClone()
-    {
-        $clone = clone $this->forge;
-        $this->assertNotSame($clone, $this->forge);
-        $this->assertNotSame($clone->getConfig(), $this->forge->getConfig());
-    }
-    
     public function testNewInstanceWithNonExistentSetter()
     {
         $class = 'Aura\Di\MockOtherClass';

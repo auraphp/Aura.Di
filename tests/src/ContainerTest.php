@@ -157,12 +157,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $foo);
     }
     
-    public function testClone()
-    {
-        $clone = clone $this->container;
-        $this->assertNotSame($clone->getForge(), $this->container->getForge());
-    }
-    
     /**
      * @expectedException Aura\Di\Exception\ContainerLocked
      */

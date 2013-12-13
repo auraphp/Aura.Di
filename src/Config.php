@@ -74,19 +74,6 @@ class Config implements ConfigInterface
 
     /**
      * 
-     * When cloning this object, reset the params and setter values (but
-     * leave the reflection values in place).
-     * 
-     * @return null
-     * 
-     */
-    public function __clone()
-    {
-        $this->reset();
-    }
-
-    /**
-     * 
      * Resets the params and setter values.
      * 
      * @return null
