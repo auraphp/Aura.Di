@@ -24,7 +24,7 @@ interface ContainerInterface
      * Lock the Container so that configuration cannot be accessed externally,
      * and no new service definitions can be added.
      * 
-     * @return void
+     * @return null
      * 
      */
     public function lock();

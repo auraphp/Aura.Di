@@ -17,7 +17,7 @@ namespace Aura\Di;
  * @package Aura.Di
  * 
  */
-class Lazy
+class Lazy implements LazyInterface
 {
     /**
      * 
@@ -34,7 +34,7 @@ class Lazy
      * 
      * @param callable $callable A callable to create an object instance.
      * 
-     * @return void
+     * @return null
      * 
      */
     public function __construct(callable $callable)

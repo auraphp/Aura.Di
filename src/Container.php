@@ -123,7 +123,7 @@ class Container implements ContainerInterface
      * When cloning this Container, *do not* make a copy of the service
      * objects.  Leave the configuration and definitions intact.
      * 
-     * @return void
+     * @return null
      * 
      */
     public function __clone()
@@ -137,7 +137,7 @@ class Container implements ContainerInterface
      * Lock the Container so that configuration cannot be accessed externally,
      * and no new service definitions can be added.
      * 
-     * @return void
+     * @return null
      * 
      */
     public function lock()
@@ -246,7 +246,7 @@ class Container implements ContainerInterface
             // instantiate it from its definition.
             $service = $this->defs[$key];
             // lazy-load as needed
-            if ($service instanceof Lazy) {
+            if ($service instanceof LazyInterface) {
                 $service = $service();
             }
             // retain
@@ -321,12 +321,7 @@ class Container implements ContainerInterface
      */
     public function lazyGet($key)
     {
-        $self = $this;
-        return $this->lazy(
-            function () use ($self, $key) {
-                return $self->get($key);
-            }
-        );
+        return new LazyGet($this, $key);
     }
 
     /**
@@ -372,12 +367,7 @@ class Container implements ContainerInterface
      */
     public function lazyNew($class, array $params = [], array $setters = [])
     {
-        $forge = $this->getForge();
-        return $this->lazy(
-            function () use ($forge, $class, $params, $setters) {
-                return $forge->newInstance($class, $params, $setters);
-            }
-        );
+        return new LazyNew($this->forge, $class, $params, $setters);
     }
     
     /**
@@ -399,9 +389,7 @@ class Container implements ContainerInterface
      */
     public function lazyRequire($file)
     {
-        return $this->lazy(function () use ($file) {
-            return require $file;
-        });
+        return new LazyRequire($file);
     }
 
     /**
@@ -423,9 +411,7 @@ class Container implements ContainerInterface
      */
     public function lazyInclude($file)
     {
-        return $this->lazy(function () use ($file) {
-            return include $file;
-        });
+        return new LazyInclude($file);
     }
 
     /**
@@ -441,35 +427,9 @@ class Container implements ContainerInterface
      */
     public function lazyCall($callable)
     {
-        // get params, if any, after removing $callable
         $params = func_get_args();
         array_shift($params);
-        
-        // create the closure to invoke the callable
-        $call = function () use ($callable, $params) {
-            
-            // convert Lazy objects in the callable
-            if (is_array($callable)) {
-                foreach ($callable as $key => $val) {
-                    if ($val instanceof Lazy) {
-                        $callable[$key] = $val();
-                    }
-                }
-            }
-            
-            // convert Lazy objects in the params
-            foreach ($params as $key => $val) {
-                if ($val instanceof Lazy) {
-                    $params[$key] = $val();
-                }
-            }
-            
-            // make the call
-            return call_user_func_array($callable, $params);
-        };
-        
-        // return wrapped in a Lazy, and done
-        return $this->lazy($call);
+        return new LazyCall($callable, $params);
     }
     
     /**

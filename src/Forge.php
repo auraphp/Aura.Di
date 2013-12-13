@@ -45,7 +45,7 @@ class Forge implements ForgeInterface
      * 
      * When cloning this Forge, create a separate Config object for the clone.
      * 
-     * @return void
+     * @return null
      * 
      */
     public function __clone()
@@ -105,7 +105,7 @@ class Forge implements ForgeInterface
             // does the specified setter method exist?
             if (method_exists($object, $method)) {
                 // lazy-load setter values as needed
-                if ($value instanceof Lazy) {
+                if ($value instanceof LazyInterface) {
                     $value = $value();
                 }
                 // call the setter
@@ -148,7 +148,7 @@ class Forge implements ForgeInterface
             }
             
             // invoke Lazy values
-            if ($val instanceof Lazy) {
+            if ($val instanceof LazyInterface) {
                 $val = $val();
             }
             

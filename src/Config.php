@@ -77,7 +77,7 @@ class Config implements ConfigInterface
      * When cloning this object, reset the params and setter values (but
      * leave the reflection values in place).
      * 
-     * @return void
+     * @return null
      * 
      */
     public function __clone()
@@ -89,7 +89,7 @@ class Config implements ConfigInterface
      * 
      * Resets the params and setter values.
      * 
-     * @return void
+     * @return null
      * 
      */
     protected function reset()
