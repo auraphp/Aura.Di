@@ -66,6 +66,7 @@ use Aura\Di\Forge;
 use Aura\Di\Config;
 
 $di = new Container(new Forge(new Config));
+?>
 ```
 
 The `Container` is the DI container proper.  The support objects are:
@@ -96,6 +97,7 @@ class Database
         // ... make the database connection
     }
 }
+?>
 ```
 
 We will proceed from naive service creation to a more sophisticated idiom in
@@ -113,6 +115,7 @@ In this variation, we create a service by instantiating an object with the
 $di->set('database', new \Example\Package\Database(
     'localhost', 'user', 'passwd'
 ));
+?>
 ```
 
 This causes the database object to be created at the time we *set* the service
@@ -130,6 +133,7 @@ using the `new` operator.
 $di->set('database', function () {
     return new \Example\Package\Database('localhost', 'user', 'passwd');
 });
+?>
 ```
 
 This causes the database object to be created at the time we *get* the service
@@ -154,6 +158,7 @@ $di->set('database', function () use ($di) {
         'password' => 'passwd',
     ));
 });
+?>
 ```
 
 The `newInstance()` method uses the `Forge` object to reflect on the
@@ -179,6 +184,7 @@ $di->params['Example\Package\Database'] = array(
 $di->set('database', function () use ($di) {
     return $di->newInstance('Example\Package\Database');
 });
+?>
 ```
 
 As part of the object-creation process, the `Forge` examines the `$di->params`
@@ -206,6 +212,7 @@ $di->params['Example\Package\Database'] = array(
 );
 
 $di->set('database', $di->lazyNew('Example\Package\Database'));
+?>
 ```
 
 
@@ -226,6 +233,7 @@ $di->params['Example\Package\Database'] = array(
 $di->set('database', $di->lazyNew('Example\Package\Database', array(
     'hostname' => 'example.com',
 ));
+?>
 ```
 
 The instantiation-time values take precedence over the configuration values,
@@ -240,6 +248,7 @@ To get a service object from the container, call `$di->get()`.
 ```php
 <?php
 $db = $di->get('database');
+?>
 ```
 
 This will retrieve the service object from the container; if it was set using
@@ -279,6 +288,7 @@ class WikiModel extends AbstractModel
 {
     // ...
 }
+?>
 ```
 
 We will create services for the `BlogModel` and `WikiModel`, and inject the
@@ -308,6 +318,7 @@ $di->set('blog_model', $di->lazyNew('Example\Package\BlogModel'));
 
 // define the wiki_model service
 $di->set('wiki_model', $di->lazyNew('Example\Package\WikiModel'));
+?>
 ```
 
 We do not need to set the value of the `'db'` param for the `BlogModel` and
@@ -385,6 +396,7 @@ class BlogController extends PageController
         // ... get data from the blog model and return it ...
     }
 }
+?>
 ```
 
 Now we can set up the DI container as follows:
@@ -423,6 +435,7 @@ $di->set('database', $di->lazyNew('Example\Package\Database'));
 
 // the model factory service
 $di->set('model_factory', $di->lazyNew('Example\Package\ModelFactory'));
+?>
 ```
 
 When we create an instance of the `BlogController` and run it ...
@@ -431,6 +444,7 @@ When we create an instance of the `BlogController` and run it ...
 <?php
 $blog_controller = $di->newInstance('Aura\Example\BlogController');
 echo $blog_controller->exec();
+?>
 ```
 
 ... a series of events occurs to fulfill all the dependencies in two steps.
@@ -477,6 +491,7 @@ class Foo {
         $this->db = $db;
     }
 }
+?>
 ```
 
 ... we can define values that should be injected via setter methods:
@@ -491,6 +506,7 @@ $di->setter['Example\Package\Foo']['setDb'] = $di->lazyGet('database');
 // create a foo_service; on get('foo_service'), the Forge will create the
 // Foo object, then call setDb() on it per the setter specification above.
 $di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
+?>
 ```
 
 Note that we use `lazyGet()` for the injection. As with constructor params, we
@@ -508,6 +524,7 @@ $di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew('Example\Package\Data
 // create a foo_service; on get('foo_service'), the Forge will create the
 // Foo object, then call setDb() on it per the setter specification above.
 $di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
+?>
 ```
 
 Setter configurations are inherited. If you have a class that extends
@@ -520,6 +537,7 @@ class Bar extends Foo
 {
     // ...
 }
+?>
 ```
 
 ... you do not need to add a new setter value for it; the `Forge` reads all
