@@ -195,9 +195,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testLazyCall()
+    public function testLazy()
     {
-        $lazy = $this->container->lazyCall(
+        $lazy = $this->container->lazy(
             [$this->container->lazyNew('Aura\Di\MockParentClass'), 'mirror'],
             $this->container->lazy(function () { return 'mirror'; })
         );

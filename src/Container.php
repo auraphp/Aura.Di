@@ -282,9 +282,11 @@ class Container implements ContainerInterface
      * @return Lazy A lazy-load object that contains the callable.
      * 
      */
-    public function lazy(callable $callable)
+    public function lazy($callable)
     {
-        return new Lazy($callable);
+        $params = func_get_args();
+        array_shift($params);
+        return new Lazy($callable, $params);
     }
 
     /**
@@ -400,24 +402,6 @@ class Container implements ContainerInterface
         return new LazyInclude($file);
     }
 
-    /**
-     * 
-     * Returns a Lazy that invokes a callable (e.g., to call a method on an
-     * object).
-     * 
-     * @param $callable callable The callable.  Params after this one are
-     * treated as params for the call.
-     * 
-     * @return Lazy
-     * 
-     */
-    public function lazyCall($callable)
-    {
-        $params = func_get_args();
-        array_shift($params);
-        return new LazyCall($callable, $params);
-    }
-    
     /**
      * 
      * Returns a Factory that creates an object over and over again (as vs

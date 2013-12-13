@@ -21,7 +21,7 @@ class Lazy implements LazyInterface
 {
     /**
      * 
-     * A callable to create an object instance.
+     * The callable.
      * 
      * @var callable
      * 
@@ -30,16 +30,24 @@ class Lazy implements LazyInterface
 
     /**
      * 
-     * Constructor.
+     * Arguments for the callable.
      * 
-     * @param callable $callable A callable to create an object instance.
+     * @var array
+     * 
+     */
+    protected $params;
+    
+    /**
+     * 
+     * Constructor.
      * 
      * @return null
      * 
      */
-    public function __construct(callable $callable)
+    public function __construct($callable, array $params = [])
     {
         $this->callable = $callable;
+        $this->params = $params;
     }
 
     /**
@@ -51,7 +59,23 @@ class Lazy implements LazyInterface
      */
     public function __invoke()
     {
-        $callable = $this->callable;
-        return $callable();
+        // convert Lazy objects in the callable
+        if (is_array($this->callable)) {
+            foreach ($this->callable as $key => $val) {
+                if ($val instanceof LazyInterface) {
+                    $this->callable[$key] = $val();
+                }
+            }
+        }
+        
+        // convert Lazy objects in the params
+        foreach ($this->params as $key => $val) {
+            if ($val instanceof LazyInterface) {
+                $this->params[$key] = $val();
+            }
+        }
+        
+        // make the call
+        return call_user_func_array($this->callable, $this->params);
     }
 }
