@@ -26,8 +26,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     
     protected function newFactory(
         $class,
-        array $params = [],
-        array $setter = []
+        array $params = array(),
+        array $setter = array()
     ) {
         return new Factory($this->forge, $class, $params, $setter);
     }
@@ -38,13 +38,13 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         
         $factory = $this->newFactory(
             'Aura\Di\MockChildClass',
-            [
+            array(
                 'foo' => 'foofoo',
                 'zim' => $other,
-            ],
-            [
+            ),
+            array(
                 'setFake' => 'fakefake',
-            ]
+            )
         );
         
         $actual = $factory();

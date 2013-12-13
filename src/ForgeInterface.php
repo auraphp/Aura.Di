@@ -46,5 +46,5 @@ interface ForgeInterface
      * @return object
      *
      */
-    public function newInstance($class, array $params = [], array $setters = []);
+    public function newInstance($class, array $params = array(), array $setters = array());
 }

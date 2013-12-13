@@ -44,7 +44,7 @@ class Lazy implements LazyInterface
      * @return null
      * 
      */
-    public function __construct($callable, array $params = [])
+    public function __construct($callable, array $params = array())
     {
         $this->callable = $callable;
         $this->params = $params;

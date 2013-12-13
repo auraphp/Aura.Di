@@ -37,9 +37,9 @@ class LazyNew implements LazyInterface
      */
     protected $class;
     
-    protected $params = [];
+    protected $params = array();
     
-    protected $setters = [];
+    protected $setters = array();
     
     /**
      * 

@@ -1,1 +1,1 @@
-<?php return ['foo' => 'bar'];
+<?php return array('foo' => 'bar');

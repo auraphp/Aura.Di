@@ -87,12 +87,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('bar', new \StdClass);
         $this->container->set('baz', new \StdClass);
         
-        $expect = ['foo', 'bar', 'baz'];
+        $expect = array('foo', 'bar', 'baz');
         $actual = $this->container->getDefs();
         $this->assertSame($expect, $actual);
         
         $service = $this->container->get('bar');
-        $expect = ['bar'];
+        $expect = array('bar');
         $actual = $this->container->getServices();
         $this->assertSame($expect, $actual);
     }
@@ -141,7 +141,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $instance = $this->container->newInstance(
             'Aura\Di\MockParentClass',
-            ['foo' => 'dib']
+            array('foo' => 'dib')
         );
         
         $expect = 'dib';
@@ -181,7 +181,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $lazy = $this->container->lazyInclude($file);
         $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
         $actual = $lazy();
-        $expect = ['foo' => 'bar'];
+        $expect = array('foo' => 'bar');
         $this->assertSame($expect, $actual);
     }
     
@@ -191,14 +191,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $lazy = $this->container->lazyRequire($file);
         $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
         $actual = $lazy();
-        $expect = ['foo' => 'bar'];
+        $expect = array('foo' => 'bar');
         $this->assertSame($expect, $actual);
     }
     
     public function testLazy()
     {
         $lazy = $this->container->lazy(
-            [$this->container->lazyNew('Aura\Di\MockParentClass'), 'mirror'],
+            array($this->container->lazyNew('Aura\Di\MockParentClass'), 'mirror'),
             $this->container->lazy(function () { return 'mirror'; })
         );
         
@@ -214,13 +214,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $factory = $this->container->newFactory(
             'Aura\Di\MockChildClass',
-            [
+            array(
                 'foo' => 'foofoo',
                 'zim' => $other,
-            ],
-            [
+            ),
+            array(
                 'setFake' => 'fakefake',
-            ]
+            )
         );
         
         $actual = $factory();

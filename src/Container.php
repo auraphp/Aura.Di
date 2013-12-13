@@ -55,7 +55,7 @@ class Container implements ContainerInterface
      * @var array
      * 
      */
-    protected $defs = [];
+    protected $defs = array();
 
     /**
      * 
@@ -64,7 +64,7 @@ class Container implements ContainerInterface
      * @var array
      * 
      */
-    protected $services = [];
+    protected $services = array();
 
     /**
      * 
@@ -326,7 +326,7 @@ class Container implements ContainerInterface
      * @return object An instance of the requested class.
      * 
      */
-    public function newInstance($class, array $params = [], array $setters = [])
+    public function newInstance($class, array $params = array(), array $setters = array())
     {
         return $this->forge->newInstance($class, $params, $setters);
     }
@@ -337,12 +337,12 @@ class Container implements ContainerInterface
      * the following idiom:
      * 
      *      $di->params['ClassName']['param_name'] = $di->lazy(function () use ($di)) {
-     *          return $di->newInstance('OtherClass', [...]);
+     *          return $di->newInstance('OtherClass', array(...));
      *      });
      * 
      * ... with the following:
      * 
-     *      $di->params['ClassName']['param_name'] = $di->lazyNew('OtherClass', [...]);
+     *      $di->params['ClassName']['param_name'] = $di->lazyNew('OtherClass', array(...));
      * 
      * @param string $class The type of class of instantiate.
      * 
@@ -353,7 +353,7 @@ class Container implements ContainerInterface
      * @return Lazy A lazy-load object that creates the new instance.
      * 
      */
-    public function lazyNew($class, array $params = [], array $setters = [])
+    public function lazyNew($class, array $params = array(), array $setters = array())
     {
         return new LazyNew($this->forge, $class, $params, $setters);
     }
@@ -416,7 +416,7 @@ class Container implements ContainerInterface
      * @return Factory
      * 
      */
-    public function newFactory($class, array $params = [], array $setters = [])
+    public function newFactory($class, array $params = array(), array $setters = array())
     {
         return new Factory($this->forge, $class, $params, $setters);
     }

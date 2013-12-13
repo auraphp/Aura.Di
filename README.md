@@ -132,11 +132,11 @@ closure for lazy-loading.
 ```php
 <?php
 $di->set('database', function () use ($di) {
-    return $di->newInstance('Example\Package\Database', [
+    return $di->newInstance('Example\Package\Database', array(
         'hostname' => 'localhost',
         'username' => 'user',
         'password' => 'passwd',
-    ]);
+    ));
 });
 ```
 
@@ -154,11 +154,11 @@ separately from the lazy-load instantiation of the `Database` object.
 
 ```php
 <?php
-$di->params['Example\Package\Database'] = [
+$di->params['Example\Package\Database'] = array(
     'hostname' => 'localhost',
     'username' => 'user',
     'password' => 'passwd',
-];
+);
 
 $di->set('database', function () use ($di) {
     return $di->newInstance('Example\Package\Database');
@@ -183,11 +183,11 @@ In this variation, we call the `lazyNew()` method, which encapsulates the
 
 ```php
 <?php
-$di->params['Example\Package\Database'] = [
+$di->params['Example\Package\Database'] = array(
     'hostname' => 'localhost',
     'username' => 'user',
     'password' => 'passwd',
-];
+);
 
 $di->set('database', $di->lazyNew('Example\Package\Database'));
 ```
@@ -201,15 +201,15 @@ instantiation time.
 
 ```php
 <?php
-$di->params['Example\Package\Database'] = [
+$di->params['Example\Package\Database'] = array(
     'hostname' => 'localhost',
     'username' => 'user',
     'password' => 'passwd',
-];
+);
 
-$di->set('database', $di->lazyNew('Example\Package\Database', [
+$di->set('database', $di->lazyNew('Example\Package\Database', array(
     'hostname' => 'example.com',
-]);
+));
 ```
 
 The instantiation-time values take precedence over the configuration values,
@@ -273,16 +273,16 @@ injection through class configuration.
 ```php
 <?php
 // default params for the Database class
-$di->params['Example\Package\Database'] = [
+$di->params['Example\Package\Database'] = array(
     'hostname' => 'localhost',
     'username' => 'user',
     'password' => 'passwd',
-];
+);
 
 // default params for the AbstractModel class
-$di->params['Example\Package\AbstractModel'] = [
+$di->params['Example\Package\AbstractModel'] = array(
     'db' => $di->lazyGet('database'),
-];
+);
 
 // define the database service
 $di->set('database', $di->lazyNew('Example\Package\Database'));
@@ -336,9 +336,9 @@ namespace Example\Package;
 class ModelFactory
 {
     // a map of model names to factory closures
-    protected $map = [];
+    protected $map = array();
     
-    public function __construct($map = [])
+    public function __construct($map = array())
     {
         $this->map = $map;
     }
@@ -376,30 +376,30 @@ Now we can set up the DI container as follows:
 ```php
 <?php
 // default params for database connections
-$di->params['Example\Package\Database'] = [
+$di->params['Example\Package\Database'] = array(
     'hostname' => 'localhost',
     'username' => 'user',
     'password' => 'passwd',
-];
+);
 
 // default params for the AbstractModel class
-$di->params['Example\Package\AbstractModel'] = [
+$di->params['Example\Package\AbstractModel'] = array(
     'db' => $di->lazyGet('database'),
-];
+);
 
 // default params for the model factory
-$di->params['Example\Package\ModelFactory'] = [
+$di->params['Example\Package\ModelFactory'] = array(
     // a map of model names to model factories
-    'map' => [
+    'map' => array(
         'blog' => $di->newFactory('Example\Package\BlogModel'),
         'wiki' => $di->newFactory('Example\Package\WikiModel'),
     ],
-];
+);
 
 // default params for page controllers
-$di->params['Example\Package\PageController'] = [
+$di->params['Example\Package\PageController'] = array(
     'model_factory' => $di->lazyGet('model_factory'),
-];
+);
 
 // the database service; note that we can use lazyNew() and the
 // forge will do all the setup for us
@@ -485,9 +485,9 @@ in the `Container`:
 <?php
 // after construction, call Foo::setDb() and inject a service object.
 // we override the default 'hostname' param for the instantiation.
-$di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew('Example\Package\Database', [
+$di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew('Example\Package\Database', array(
     'hostname' => 'example.com',
-]);
+));
 
 // create a foo_service; on get('foo_service'), the Forge will create the
 // Foo object, then call setDb() on it per the setter specification above.
