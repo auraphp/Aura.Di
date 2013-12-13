@@ -269,13 +269,8 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Lazy containing a general-purpose callable. Use this when you
-     * have complex logic or heavy overhead when creating a param that may or 
-     * may not need to be loaded.
-     * 
-     *      $di->params['ClassName']['param_name'] = $di->lazy(function () {
-     *          return include 'filename.php';
-     *      });
+     * Returns a Lazy containing a general-purpose callable, optionally with
+     * arguments.
      * 
      * @param callable $callable The callable functionality.
      * 
@@ -291,20 +286,11 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Lazy that gets a service. This allows you to replace the
-     * following idiom ...
-     * 
-     *      $di->params['ClassName']['param_name'] = $di->lazy(function() use ($di)) {
-     *          return $di->get('service');
-     *      }
-     * 
-     * ... with the following:
-     * 
-     *      $di->params['ClassName']['param_name'] = $di->lazyGet('service');
+     * Returns a Lazy that gets a service.
      * 
      * @param string $key The service name; it does not need to exist yet.
      * 
-     * @return Lazy A lazy-load object that gets the named service.
+     * @return LazyGet A lazy-load object that gets the named service.
      * 
      */
     public function lazyGet($key)
@@ -333,16 +319,7 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Lazy that creates a new instance. This allows you to replace
-     * the following idiom:
-     * 
-     *      $di->params['ClassName']['param_name'] = $di->lazy(function () use ($di)) {
-     *          return $di->newInstance('OtherClass', array(...));
-     *      });
-     * 
-     * ... with the following:
-     * 
-     *      $di->params['ClassName']['param_name'] = $di->lazyNew('OtherClass', array(...));
+     * Returns a Lazy that creates a new instance.
      * 
      * @param string $class The type of class of instantiate.
      * 
@@ -360,15 +337,7 @@ class Container implements ContainerInterface
     
     /**
      * 
-     * Returns a lazy that requires a file.  This replaces the idiom ...
-     * 
-     *     $di->params['ClassName']['foo'] = $di->lazy(function () {
-     *         return require "/path/to/file.php";
-     *     };
-     * 
-     * ... with:
-     * 
-     *     $di->params['ClassName']['foo'] = $di->lazyRequire("/path/to/file.php");
+     * Returns a lazy that requires a file.
      * 
      * @param string $file The file to require.
      * 
@@ -382,15 +351,7 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a lazy that includes a file.  This replaces the idiom ...
-     * 
-     *     $di->params['ClassName']['foo'] = $di->lazy(function () {
-     *         return include "/path/to/file.php";
-     *     };
-     * 
-     * ... with:
-     * 
-     *     $di->params['ClassName']['foo'] = $di->lazyRequire("/path/to/file.php");
+     * Returns a lazy that includes a file.
      * 
      * @param string $file The file to include.
      * 
