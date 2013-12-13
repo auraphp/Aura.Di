@@ -202,10 +202,12 @@ class Config implements ConfigInterface
         }
 
         // look for setters inside traits
-        $uses = class_uses($class);
-        foreach ($uses as $use) {
-            if (isset($this->setter[$use])) {
-                $unified_setter = array_merge($this->setter[$use], $unified_setter);
+        if (function_exists('class_uses')) {
+            $uses = class_uses($class);
+            foreach ($uses as $use) {
+                if (isset($this->setter[$use])) {
+                    $unified_setter = array_merge($this->setter[$use], $unified_setter);
+                }
             }
         }
 
