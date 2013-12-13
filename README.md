@@ -22,7 +22,7 @@ desirable, is beyond the scope of this document. For more information about
 
 ### Requirements
 
-This library requires PHP 5.4 or later, and has no userland dependencies.
+This library requires PHP 5.3 or later, and has no userland dependencies.
 
 ### Installation
 
@@ -71,7 +71,8 @@ $di = new Container(new Forge(new Config));
 
 The `Container` is the DI container proper.  The support objects are:
 
-- a `Config` object for collection, retrieval, and merging of setters and constructor params
+- a `Config` object for collection, retrieval, and merging of setters and
+  constructor params
 
 - a `Forge` for object creation using the unified `Config` values
 
