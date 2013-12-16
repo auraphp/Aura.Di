@@ -63,6 +63,7 @@ You can instantiate `Aura\Di\Container` as below
 <?php
 use Aura\Di\Container;
 use Aura\Di\Config;
+use Aura\Di\Lazy\LazyFactory;
 
 $di = new Container(new Config, new LazyFactory);
 ?>

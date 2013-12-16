@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Di;
 
+use Aura\Di\Lazy\LazyFactory;
+
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
@@ -78,7 +80,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $lazy = $this->container->lazyGet('foo');
         
-        $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy\LazyGet', $lazy);
         
         $foo = $lazy();
         
@@ -120,7 +122,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazyInstance()
     {
         $lazy = $this->container->lazyNew('Aura\Di\MockOtherClass');
-        $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy\LazyInstance', $lazy);
         $foo = $lazy();
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $foo);
     }
@@ -143,7 +145,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $file = __DIR__ . DIRECTORY_SEPARATOR . 'lazy_array.php';
         $lazy = $this->container->lazyInclude($file);
-        $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy\LazyInclude', $lazy);
         $actual = $lazy();
         $expect = array('foo' => 'bar');
         $this->assertSame($expect, $actual);
@@ -153,7 +155,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $file = __DIR__ . DIRECTORY_SEPARATOR . 'lazy_array.php';
         $lazy = $this->container->lazyRequire($file);
-        $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy\LazyRequire', $lazy);
         $actual = $lazy();
         $expect = array('foo' => 'bar');
         $this->assertSame($expect, $actual);
@@ -166,7 +168,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             $this->container->lazy(function () { return 'mirror'; })
         );
         
-        $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
+        $this->assertInstanceOf('Aura\Di\Lazy\Lazy', $lazy);
         $actual = $lazy();
         $expect = 'mirror';
         $this->assertSame($expect, $actual);
@@ -208,7 +210,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testNewInstanceWithLazyParam()
     {
-        $lazy = new Lazy(function() {
+        $lazy = $this->container->lazy(function() {
             return new MockOtherClass;
         });
         
@@ -238,7 +240,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testnewInstanceWithLazySetter()
     {
-        $lazy = new Lazy(function() {
+        $lazy = $this->container->lazy(function() {
             return new MockOtherClass;
         });
         

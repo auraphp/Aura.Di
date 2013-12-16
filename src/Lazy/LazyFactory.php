@@ -1,9 +1,11 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Lazy;
+
+use Aura\Di\Container;
 
 class LazyFactory
 {
-    public function newLazy($callable, array $params)
+    public function newLazy($callable, array $params = array())
     {
         return new Lazy($callable, $params);
     }

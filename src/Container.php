@@ -10,6 +10,9 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Lazy\LazyFactory;
+use Aura\Di\Lazy\LazyInterface;
+
 /**
  * 
  * Dependency injection container.
@@ -192,7 +195,7 @@ class Container implements ContainerInterface
         }
 
         if ($val instanceof \Closure) {
-            $val = new Lazy($val);
+            $val = $this->lazy_factory->newLazy($val);
         }
 
         $this->defs[$key] = $val;
@@ -327,7 +330,7 @@ class Container implements ContainerInterface
      */
     public function lazyRequire($file)
     {
-        return new LazyRequire($file);
+        return $this->lazy_factory->newLazyRequire($file);
     }
 
     /**
@@ -341,7 +344,7 @@ class Container implements ContainerInterface
      */
     public function lazyInclude($file)
     {
-        return new LazyInclude($file);
+        return $this->lazy_factory->newLazyInclude($file);
     }
 
     /**

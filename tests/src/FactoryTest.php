@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Di;
 
+use Aura\Di\Lazy\LazyFactory;
+
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
