@@ -132,11 +132,28 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         
     }
     
-    /**
-     * @expectedException        Aura\Di\Exception\ReflectionFailure
-     */
     public function testExceptionOnGetReflect()
     {
+        $this->setExpectedException('Aura\Di\Exception\ReflectionFailure');
         $this->config->getReflect('NoSuchClass');
+    }
+    
+    public function testPreFetch()
+    {
+        $params = $this->config->getParams();
+        $params['Aura\Di\MockParentClass'] = array('foo' => 'dib');
+        
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';
+        
+        // before pre-fetch
+        $actual = serialize($this->config);
+        $expect = 'O:14:"Aura\\Di\\Config":4:{s:9:"' . "\0" . '*' . "\0" . 'params";C:11:"ArrayObject":78:{x:i:0;a:1:{s:23:"Aura\\Di\\MockParentClass";a:1:{s:3:"foo";s:3:"dib";}};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'reflect";a:0:{}s:9:"' . "\0" . '*' . "\0" . 'setter";C:11:"ArrayObject":84:{x:i:0;a:1:{s:23:"Aura\\Di\\MockParentClass";a:1:{s:7:"setFake";s:5:"fake1";}};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'unified";a:0:{}}';
+        $this->assertSame($expect, $actual);
+        
+        $this->config->preFetch();
+        $actual = serialize($this->config);
+        $expect = 'O:14:"Aura\\Di\\Config":4:{s:9:"' . "\0" . '*' . "\0" . 'params";C:11:"ArrayObject":78:{x:i:0;a:1:{s:23:"Aura\\Di\\MockParentClass";a:1:{s:3:"foo";s:3:"dib";}};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'reflect";a:1:{s:23:"Aura\\Di\\MockParentClass";O:15:"ReflectionClass":1:{s:4:"name";s:23:"Aura\\Di\\MockParentClass";}}s:9:"' . "\0" . '*' . "\0" . 'setter";C:11:"ArrayObject":84:{x:i:0;a:1:{s:23:"Aura\\Di\\MockParentClass";a:1:{s:7:"setFake";s:5:"fake1";}};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'unified";a:1:{s:23:"Aura\\Di\\MockParentClass";a:2:{i:0;a:1:{s:3:"foo";s:3:"dib";}i:1;a:1:{s:7:"setFake";s:5:"fake1";}}}}';
+        $this->assertSame($expect, $actual);
     }
 }
