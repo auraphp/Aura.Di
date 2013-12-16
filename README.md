@@ -1,6 +1,6 @@
-# Aura DI
+# Aura.Di
 
-The Aura DI package provides a dependency injection container system with the
+The Aura.Di package provides a dependency injection container system with the
 following features:
 
 - native support for constructor- and setter-based injection
@@ -57,7 +57,7 @@ you notice compliance oversights, please send a patch via pull request.
 
 ## Getting Started
 
-You can instantiate `Aura\Di\Container` as below
+You can instantiate a `Container` as follows:
 
 ```php
 <?php
@@ -70,12 +70,11 @@ $di = new Container(new Config, new LazyFactory);
 ```
 
 The `Container` is the DI container proper. The `Config` is for collection,
-retrieval, and merging of setters and constructor params.
+retrieval, and merging of setters and constructor params, and the
+`LazyFactory` is for creating lazy-loading objects.
 
 
-
-Setting Services
-================
+### Setting Services
 
 For the following examples, we will set a service that should return a
 database connection. The hypothetical database connection class is defined as
@@ -99,8 +98,7 @@ We will proceed from naive service creation to a more sophisticated idiom in
 four steps. Each of the variations is a valid use of the DI container with its
 own strengths and weaknesses.
 
-Variation 1: Eager Loading
---------------------------
+#### Variation 1: Eager Loading
 
 In this variation, we create a service by instantiating an object with the
 `new` operator.
@@ -117,8 +115,7 @@ This causes the database object to be created at the time we *set* the service
 into the container. That means it is always created, even if we never retrieve
 it from the container.
 
-Variation 2: Lazy Loading
--------------------------
+#### Variation 2: Lazy Loading
 
 In this variation, we create a service by wrapping it in a closure, still
 using the `new` operator.
@@ -137,8 +134,7 @@ instantiation inside a closure allows for lazy-loading of the database object;
 if we never make a call to `$di->get('database')`, the object will never be
 created.
 
-Variation 3: Constructor Params
--------------------------------
+#### Variation 3: Constructor Params
 
 In this variation, we will move away from using the `new` operator, and use
 the `$di->newInstance()` method instead. We still wrap the instantiation in a
@@ -162,8 +158,7 @@ constructor parameters based on their names as an array of key-value pairs.
 The order of the pairs does not matter; missing parameters will use the
 defaults as defined by the class constructor.
 
-Variation 4: Class Constructor Params
--------------------------------------
+#### Variation 4: Class Constructor Params
 
 In this variation, we define a configuration for the `Database` class
 separately from the lazy-load instantiation of the `Database` object.
@@ -192,8 +187,7 @@ At this point, we have successfully separated object configuration from object
 instantiation, and allow for lazy-loading of service objects from the
 container.
 
-Variation 5: Call The lazyNew() Method
--------------------------------------
+#### Variation 5: Call The lazyNew() Method
 
 In this variation, we call the `lazyNew()` method, which encapsulates the
 "use a closure to return a new instance" idiom.
@@ -210,9 +204,7 @@ $di->set('database', $di->lazyNew('Example\Package\Database'));
 ?>
 ```
 
-
-Variation 5a: Override Class Constructor Params
------------------------------------------------
+#### Variation 5a: Override Class Constructor Params
 
 In this variation, we override the `$di->params` values that will be used at
 instantiation time.
@@ -235,8 +227,7 @@ The instantiation-time values take precedence over the configuration values,
 which themselves take precedence over the constructor defaults.
 
 
-Getting Services
-================
+### Getting Services
 
 To get a service object from the container, call `$di->get()`.
 
@@ -252,8 +243,7 @@ the object is created, it is retained in the container for future use; getting
 the same service multiple times will return the exact same object instance.
 
 
-Constructor Params Inheritance
-==============================
+### Constructor Params Inheritance
 
 For the following examples, we will add an `AbstractModel` class and two
 concrete classes called `BlogModel` and `WikiModel`. The idea is that all
@@ -335,8 +325,7 @@ recognized by the configuration system, so long as we instantiate it via
 `$di->newInstance()`or `$di->lazyNew()`.
 
 
-Factories and Dependency Fulfillment
-====================================
+### Factories and Dependency Fulfillment
 
 Creating a service for each of the model objects in our application can become
 tiresome. We may need to create other models, and we don't want to have to
@@ -465,8 +454,7 @@ retrieve a fully-configured `BlogModel` object without having to specify any
 configuration locally.
 
 
-Setter Injection
-================
+### Setter Injection
 
 Until this point, we have been working via constructor injection. However, we
 can work via setter injection as well.
@@ -540,8 +528,7 @@ parent setters and applies them. (If you do add a setter value for that class,
 it will override the parent setter.)
 
 
-Conclusion
-==========
+## Conclusion
 
 If we construct our dependencies properly with params, setters, services, and
 factories, we will only need to get one object directly from DI container. All
