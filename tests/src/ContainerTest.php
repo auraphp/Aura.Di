@@ -289,4 +289,18 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
         $this->assertSame('keepme', $actual->getFoo());
     }
+    
+    public function testGetSerialized()
+    {
+        // before adding anything
+        $actual = $this->container->getSerialized();
+        $expect = 'O:17:"Aura\\Di\\Container":7:{s:9:"' . "\0" . '*' . "\0" . 'config";O:14:"Aura\\Di\\Config":4:{s:9:"' . "\0" . '*' . "\0" . 'params";C:11:"ArrayObject":21:{x:i:0;a:0:{};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'reflect";a:0:{}s:9:"' . "\0" . '*' . "\0" . 'setter";C:11:"ArrayObject":21:{x:i:0;a:0:{};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'unified";a:0:{}}s:9:"' . "\0" . '*' . "\0" . 'params";r:3;s:9:"' . "\0" . '*' . "\0" . 'setter";r:8;s:7:"' . "\0" . '*' . "\0" . 'defs";a:0:{}s:11:"' . "\0" . '*' . "\0" . 'services";a:0:{}s:9:"' . "\0" . '*' . "\0" . 'locked";b:0;s:12:"lazy_factory";O:24:"Aura\\Di\\Lazy\\LazyFactory":0:{}}';
+        $this->assertSame($expect, $actual);
+        
+        // after adding services
+        $this->container->set('foo', $this->container->lazyNew('StdClass'));
+        $actual = $this->container->getSerialized();
+        $expect = 'O:17:"Aura\\Di\\Container":7:{s:9:"' . "\0" . '*' . "\0" . 'config";O:14:"Aura\\Di\\Config":4:{s:9:"' . "\0" . '*' . "\0" . 'params";C:11:"ArrayObject":21:{x:i:0;a:0:{};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'reflect";a:0:{}s:9:"' . "\0" . '*' . "\0" . 'setter";C:11:"ArrayObject":21:{x:i:0;a:0:{};m:a:0:{}}s:10:"' . "\0" . '*' . "\0" . 'unified";a:0:{}}s:9:"' . "\0" . '*' . "\0" . 'params";r:3;s:9:"' . "\0" . '*' . "\0" . 'setter";r:8;s:7:"' . "\0" . '*' . "\0" . 'defs";a:1:{s:3:"foo";O:25:"Aura\\Di\\Lazy\\LazyInstance":4:{s:12:"' . "\0" . '*' . "\0" . 'container";r:1;s:8:"' . "\0" . '*' . "\0" . 'class";s:8:"StdClass";s:9:"' . "\0" . '*' . "\0" . 'params";a:0:{}s:10:"' . "\0" . '*' . "\0" . 'setters";a:0:{}}}s:11:"' . "\0" . '*' . "\0" . 'services";a:0:{}s:9:"' . "\0" . '*' . "\0" . 'locked";b:0;s:12:"lazy_factory";O:24:"Aura\\Di\\Lazy\\LazyFactory":0:{}}';
+        $this->assertSame($expect, $actual);
+    }
 }
