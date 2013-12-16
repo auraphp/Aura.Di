@@ -68,18 +68,6 @@ class Config implements ConfigInterface
      */
     public function __construct()
     {
-        $this->reset();
-    }
-
-    /**
-     * 
-     * Resets the params and setter values.
-     * 
-     * @return null
-     * 
-     */
-    protected function reset()
-    {
         $this->params = new ArrayObject;
         $this->setter = new ArrayObject;
     }
