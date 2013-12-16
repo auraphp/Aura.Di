@@ -300,7 +300,7 @@ class Container implements ContainerInterface
      */
     public function lazyNew($class, array $params = array(), array $setters = array())
     {
-        return new LazyNew($this, $class, $params, $setters);
+        return new LazyInstance($this, $class, $params, $setters);
     }
     
     /**

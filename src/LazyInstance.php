@@ -17,7 +17,7 @@ namespace Aura\Di;
  * @package Aura.Di
  * 
  */
-class LazyNew implements LazyInterface
+class LazyInstance implements LazyInterface
 {
     /**
      * 

@@ -117,7 +117,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    public function testLazyNew()
+    public function testLazyInstance()
     {
         $lazy = $this->container->lazyNew('Aura\Di\MockOtherClass');
         $this->assertInstanceOf('Aura\Di\LazyInterface', $lazy);
