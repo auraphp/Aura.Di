@@ -12,6 +12,8 @@ namespace Aura\Di;
 
 use Aura\Di\Lazy\LazyFactory;
 use Aura\Di\Lazy\LazyInterface;
+use Closure;
+use UnexpectedValueException;
 
 /**
  * 
@@ -122,7 +124,7 @@ class Container implements ContainerInterface
             return $this->$key;
         }
 
-        throw new \UnexpectedValueException($key);
+        throw new UnexpectedValueException($key);
     }
 
     /**
@@ -194,7 +196,7 @@ class Container implements ContainerInterface
             throw new Exception\ServiceNotObject($key);
         }
 
-        if ($val instanceof \Closure) {
+        if ($val instanceof Closure) {
             $val = $this->lazy_factory->newLazy($val);
         }
 
