@@ -81,9 +81,7 @@ class Config implements ConfigInterface
     protected function reset()
     {
         $this->params = new ArrayObject;
-        $this->params['*'] = array();
         $this->setter = new ArrayObject;
-        $this->setter['*'] = array();
     }
 
     /**
@@ -156,9 +154,9 @@ class Config implements ConfigInterface
             // parent class values
             list($parent_params, $parent_setter) = $this->fetch($pclass);
         } else {
-            // no more parents; get top-level values for all classes
-            $parent_params = $this->params['*'];
-            $parent_setter = $this->setter['*'];
+            // no more parents
+            $parent_params = array();
+            $parent_setter = array();
         }
 
         // stores the unified config and setter values
