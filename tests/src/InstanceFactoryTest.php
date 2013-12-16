@@ -16,19 +16,19 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->container = new Container($this->config, new LazyFactory);
     }
     
-    protected function newFactory(
+    protected function newInstanceFactory(
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        return new Factory($this->container, $class, $params, $setter);
+        return new InstanceFactory($this->container, $class, $params, $setter);
     }
     
     public function test__invoke()
     {
         $other = $this->container->newInstance('Aura\Di\MockOtherClass');
         
-        $factory = $this->newFactory(
+        $factory = $this->newInstanceFactory(
             'Aura\Di\MockChildClass',
             array(
                 'foo' => 'foofoo',

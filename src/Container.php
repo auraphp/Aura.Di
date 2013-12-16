@@ -361,9 +361,9 @@ class Container implements ContainerInterface
      * @return Factory
      * 
      */
-    public function newFactory($class, array $params = array(), array $setters = array())
+    public function newInstanceFactory($class, array $params = array(), array $setters = array())
     {
-        return new Factory($this, $class, $params, $setters);
+        return new InstanceFactory($this, $class, $params, $setters);
     }
 
     /**

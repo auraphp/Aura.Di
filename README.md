@@ -414,8 +414,8 @@ $di->params['Example\Package\AbstractModel'] = array(
 $di->params['Example\Package\ModelFactory'] = array(
     // a map of model names to model factories
     'map' => array(
-        'blog' => $di->newFactory('Example\Package\BlogModel'),
-        'wiki' => $di->newFactory('Example\Package\WikiModel'),
+        'blog' => $di->newInstanceFactory('Example\Package\BlogModel'),
+        'wiki' => $di->newInstanceFactory('Example\Package\WikiModel'),
     ],
 );
 

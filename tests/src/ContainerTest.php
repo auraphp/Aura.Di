@@ -178,7 +178,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $other = $this->container->newInstance('Aura\Di\MockOtherClass');
         
-        $factory = $this->container->newFactory(
+        $factory = $this->container->newInstanceFactory(
             'Aura\Di\MockChildClass',
             array(
                 'foo' => 'foofoo',

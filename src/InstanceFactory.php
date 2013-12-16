@@ -12,12 +12,12 @@ namespace Aura\Di;
 
 /**
  * 
- * A generic factory to create objects of a single class.
+ * A generic factory to create multiple instances of a single class.
  * 
  * @package Aura.Di
  * 
  */
-class Factory
+class InstanceFactory
 {
     /**
      * 
@@ -82,8 +82,8 @@ class Factory
 
     /**
      * 
-     * Invoke this Factory object as a function to use the Container to create a
-     * new instance of the specified class; pass sequential parameters as
+     * Invoke this Factory object as a function to use the Container to create
+     * a new instance of the specified class; pass sequential parameters as
      * as yet another set of constructor parameter overrides.
      * 
      * Why the overrides for the overrides?  So that any package that needs a
