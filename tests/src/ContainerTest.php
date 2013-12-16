@@ -11,7 +11,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->config  = new Config;
-        $this->container = new Container($this->config);
+        $this->container = new Container($this->config, new LazyFactory);
     }
     
     protected function tearDown()

@@ -86,12 +86,17 @@ class Container implements ContainerInterface
      * @param Config $config A config object for params, setters, reflects,
      * etc.
      * 
+     * @param LazyFactory $lazy_factory A factory to create Lazy objects.
+     * 
      */
-    public function __construct(Config $config)
-    {
+    public function __construct(
+        Config $config,
+        LazyFactory $lazy_factory
+    ) {
         $this->config = $config;
         $this->params = $this->config->getParams();
         $this->setter = $this->config->getSetter();
+        $this->lazy_factory = $lazy_factory;
     }
 
     /**
@@ -268,21 +273,21 @@ class Container implements ContainerInterface
     {
         $params = func_get_args();
         array_shift($params);
-        return new Lazy($callable, $params);
+        return $this->lazy_factory->newLazy($callable, $params);
     }
 
     /**
      * 
      * Returns a Lazy that gets a service.
      * 
-     * @param string $key The service name; it does not need to exist yet.
+     * @param string $service The service name; it does not need to exist yet.
      * 
      * @return LazyGet A lazy-load object that gets the named service.
      * 
      */
-    public function lazyGet($key)
+    public function lazyGet($service)
     {
-        return new LazyGet($this, $key);
+        return $this->lazy_factory->newLazyGet($this, $service);
     }
 
     /**
@@ -293,14 +298,22 @@ class Container implements ContainerInterface
      * 
      * @param array $params Override parameters for the instance.
      * 
-     * @param array $setters Override setters for the instance
+     * @param array $setter Override setters for the instance.
      * 
-     * @return Lazy A lazy-load object that creates the new instance.
+     * @return LazyInstance A lazy-load object that creates the new instance.
      * 
      */
-    public function lazyNew($class, array $params = array(), array $setters = array())
-    {
-        return new LazyInstance($this, $class, $params, $setters);
+    public function lazyNew(
+        $class,
+        array $params = array(),
+        array $setter = array()
+    ) {
+        return $this->lazy_factory->newLazyInstance(
+            $this,
+            $class,
+            $params,
+            $setter
+        );
     }
     
     /**
@@ -309,7 +322,7 @@ class Container implements ContainerInterface
      * 
      * @param string $file The file to require.
      * 
-     * @return Lazy
+     * @return LazyRequire
      * 
      */
     public function lazyRequire($file)
@@ -323,7 +336,7 @@ class Container implements ContainerInterface
      * 
      * @param string $file The file to include.
      * 
-     * @return Lazy
+     * @return LazyInclude
      * 
      */
     public function lazyInclude($file)

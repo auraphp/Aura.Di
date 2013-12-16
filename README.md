@@ -64,7 +64,7 @@ You can instantiate `Aura\Di\Container` as below
 use Aura\Di\Container;
 use Aura\Di\Config;
 
-$di = new Container(new Config);
+$di = new Container(new Config, new LazyFactory);
 ?>
 ```
 
