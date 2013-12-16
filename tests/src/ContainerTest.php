@@ -1,44 +1,24 @@
 <?php
 namespace Aura\Di;
 
-/**
- * Test class for Dependency.
- */
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Container
-     */
     protected $container;
     
     protected $config;
     
-    protected $forge;
-    
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
     protected function setUp()
     {
         parent::setUp();
         $this->config  = new Config;
-        $this->forge   = new Forge($this->config);
-        $this->container = new Container($this->forge);
+        $this->container = new Container($this->config);
     }
     
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
     protected function tearDown()
     {
         parent::tearDown();
     }
     
-    /**
-     * @todo Implement testHas().
-     */
     public function testHasGet()
     {
         $expect = new \StdClass;
@@ -51,19 +31,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
     
-    /**
-     * @expectedException Aura\Di\Exception\ServiceNotObject
-     */
     public function testInitInvalidService()
     {
+        $this->setExpectedException('Aura\Di\Exception\ServiceNotObject');
         $this->container->set('foo', 'bar');
     }
     
-    /**
-     * @expectedException Aura\Di\Exception\ServiceNotFound
-     */
     public function testGetNoSuchService()
     {
+        $this->setExpectedException('Aura\Di\Exception\ServiceNotFound');
         $this->container->get('foo');
     }
     
@@ -78,9 +54,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockParentClass', $actual);
     }
     
-    /**
-     * @todo Implement testGetServices().
-     */
     public function testGetDefsAndServices()
     {
         $this->container->set('foo', new \StdClass);
@@ -118,17 +91,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->container->setter, $this->config->getSetter());
     }
     
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testMagicGetNoSuchProperty()
     {
+        $this->setExpectedException('UnexpectedValueException');
         $actual = $this->container->no_such_property;
     }
     
-    /**
-     * @todo Implement testNewInstance().
-     */
     public function testNewInstanceWithDefaults()
     {
         $instance = $this->container->newInstance('Aura\Di\MockParentClass');
@@ -157,21 +125,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $foo);
     }
     
-    /**
-     * @expectedException Aura\Di\Exception\ContainerLocked
-     */
     public function testLockedConfig()
     {
         $this->container->lock();
+        $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
         $params = $this->container->params;
     }
     
-    /**
-     * @expectedException Aura\Di\Exception\ContainerLocked
-     */
     public function testLockedSet()
     {
         $this->container->lock();
+        $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
         $this->container->set('foo', function() { return new StdClass; });
     }
     
@@ -210,7 +174,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testNewFactory()
     {
-        $other = $this->forge->newInstance('Aura\Di\MockOtherClass');
+        $other = $this->container->newInstance('Aura\Di\MockOtherClass');
         
         $factory = $this->container->newFactory(
             'Aura\Di\MockChildClass',
@@ -234,5 +198,93 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         // create another one, should not be the same
         $extra = $factory();
         $this->assertNotSame($actual, $extra);
+    }
+    
+    public function testNewInstance()
+    {
+        $actual = $this->container->newInstance('Aura\Di\MockOtherClass');
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual);
+    }
+    
+    public function testNewInstanceWithLazyParam()
+    {
+        $lazy = new Lazy(function() {
+            return new MockOtherClass;
+        });
+        
+        $class = 'Aura\Di\MockParentClass';
+        
+        $actual = $this->container->newInstance($class, array(
+            'foo' => $lazy,
+        ));
+        
+        $this->assertInstanceOf($class, $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFoo());
+    }
+    
+    public function testNewInstanceWithSetter()
+    {
+        $class = 'Aura\Di\MockChildClass';
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockChildClass']['setFake'] = 'fake_value';
+        
+        $actual = $this->container->newInstance('Aura\Di\MockChildClass', array(
+            'foo' => 'gir',
+            'zim' => new MockOtherClass,
+        ));
+        
+        $this->assertSame('fake_value', $actual->getFake());
+    }
+    
+    public function testnewInstanceWithLazySetter()
+    {
+        $lazy = new Lazy(function() {
+            return new MockOtherClass;
+        });
+        
+        $class = 'Aura\Di\MockChildClass';
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockChildClass']['setFake'] = $lazy;
+        
+        $actual = $this->container->newInstance('Aura\Di\MockChildClass', array(
+            'foo' => 'gir',
+            'zim' => new MockOtherClass,
+        ));
+        
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getFake());
+    }
+    
+    public function testNewInstanceWithNonExistentSetter()
+    {
+        $class = 'Aura\Di\MockOtherClass';
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\MockOtherClass']['setFakeNotExists'] = 'fake_value';
+        $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
+        $actual = $this->container->newInstance('Aura\Di\MockOtherClass');
+    }
+    
+    public function testNewInstanceWithPositionalParams()
+    {
+        $other = $this->container->newInstance('Aura\Di\MockOtherClass');
+        
+        $actual = $this->container->newInstance('Aura\Di\MockChildClass', array(
+            'foofoo',
+            $other,
+        ));
+        
+        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertSame('foofoo', $actual->getFoo());
+        
+        // positional overrides names
+        $actual = $this->container->newInstance('Aura\Di\MockChildClass', array(
+            0 => 'keepme',
+            'foo' => 'bad',
+            $other,
+        ));
+        
+        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertSame('keepme', $actual->getFoo());
     }
 }

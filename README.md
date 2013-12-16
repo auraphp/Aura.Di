@@ -62,22 +62,15 @@ You can instantiate `Aura\Di\Container` as below
 ```php
 <?php
 use Aura\Di\Container;
-use Aura\Di\Forge;
 use Aura\Di\Config;
 
-$di = new Container(new Forge(new Config));
+$di = new Container(new Config);
 ?>
 ```
 
-The `Container` is the DI container proper.  The support objects are:
+The `Container` is the DI container proper. The `Config` is for collection,
+retrieval, and merging of setters and constructor params.
 
-- a `Config` object for collection, retrieval, and merging of setters and
-  constructor params
-
-- a `Forge` for object creation using the unified `Config` values
-
-We will not need to use the support objects directly; we will get access to
-their behaviors through `Container` methods.
 
 
 Setting Services
@@ -162,7 +155,7 @@ $di->set('database', function () use ($di) {
 ?>
 ```
 
-The `newInstance()` method uses the `Forge` object to reflect on the
+The `newInstance()` method uses the `Config` object to reflect on the
 constructor method of the class to be instantiated. We can then pass
 constructor parameters based on their names as an array of key-value pairs.
 The order of the pairs does not matter; missing parameters will use the
@@ -188,7 +181,7 @@ $di->set('database', function () use ($di) {
 ?>
 ```
 
-As part of the object-creation process, the `Forge` examines the `$di->params`
+As part of the object-creation process, the `Config` examines the `$di->params`
 values for the class being instantiated. Those values are merged with the
 class constructor defaults at instantiation time, and passed to the
 constructor (again, the order does not matter, only that the param key names
@@ -431,7 +424,7 @@ $di->params['Example\Package\PageController'] = array(
 );
 
 // the database service; note that we can use lazyNew() and the
-// forge will do all the setup for us
+// container will do all the setup for us
 $di->set('database', $di->lazyNew('Example\Package\Database'));
 
 // the model factory service
@@ -500,11 +493,11 @@ class Foo {
 
 ```php
 <?php
-// after construction, the Forge will call Foo::setDb()
+// after construction, the Container will call Foo::setDb()
 // and inject the 'database' service object
 $di->setter['Example\Package\Foo']['setDb'] = $di->lazyGet('database');
 
-// create a foo_service; on get('foo_service'), the Forge will create the
+// create a foo_service; on get('foo_service'), the Container will create the
 // Foo object, then call setDb() on it per the setter specification above.
 $di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
 ?>
@@ -522,7 +515,7 @@ $di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew('Example\Package\Data
     'hostname' => 'example.com',
 ));
 
-// create a foo_service; on get('foo_service'), the Forge will create the
+// create a foo_service; on get('foo_service'), the Container will create the
 // Foo object, then call setDb() on it per the setter specification above.
 $di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
 ?>
@@ -541,7 +534,7 @@ class Bar extends Foo
 ?>
 ```
 
-... you do not need to add a new setter value for it; the `Forge` reads all
+... you do not need to add a new setter value for it; the `Container` reads all
 parent setters and applies them. (If you do add a setter value for that class,
 it will override the parent setter.)
 
@@ -552,5 +545,5 @@ Conclusion
 If we construct our dependencies properly with params, setters, services, and
 factories, we will only need to get one object directly from DI container. All
 object creation will then happen through the DI container via factory objects
-and/or the `Forge` object. We will never need to use the DI container itself
+and/or the `Container` object. We will never need to use the DI container itself
 in any of the created objects.

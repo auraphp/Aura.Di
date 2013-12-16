@@ -35,8 +35,7 @@ class Config implements ConfigInterface
 
     /**
      * 
-     * An array of retained ReflectionClass instances; this is as much for
-     * the Forge as it is for Config.
+     * An array of retained ReflectionClass instances.
      * 
      * @var array
      * 

@@ -40,15 +40,6 @@ interface ContainerInterface
 
     /**
      * 
-     * Gets the Forge object used for creating new instances.
-     * 
-     * @return ForgeInterface
-     * 
-     */
-    public function getForge();
-
-    /**
-     * 
      * Does a particular service exist?
      * 
      * @param string $key The service key to look up.

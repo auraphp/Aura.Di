@@ -21,12 +21,12 @@ class Factory
 {
     /**
      * 
-     * An object forge.
+     * The container.
      * 
-     * @var ForgeInterface
+     * @var ContainerInterface
      * 
      */
-    protected $forge;
+    protected $container;
     
     /**
      * 
@@ -59,7 +59,7 @@ class Factory
      * 
      * Constructor.
      * 
-     * @param ForgeInterface $forge
+     * @param ContainerInterface $container
      * 
      * @param string $class The class to create.
      * 
@@ -69,12 +69,12 @@ class Factory
      * 
      */
     public function __construct(
-        ForgeInterface $forge,
+        ContainerInterface $container,
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        $this->forge = $forge;
+        $this->container = $container;
         $this->class = $class;
         $this->params = $params;
         $this->setter = $setter;
@@ -82,7 +82,7 @@ class Factory
 
     /**
      * 
-     * Invoke this Factory object as a function to use the Forge to create a
+     * Invoke this Factory object as a function to use the Container to create a
      * new instance of the specified class; pass sequential parameters as
      * as yet another set of constructor parameter overrides.
      * 
@@ -96,6 +96,6 @@ class Factory
     public function __invoke()
     {
         $params = array_merge($this->params, func_get_args());
-        return $this->forge->newInstance($this->class, $params, $this->setter);
+        return $this->container->newInstance($this->class, $params, $this->setter);
     }
 }

@@ -1,27 +1,17 @@
 <?php
 namespace Aura\Di;
 
-/**
- * Test class for Forge.
- */
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Forge
-     */
-    protected $forge;
+    protected $container;
     
     protected $config;
     
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
     protected function setUp()
     {
         parent::setUp();
         $this->config = new Config;
-        $this->forge = new Forge($this->config);
+        $this->container = new Container($this->config);
     }
     
     protected function newFactory(
@@ -29,12 +19,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         array $params = array(),
         array $setter = array()
     ) {
-        return new Factory($this->forge, $class, $params, $setter);
+        return new Factory($this->container, $class, $params, $setter);
     }
     
     public function test__invoke()
     {
-        $other = $this->forge->newInstance('Aura\Di\MockOtherClass');
+        $other = $this->container->newInstance('Aura\Di\MockOtherClass');
         
         $factory = $this->newFactory(
             'Aura\Di\MockChildClass',

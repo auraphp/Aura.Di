@@ -21,12 +21,12 @@ class LazyNew implements LazyInterface
 {
     /**
      * 
-     * The object forge.
+     * The container.
      * 
-     * @var Forge
+     * @var Container
      * 
      */
-    protected $forge;
+    protected $container;
 
     /**
      * 
@@ -52,9 +52,9 @@ class LazyNew implements LazyInterface
      * @return null
      * 
      */
-    public function __construct(Forge $forge, $class, array $params, array $setters)
+    public function __construct(Container $container, $class, array $params, array $setters)
     {
-        $this->forge = $forge;
+        $this->container = $container;
         $this->class = $class;
         $this->params = $params;
         $this->setters = $setters;
@@ -69,6 +69,6 @@ class LazyNew implements LazyInterface
      */
     public function __invoke()
     {
-        return $this->forge->newInstance($this->class, $this->params, $this->setters);
+        return $this->container->newInstance($this->class, $this->params, $this->setters);
     }
 }

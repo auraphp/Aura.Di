@@ -21,17 +21,17 @@ class Container implements ContainerInterface
 {
     /**
      * 
-     * A Forge object to create classes through reflection.
+     * A Config object to get parameters for object instantiation and
+     * ReflectionClass instances.
      * 
-     * @var array
+     * @var Config
      * 
      */
-    protected $forge;
+    protected $config;
 
     /**
      * 
-     * A convenient reference to the Config::$params object, which itself
-     * is contained by the Forge object.
+     * A convenient reference to the Config::$params object.
      * 
      * @var \ArrayObject
      * 
@@ -40,8 +40,7 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * A convenient reference to the Config::$setter object, which itself
-     * is contained by the Forge object.
+     * A convenient reference to the Config::$setter object.
      * 
      * @var \ArrayObject
      * 
@@ -84,15 +83,15 @@ class Container implements ContainerInterface
      * 
      * Constructor.
      * 
-     * @param ForgeInterface $forge A forge for creating objects using
-     * keyword parameter configuration.
+     * @param Config $config A config object for params, setters, reflects,
+     * etc.
      * 
      */
-    public function __construct(ForgeInterface $forge)
+    public function __construct(Config $config)
     {
-        $this->forge  = $forge;
-        $this->params = $this->getForge()->getConfig()->getParams();
-        $this->setter = $this->getForge()->getConfig()->getSetter();
+        $this->config = $config;
+        $this->params = $this->config->getParams();
+        $this->setter = $this->config->getSetter();
     }
 
     /**
@@ -141,18 +140,6 @@ class Container implements ContainerInterface
     public function isLocked()
     {
         return $this->locked;
-    }
-
-    /**
-     * 
-     * Gets the Forge object used for creating new instances.
-     * 
-     * @return array
-     * 
-     */
-    public function getForge()
-    {
-        return $this->forge;
     }
 
     /**
@@ -300,25 +287,6 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a new instance of the specified class, optionally
-     * with additional override parameters.
-     * 
-     * @param string $class The type of class of instantiate.
-     * 
-     * @param array $params Override parameters for the instance.
-     * 
-     * @param array $setters Override setters for the instance.
-     * 
-     * @return object An instance of the requested class.
-     * 
-     */
-    public function newInstance($class, array $params = array(), array $setters = array())
-    {
-        return $this->forge->newInstance($class, $params, $setters);
-    }
-
-    /**
-     * 
      * Returns a Lazy that creates a new instance.
      * 
      * @param string $class The type of class of instantiate.
@@ -332,7 +300,7 @@ class Container implements ContainerInterface
      */
     public function lazyNew($class, array $params = array(), array $setters = array())
     {
-        return new LazyNew($this->forge, $class, $params, $setters);
+        return new LazyNew($this, $class, $params, $setters);
     }
     
     /**
@@ -368,7 +336,7 @@ class Container implements ContainerInterface
      * Returns a Factory that creates an object over and over again (as vs
      * creating it one time like the lazyNew() or newInstance() methods).
      * 
-     * @param string $class THe factory will create an instance of this class.
+     * @param string $class The factory will create an instance of this class.
      * 
      * @param array $params Override parameters for the instance.
      * 
@@ -379,6 +347,104 @@ class Container implements ContainerInterface
      */
     public function newFactory($class, array $params = array(), array $setters = array())
     {
-        return new Factory($this->forge, $class, $params, $setters);
+        return new Factory($this, $class, $params, $setters);
+    }
+
+    /**
+     * 
+     * Creates and returns a new instance of a class using reflection and
+     * the configuration parameters, optionally with overrides, invoking Lazy
+     * values along the way.
+     * 
+     * @param string $class The class to instantiate.
+     * 
+     * @param array $merge_params An array of override parameters; the key may
+     * be the name *or* the numeric position of the constructor parameter, and
+     * the value is the parameter value to use.
+     * 
+     * @param array $merge_setter An array of override setters; the key is the
+     * name of the setter method to call and the value is the value to be 
+     * passed to the setter method.
+     * 
+     * @return object
+     * 
+     */
+    public function newInstance(
+        $class,
+        array $merge_params = array(),
+        array $merge_setter = array()
+    ) {
+        // base configs
+        list($params, $setter) = $this->config->fetch($class);
+        
+        // merge configs
+        $params = $this->mergeParams($params, $merge_params);
+        $setter = array_merge($setter, $merge_setter);
+
+        // create the new instance
+        $rclass = $this->config->getReflect($class);
+        $object = $rclass->newInstanceArgs($params);
+
+        // call setters after creation
+        foreach ($setter as $method => $value) {
+            // does the specified setter method exist?
+            if (method_exists($object, $method)) {
+                // lazy-load setter values as needed
+                if ($value instanceof LazyInterface) {
+                    $value = $value();
+                }
+                // call the setter
+                $object->$method($value);
+            } else {
+                throw new Exception\SetterMethodNotFound("$class::$method");
+            }
+        }
+        
+        // done!
+        return $object;
+    }
+    
+    /**
+     * 
+     * Returns the params after merging with overides; also invokes Lazy param
+     * values.
+     * 
+     * @param array $params The constructor parameters.
+     * 
+     * @param array $merge_params An array of override parameters; the key may
+     * be the name *or* the numeric position of the constructor parameter, and
+     * the value is the parameter value to use.
+     * 
+     * @return array
+     * 
+     */
+    protected function mergeParams($params, array $merge_params = array())
+    {
+        $pos = 0;
+        foreach ($params as $key => $val) {
+            
+            // positional overrides take precedence over named overrides
+            if (array_key_exists($pos, $merge_params)) {
+                // positional override
+                $val = $merge_params[$pos];
+            } elseif (array_key_exists($key, $merge_params)) {
+                // named override
+                $val = $merge_params[$key];
+            }
+            
+            // invoke Lazy values
+            if ($val instanceof LazyInterface) {
+                $val = $val();
+            }
+            
+            // retain the merged value
+            $params[$key] = $val;
+            
+            // next position
+            $pos += 1;
+        }
+        
+        // done
+        return $params;
     }
 }
