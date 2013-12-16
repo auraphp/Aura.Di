@@ -98,6 +98,20 @@ class Config implements ConfigInterface
 
     /**
      * 
+     * Do not serialize $reflect property, as Reflection object don't
+     * unserialize properly. This will cause them to be recreated as needed
+     * after wakeup.
+     * 
+     * @return null
+     * 
+     */
+    public function __sleep()
+    {
+        return array('params', 'setter', 'unified');
+    }
+    
+    /**
+     * 
      * Returns a ReflectionClass for a named class.
      *
      * @param string $class The class to reflect on.
