@@ -262,12 +262,11 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Lazy containing a general-purpose callable, optionally with
-     * arguments.
+     * Returns a lazy object that calls a callable, optionally with arguments.
      * 
-     * @param callable $callable The callable functionality.
+     * @param callable $callable The callable.
      * 
-     * @return Lazy A lazy-load object that contains the callable.
+     * @return Lazy
      * 
      */
     public function lazy($callable)
@@ -279,11 +278,11 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Lazy that gets a service.
+     * Returns a lazy object that gets a service.
      * 
      * @param string $service The service name; it does not need to exist yet.
      * 
-     * @return LazyGet A lazy-load object that gets the named service.
+     * @return LazyGet
      * 
      */
     public function lazyGet($service)
@@ -293,7 +292,7 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Lazy that creates a new instance.
+     * Returns a lazy object that creates a new instance.
      * 
      * @param string $class The type of class of instantiate.
      * 
@@ -301,7 +300,7 @@ class Container implements ContainerInterface
      * 
      * @param array $setter Override setters for the instance.
      * 
-     * @return LazyNew A lazy-load object that creates the new instance.
+     * @return LazyNew
      * 
      */
     public function lazyNew(
@@ -309,12 +308,7 @@ class Container implements ContainerInterface
         array $params = array(),
         array $setter = array()
     ) {
-        return $this->factory->newLazyNew(
-            $this,
-            $class,
-            $params,
-            $setter
-        );
+        return $this->factory->newLazyNew($this, $class, $params, $setter);
     }
     
     /**

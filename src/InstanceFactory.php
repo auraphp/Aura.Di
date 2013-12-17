@@ -96,6 +96,10 @@ class InstanceFactory
     public function __invoke()
     {
         $params = array_merge($this->params, func_get_args());
-        return $this->container->newInstance($this->class, $params, $this->setter);
+        return $this->container->newInstance(
+            $this->class,
+            $params,
+            $this->setter
+        );
     }
 }
