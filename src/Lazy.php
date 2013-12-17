@@ -63,7 +63,7 @@ class Lazy implements LazyInterface
         if (is_array($this->callable)) {
             foreach ($this->callable as $key => $val) {
                 if ($val instanceof LazyInterface) {
-                    $this->callable[$key] = $val();
+                    $this->callable[$key] = $val->__invoke();
                 }
             }
         }
@@ -71,7 +71,7 @@ class Lazy implements LazyInterface
         // convert Lazy objects in the params
         foreach ($this->params as $key => $val) {
             if ($val instanceof LazyInterface) {
-                $this->params[$key] = $val();
+                $this->params[$key] = $val->__invoke();
             }
         }
         

@@ -413,7 +413,7 @@ class Container implements ContainerInterface
             if (method_exists($object, $method)) {
                 // lazy-load setter values as needed
                 if ($value instanceof LazyInterface) {
-                    $value = $value();
+                    $value = $value->__invoke();
                 }
                 // call the setter
                 $object->$method($value);
@@ -454,9 +454,9 @@ class Container implements ContainerInterface
                 $val = $merge_params[$key];
             }
             
-            // invoke Lazy values
+            // lazy-load as needed
             if ($val instanceof LazyInterface) {
-                $val = $val();
+                $val = $val->__invoke();
             }
             
             // retain the merged value
