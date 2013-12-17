@@ -29,13 +29,13 @@ class Factory
         return new LazyInclude($file);
     }
     
-    public function newLazyInstance(
+    public function newLazyNew(
         Container $container,
         $class,
         array $params,
         array $setter
     ) {
-        return new LazyInstance($container, $class, $params, $setter);
+        return new LazyNew($container, $class, $params, $setter);
     }
     
     public function newLazyRequire($file)

@@ -92,13 +92,11 @@ class Container implements ContainerInterface
      * @param Factory $factory A factory to create support objects.
      * 
      */
-    public function __construct(
-        Config $config,
-        Factory $factory
-    ) {
-        $this->config = $config;
-        $this->params = $this->config->getParams();
-        $this->setter = $this->config->getSetter();
+    public function __construct(Config $config, Factory $factory)
+    {
+        $this->config  = $config;
+        $this->params  = $this->config->getParams();
+        $this->setter  = $this->config->getSetter();
         $this->factory = $factory;
     }
 
@@ -303,7 +301,7 @@ class Container implements ContainerInterface
      * 
      * @param array $setter Override setters for the instance.
      * 
-     * @return LazyInstance A lazy-load object that creates the new instance.
+     * @return LazyNew A lazy-load object that creates the new instance.
      * 
      */
     public function lazyNew(
@@ -311,7 +309,7 @@ class Container implements ContainerInterface
         array $params = array(),
         array $setter = array()
     ) {
-        return $this->factory->newLazyInstance(
+        return $this->factory->newLazyNew(
             $this,
             $class,
             $params,

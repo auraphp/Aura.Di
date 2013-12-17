@@ -19,7 +19,7 @@ use Aura\Di\Container;
  * @package Aura.Di
  * 
  */
-class LazyInstance implements LazyInterface
+class LazyNew implements LazyInterface
 {
     /**
      * 
