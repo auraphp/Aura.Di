@@ -349,7 +349,7 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Returns a Factory that creates an object over and over again (as vs
+     * Returns a factory that creates an object over and over again (as vs
      * creating it one time like the lazyNew() or newInstance() methods).
      * 
      * @param string $class The factory will create an instance of this class.
@@ -358,12 +358,20 @@ class Container implements ContainerInterface
      * 
      * @param array $setters Override setters for the instance.
      * 
-     * @return Factory
+     * @return InstanceFactory
      * 
      */
-    public function newFactory($class, array $params = array(), array $setters = array())
-    {
-        return $this->factory->newInstanceFactory($this, $class, $params, $setters);
+    public function newFactory(
+        $class,
+        array $params = array(),
+        array $setters = array()
+    ) {
+        return $this->factory->newInstanceFactory(
+            $this,
+            $class,
+            $params,
+            $setters
+        );
     }
 
     /**
