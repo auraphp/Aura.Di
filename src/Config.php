@@ -98,20 +98,6 @@ class Config implements ConfigInterface
 
     /**
      * 
-     * Do not serialize $reflect property, as Reflection object don't
-     * unserialize properly. This will cause them to be recreated as needed
-     * after wakeup.
-     * 
-     * @return null
-     * 
-     */
-    public function __sleep()
-    {
-        return array('params', 'setter', 'unified');
-    }
-    
-    /**
-     * 
      * Returns a ReflectionClass for a named class.
      *
      * @param string $class The class to reflect on.
@@ -214,29 +200,5 @@ class Config implements ConfigInterface
         $this->unified[$class][0] = $unified_params;
         $this->unified[$class][1] = $unified_setter;
         return $this->unified[$class];
-    }
-    
-    /**
-     * 
-     * "Warms" the config object by pre-fetching unified and reflection values
-     * for all classes the config object is aware of.
-     * 
-     * @param array $classes Pre-fetch the unified and reflection values for
-     * these classes as well.
-     * 
-     * @return null
-     * 
-     */
-    public function preFetch(array $classes = array())
-    {
-        $classes = array_merge(
-            array_keys($this->params->getArrayCopy()),
-            array_keys($this->setter->getArrayCopy()),
-            $classes
-        );
-        
-        foreach ($classes as $class) {
-            $this->fetch($class);
-        }
     }
 }

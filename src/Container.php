@@ -465,18 +465,4 @@ class Container implements ContainerInterface
         // done
         return $params;
     }
-    
-    /**
-     * 
-     * Pre-fetches the Config values and serializes the container, making it
-     * suitable for caching.
-     * 
-     * @return string A serialized representation of this container.
-     * 
-     */
-    public function getSerialized()
-    {
-        $this->config->preFetch();
-        return serialize($this);
-    }
 }
