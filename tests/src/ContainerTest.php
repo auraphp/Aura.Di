@@ -54,19 +54,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockParentClass', $actual);
     }
     
-    public function testGetDefsAndServices()
+    public function testGetServicesAndInstances()
     {
         $this->container->set('foo', new \StdClass);
         $this->container->set('bar', new \StdClass);
         $this->container->set('baz', new \StdClass);
         
         $expect = array('foo', 'bar', 'baz');
-        $actual = $this->container->getDefs();
+        $actual = $this->container->getServices();
         $this->assertSame($expect, $actual);
         
         $service = $this->container->get('bar');
         $expect = array('bar');
-        $actual = $this->container->getServices();
+        $actual = $this->container->getInstances();
         $this->assertSame($expect, $actual);
     }
     

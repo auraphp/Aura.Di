@@ -57,16 +57,16 @@ class Container implements ContainerInterface
      * @var array
      * 
      */
-    protected $defs = array();
+    protected $services = array();
 
     /**
      * 
-     * Retains the actual service objects.
+     * Retains the actual service object instances.
      * 
      * @var array
      * 
      */
-    protected $services = array();
+    protected $instances = array();
 
     /**
      * 
@@ -159,9 +159,9 @@ class Container implements ContainerInterface
      * @return bool
      * 
      */
-    public function has($key)
+    public function has($service)
     {
-        return isset($this->defs[$key]);
+        return isset($this->services[$service]);
     }
 
     /**
@@ -172,7 +172,7 @@ class Container implements ContainerInterface
      * because the actual service object itself might be callable via an
      * __invoke() method.)
      * 
-     * @param string $key The service key.
+     * @param string $service The service key.
      * 
      * @param object $val The service object; if a Closure, is treated as a
      * Lazy.
@@ -184,21 +184,21 @@ class Container implements ContainerInterface
      * @return $this
      * 
      */
-    public function set($key, $val)
+    public function set($service, $val)
     {
         if ($this->isLocked()) {
             throw new Exception\ContainerLocked;
         }
 
         if (! is_object($val)) {
-            throw new Exception\ServiceNotObject($key);
+            throw new Exception\ServiceNotObject($service);
         }
 
         if ($val instanceof Closure) {
             $val = $this->factory->newLazy($val);
         }
 
-        $this->defs[$key] = $val;
+        $this->services[$service] = $val;
 
         return $this;
     }
@@ -207,7 +207,7 @@ class Container implements ContainerInterface
      * 
      * Gets a service object by key, lazy-loading it as needed.
      * 
-     * @param string $key The service to get.
+     * @param string $service The service to get.
      * 
      * @return object
      * 
@@ -215,27 +215,27 @@ class Container implements ContainerInterface
      * does not exist.
      * 
      */
-    public function get($key)
+    public function get($service)
     {
         // does the definition exist?
-        if (! $this->has($key)) {
-            throw new Exception\ServiceNotFound($key);
+        if (! $this->has($service)) {
+            throw new Exception\ServiceNotFound($service);
         }
 
         // has it been instantiated?
-        if (! isset($this->services[$key])) {
-            // instantiate it from its definition.
-            $service = $this->defs[$key];
+        if (! isset($this->instances[$service])) {
+            // instantiate it from its definition
+            $instance = $this->services[$service];
             // lazy-load as needed
-            if ($service instanceof LazyInterface) {
-                $service = $service();
+            if ($instance instanceof LazyInterface) {
+                $instance = $instance->__invoke();
             }
             // retain
-            $this->services[$key] = $service;
+            $this->instances[$service] = $instance;
         }
 
         // done
-        return $this->services[$key];
+        return $this->instances[$service];
     }
 
     /**
@@ -245,9 +245,9 @@ class Container implements ContainerInterface
      * @return array
      * 
      */
-    public function getServices()
+    public function getInstances()
     {
-        return array_keys($this->services);
+        return array_keys($this->instances);
     }
 
     /**
@@ -257,9 +257,9 @@ class Container implements ContainerInterface
      * @return array
      * 
      */
-    public function getDefs()
+    public function getServices()
     {
-        return array_keys($this->defs);
+        return array_keys($this->services);
     }
 
     /**

@@ -81,7 +81,7 @@ interface ContainerInterface
      * @return array
      * 
      */
-    public function getServices();
+    public function getInstances();
 
     /**
      * 
@@ -90,7 +90,7 @@ interface ContainerInterface
      * @return array
      * 
      */
-    public function getDefs();
+    public function getServices();
 
     /**
      * 
