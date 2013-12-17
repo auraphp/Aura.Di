@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Di\Lazy;
+namespace Aura\Di;
 
 use Aura\Di\Container;
 
@@ -19,11 +19,11 @@ use Aura\Di\Container;
  * @package Aura.Di
  * 
  */
-class LazyGet implements LazyInterface
+class LazyInstance implements LazyInterface
 {
     /**
      * 
-     * The service container.
+     * The container.
      * 
      * @var Container
      * 
@@ -32,12 +32,16 @@ class LazyGet implements LazyInterface
 
     /**
      * 
-     * The service name to retrieve.
+     * The class to instantiate.
      * 
      * @var string
      * 
      */
-    protected $service;
+    protected $class;
+    
+    protected $params = array();
+    
+    protected $setters = array();
     
     /**
      * 
@@ -50,10 +54,12 @@ class LazyGet implements LazyInterface
      * @return null
      * 
      */
-    public function __construct(Container $container, $service)
+    public function __construct(Container $container, $class, array $params, array $setters)
     {
         $this->container = $container;
-        $this->service = $service;
+        $this->class = $class;
+        $this->params = $params;
+        $this->setters = $setters;
     }
 
     /**
@@ -65,6 +71,6 @@ class LazyGet implements LazyInterface
      */
     public function __invoke()
     {
-        return $this->container->get($this->service);
+        return $this->container->newInstance($this->class, $this->params, $this->setters);
     }
 }

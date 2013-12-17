@@ -1,10 +1,19 @@
 <?php
-namespace Aura\Di\Lazy;
+namespace Aura\Di;
 
 use Aura\Di\Container;
 
-class LazyFactory
+class Factory
 {
+    public function newInstanceFactory(
+        Container $container,
+        $class,
+        array $params = array(),
+        array $setter = array()
+    ) {
+        return new InstanceFactory($container, $class, $params, $setter);
+    }
+    
     public function newLazy($callable, array $params = array())
     {
         return new Lazy($callable, $params);

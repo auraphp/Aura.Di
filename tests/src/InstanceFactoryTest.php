@@ -1,9 +1,7 @@
 <?php
 namespace Aura\Di;
 
-use Aura\Di\Lazy\LazyFactory;
-
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
     
@@ -13,7 +11,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $this->config = new Config;
-        $this->container = new Container($this->config, new LazyFactory);
+        $this->container = new Container($this->config, new Factory);
     }
     
     protected function newInstanceFactory(

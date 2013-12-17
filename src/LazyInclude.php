@@ -8,7 +8,7 @@
  * @license http://opensource.org/licenses/bsd-license.php BSD
  * 
  */
-namespace Aura\Di\Lazy;
+namespace Aura\Di;
 
 /**
  * 
@@ -17,11 +17,11 @@ namespace Aura\Di\Lazy;
  * @package Aura.Di
  * 
  */
-class LazyRequire implements LazyInterface
+class LazyInclude implements LazyInterface
 {
     /**
      * 
-     * The file to require.
+     * The file to include.
      * 
      * @var string
      * 
@@ -32,7 +32,7 @@ class LazyRequire implements LazyInterface
      * 
      * Constructor.
      * 
-     * @param string $file The file to require.
+     * @param string $file The file to include.
      * 
      * @return null
      * 
@@ -44,13 +44,13 @@ class LazyRequire implements LazyInterface
 
     /**
      * 
-     * Invokes the closure to require the file.
+     * Invokes the closure to include the file.
      * 
-     * @return mixed The return from the required file, if any.
+     * @return mixed The return from the included file, if any.
      * 
      */
     public function __invoke()
     {
-        return require $this->file;
+        return include $this->file;
     }
 }

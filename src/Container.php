@@ -10,8 +10,6 @@
  */
 namespace Aura\Di;
 
-use Aura\Di\Lazy\LazyFactory;
-use Aura\Di\Lazy\LazyInterface;
 use Closure;
 use UnexpectedValueException;
 
@@ -91,17 +89,17 @@ class Container implements ContainerInterface
      * @param Config $config A config object for params, setters, reflects,
      * etc.
      * 
-     * @param LazyFactory $lazy_factory A factory to create Lazy objects.
+     * @param Factory $factory A factory to create support objects.
      * 
      */
     public function __construct(
         Config $config,
-        LazyFactory $lazy_factory
+        Factory $factory
     ) {
         $this->config = $config;
         $this->params = $this->config->getParams();
         $this->setter = $this->config->getSetter();
-        $this->lazy_factory = $lazy_factory;
+        $this->factory = $factory;
     }
 
     /**
@@ -197,7 +195,7 @@ class Container implements ContainerInterface
         }
 
         if ($val instanceof Closure) {
-            $val = $this->lazy_factory->newLazy($val);
+            $val = $this->factory->newLazy($val);
         }
 
         $this->defs[$key] = $val;
@@ -278,7 +276,7 @@ class Container implements ContainerInterface
     {
         $params = func_get_args();
         array_shift($params);
-        return $this->lazy_factory->newLazy($callable, $params);
+        return $this->factory->newLazy($callable, $params);
     }
 
     /**
@@ -292,7 +290,7 @@ class Container implements ContainerInterface
      */
     public function lazyGet($service)
     {
-        return $this->lazy_factory->newLazyGet($this, $service);
+        return $this->factory->newLazyGet($this, $service);
     }
 
     /**
@@ -313,7 +311,7 @@ class Container implements ContainerInterface
         array $params = array(),
         array $setter = array()
     ) {
-        return $this->lazy_factory->newLazyInstance(
+        return $this->factory->newLazyInstance(
             $this,
             $class,
             $params,
@@ -332,7 +330,7 @@ class Container implements ContainerInterface
      */
     public function lazyRequire($file)
     {
-        return $this->lazy_factory->newLazyRequire($file);
+        return $this->factory->newLazyRequire($file);
     }
 
     /**
@@ -346,7 +344,7 @@ class Container implements ContainerInterface
      */
     public function lazyInclude($file)
     {
-        return $this->lazy_factory->newLazyInclude($file);
+        return $this->factory->newLazyInclude($file);
     }
 
     /**
@@ -363,9 +361,9 @@ class Container implements ContainerInterface
      * @return Factory
      * 
      */
-    public function newInstanceFactory($class, array $params = array(), array $setters = array())
+    public function newFactory($class, array $params = array(), array $setters = array())
     {
-        return new InstanceFactory($this, $class, $params, $setters);
+        return $this->factory->newInstanceFactory($this, $class, $params, $setters);
     }
 
     /**

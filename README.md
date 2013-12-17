@@ -63,15 +63,15 @@ You can instantiate a `Container` as follows:
 <?php
 use Aura\Di\Container;
 use Aura\Di\Config;
-use Aura\Di\Lazy\LazyFactory;
+use Aura\Di\Factory;
 
-$di = new Container(new Config, new LazyFactory);
+$di = new Container(new Config, new Factory);
 ?>
 ```
 
 The `Container` is the DI container proper. The `Config` is for collection,
-retrieval, and merging of setters and constructor params, and the
-`LazyFactory` is for creating lazy-loading objects.
+retrieval, and merging of setters and constructor params, and the `Factory` is
+for creating lazy-loading and instance-factory objects.
 
 
 ### Setting Services
@@ -403,8 +403,8 @@ $di->params['Example\Package\AbstractModel'] = array(
 $di->params['Example\Package\ModelFactory'] = array(
     // a map of model names to model factories
     'map' => array(
-        'blog' => $di->newInstanceFactory('Example\Package\BlogModel'),
-        'wiki' => $di->newInstanceFactory('Example\Package\WikiModel'),
+        'blog' => $di->newFactory('Example\Package\BlogModel'),
+        'wiki' => $di->newFactory('Example\Package\WikiModel'),
     ],
 );
 
