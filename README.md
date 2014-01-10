@@ -376,7 +376,7 @@ class BlogController extends PageController
 {
     public function exec()
     {
-        $blog_model = $this->model_factory('blog');
+        $blog_model = $this->model_factory->newInstance('blog');
         // ... get data from the blog model and return it ...
     }
 }
