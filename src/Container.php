@@ -447,7 +447,7 @@ class Container implements ContainerInterface
      * Returns the params after merging with overides; also invokes Lazy param
      * values.
      * 
-     * @param array $params The constructor parameters.
+     * @param array &$params The constructor parameters.
      * 
      * @param array $merge_params An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and

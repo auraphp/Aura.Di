@@ -5,8 +5,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
     
-    protected $config;
-    
     protected function setUp()
     {
         parent::setUp();
@@ -387,5 +385,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Aura\Di\Exception\ReflectionFailure');
         $this->container->newInstance('NoSuchClass');
+    }
+    
+    public function testHonorsLazyParams()
+    {
+        $this->container->params['Aura\Di\MockParentClass']['foo'] = $this->container->lazyNew('Aura\Di\MockOtherClass');
+        $object = $this->container->newInstance('Aura\Di\MockParentClass');
+        $actual = $object->getFoo();
+        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual);
     }
 }
