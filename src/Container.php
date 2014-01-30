@@ -411,9 +411,14 @@ class Container implements ContainerInterface
         // base configs
         list($params, $setter) = $this->getUnified($class);
         
-        // merge param configs (which invokes lazy objects)
+        // merge param configs and load lazy objects
+        if ($merge_params) {
+            $this->mergeParams($params, $merge_params);
+        } else {
+            $this->loadLazyParams($params);
+        }
+        
         // and create the new instance
-        $params = $this->mergeParams($params, $merge_params);
         $rclass = $this->getReflection($class);
         $object = $rclass->newInstanceArgs($params);
 
@@ -451,7 +456,7 @@ class Container implements ContainerInterface
      * @return array
      * 
      */
-    protected function mergeParams($params, array $merge_params = array())
+    protected function mergeParams(&$params, array $merge_params = array())
     {
         $pos = 0;
         foreach ($params as $key => $val) {
@@ -465,7 +470,7 @@ class Container implements ContainerInterface
                 $val = $merge_params[$key];
             }
             
-            // lazy-load as needed
+            // load lazy objects as we go
             if ($val instanceof LazyInterface) {
                 $val = $val();
             }
@@ -476,9 +481,15 @@ class Container implements ContainerInterface
             // next position
             $pos += 1;
         }
-        
-        // done
-        return $params;
+    }
+    
+    protected function loadLazyParams(&$params)
+    {
+        foreach ($params as $key => $val) {
+            if ($val instanceof LazyInterface) {
+                $params[$key] = $val();
+            }
+        }
     }
     
     /**
