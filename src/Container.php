@@ -11,9 +11,9 @@
 namespace Aura\Di;
 
 use Closure;
-use UnexpectedValueException;
 use ReflectionClass;
 use ReflectionException;
+use UnexpectedValueException;
 
 /**
  * 
@@ -411,21 +411,19 @@ class Container implements ContainerInterface
         // base configs
         list($params, $setter) = $this->getUnified($class);
         
-        // merge param configs if needed
+        // merge param configs and load lazy objects
         if ($merge_params) {
-            $params = $this->mergeParams($params, $merge_params);
+            $this->mergeParams($params, $merge_params);
+        } else {
+            $this->loadLazyParams($params);
         }
         
-        // merge setter configs if needed
-        if ($merge_setter) {
-            $setter = array_merge($setter, $merge_setter);
-        }
-
-        // create the new instance
+        // and create the new instance
         $rclass = $this->getReflection($class);
         $object = $rclass->newInstanceArgs($params);
 
         // call setters after creation
+        $setter = array_merge($setter, $merge_setter);
         foreach ($setter as $method => $value) {
             // does the specified setter method exist?
             if (method_exists($object, $method)) {
@@ -449,7 +447,7 @@ class Container implements ContainerInterface
      * Returns the params after merging with overides; also invokes Lazy param
      * values.
      * 
-     * @param array $params The constructor parameters.
+     * @param array &$params The constructor parameters.
      * 
      * @param array $merge_params An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
@@ -458,7 +456,7 @@ class Container implements ContainerInterface
      * @return array
      * 
      */
-    protected function mergeParams($params, array $merge_params = array())
+    protected function mergeParams(&$params, array $merge_params = array())
     {
         $pos = 0;
         foreach ($params as $key => $val) {
@@ -472,7 +470,7 @@ class Container implements ContainerInterface
                 $val = $merge_params[$key];
             }
             
-            // lazy-load as needed
+            // load lazy objects as we go
             if ($val instanceof LazyInterface) {
                 $val = $val();
             }
@@ -483,9 +481,15 @@ class Container implements ContainerInterface
             // next position
             $pos += 1;
         }
-        
-        // done
-        return $params;
+    }
+    
+    protected function loadLazyParams(&$params)
+    {
+        foreach ($params as $key => $val) {
+            if ($val instanceof LazyInterface) {
+                $params[$key] = $val();
+            }
+        }
     }
     
     /**
