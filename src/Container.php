@@ -411,21 +411,14 @@ class Container implements ContainerInterface
         // base configs
         list($params, $setter) = $this->getUnified($class);
         
-        // merge param configs if needed
-        if ($merge_params) {
-            $params = $this->mergeParams($params, $merge_params);
-        }
-        
-        // merge setter configs if needed
-        if ($merge_setter) {
-            $setter = array_merge($setter, $merge_setter);
-        }
-
-        // create the new instance
+        // merge param configs (which invokes lazy objects)
+        // and create the new instance
+        $params = $this->mergeParams($params, $merge_params);
         $rclass = $this->getReflection($class);
         $object = $rclass->newInstanceArgs($params);
 
         // call setters after creation
+        $setter = array_merge($setter, $merge_setter);
         foreach ($setter as $method => $value) {
             // does the specified setter method exist?
             if (method_exists($object, $method)) {
