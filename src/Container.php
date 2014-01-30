@@ -13,6 +13,7 @@ namespace Aura\Di;
 use Closure;
 use UnexpectedValueException;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * 
@@ -116,7 +117,7 @@ class Container implements ContainerInterface
      * Magic get to provide access to the Config::$params and $setter
      * objects.
      * 
-     * @param string $key The property to retrieve ('params' or 'setter').
+     * @param string $key The property to retrieve ('params' or 'setter(s)').
      * 
      * @return mixed
      * 
@@ -127,10 +128,14 @@ class Container implements ContainerInterface
             throw new Exception\ContainerLocked;
         }
 
-        if ($key == 'params' || $key == 'setter') {
-            return $this->$key;
+        if ($key == 'params') {
+            return $this->params;
         }
-
+        
+        if ($key == 'setter' || $key == 'setters') {
+            return $this->setter;
+        }
+        
         throw new UnexpectedValueException($key);
     }
 
@@ -508,7 +513,7 @@ class Container implements ContainerInterface
      * for the class, and 1 is the setter methods and values for the class.
      * 
      */
-    protected function getUnified($class)
+    public function getUnified($class)
     {
         // have values already been unified for this class?
         if (isset($this->unified[$class])) {

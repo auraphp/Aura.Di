@@ -277,4 +277,111 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
         $this->assertSame('keepme', $actual->getFoo());
     }
+    
+    public function testReadsConstructorDefaults()
+    {
+        $expect = array('foo' => 'bar');
+        list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockParentClass');
+        $this->assertSame($expect, $actual_params);
+    }
+    
+    /**
+     * coverage for the "merged already" portion of the fetch() method
+     */
+    public function testTwiceForMerge()
+    {
+        $expect = $this->container->getUnified('Aura\Di\MockParentClass');
+        $actual = $this->container->getUnified('Aura\Di\MockParentClass');
+        $this->assertSame($expect, $actual);
+    }
+    
+    public function testHonorsParentParams()
+    {
+        $expect = array(
+            'foo' => 'bar',
+            'zim' => null,
+        );
+        
+        list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
+        $this->assertSame($expect, $actual_params);
+    }
+    
+    public function testHonorsExplicitParams()
+    {
+        $this->container->params['Aura\Di\MockParentClass'] = array('foo' => 'zim');
+        
+        $expect = array('foo' => 'zim');
+        list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockParentClass');
+        $this->assertSame($expect, $actual_params);
+    }
+    
+    public function testHonorsExplicitParentParams()
+    {
+        $this->container->params['Aura\Di\MockParentClass'] = array('foo' => 'dib');
+        
+        $expect = array(
+            'foo' => 'dib',
+            'zim' => null,
+        );
+        
+        list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
+        $this->assertSame($expect, $actual_params);
+        
+        // for test coverage of the mock class
+        $child = new \Aura\Di\MockChildClass('bar', new \Aura\Di\MockOtherClass);
+    }
+    
+    public function testHonorsParentSetter()
+    {
+        $this->container->setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';
+        
+        list($actual_config, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
+        $expect = array('setFake' => 'fake1');
+        $this->assertSame($expect, $actual_setter);
+        
+    }
+    
+    public function testHonorsOverrideSetter()
+    {
+        $this->container->setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';
+        $this->container->setter['Aura\Di\MockChildClass']['setFake'] = 'fake2';
+        
+        list($actual_config, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
+        $expect = array('setFake' => 'fake2');
+        $this->assertSame($expect, $actual_setter);
+    }
+    
+    public function testHonorsTraitSetter()
+    {
+        if (phpversion() < '5.4') {
+            $this->markTestSkipped("No traits before PHP 5.4");
+        }
+        
+        $this->container->setter['Aura\Di\MockTrait']['setFake'] = 'fake1';
+        
+        list($actual_config, $actual_setter) = $this->container->getUnified('Aura\Di\MockClassWithTrait');
+        $expect = array('setFake' => 'fake1');
+        $this->assertSame($expect, $actual_setter);
+        
+    }
+
+    public function testHonorsOverrideTraitSetter()
+    {
+        if (phpversion() < '5.4') {
+            $this->markTestSkipped("No traits before PHP 5.4");
+        }
+        
+        $this->container->setter['Aura\Di\MockTrait']['setFake'] = 'fake1';
+        $this->container->setter['Aura\Di\MockClassWithTrait']['setFake'] = 'fake2';
+        
+        list($actual_config, $actual_setter) = $this->container->getUnified('Aura\Di\MockClassWithTrait');
+        $expect = array('setFake' => 'fake2');
+        $this->assertSame($expect, $actual_setter);
+    }
+    
+    public function testReflectionFailure()
+    {
+        $this->setExpectedException('Aura\Di\Exception\ReflectionFailure');
+        $this->container->newInstance('NoSuchClass');
+    }
 }
