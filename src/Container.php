@@ -516,11 +516,11 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * Fetches the unified constructor params and setter values for a class.
+     * Returns the unified constructor params and setter values for a class.
      * 
-     * @param string $class The class name to fetch values for.
+     * @param string $class The class name to return values for.
      * 
-     * @return array An array with two elements; 0 is the constructor values 
+     * @return array An array with two elements; 0 is the constructor params 
      * for the class, and 1 is the setter methods and values for the class.
      * 
      */
