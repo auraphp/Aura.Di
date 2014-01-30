@@ -28,6 +28,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $actual = $this->container->get('foo');
         $this->assertSame($expect, $actual);
+        
+        // get it again for coverage
+        $again = $this->container->get('foo');
+        $this->assertSame($actual, $again);
     }
     
     public function testInitInvalidService()

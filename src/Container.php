@@ -237,18 +237,20 @@ class Container implements ContainerInterface
         }
 
         // has it been instantiated?
-        if (! isset($this->instances[$service])) {
-            // instantiate it from its definition
-            $instance = $this->services[$service];
-            // lazy-load as needed
-            if ($instance instanceof LazyInterface) {
-                $instance = $instance();
-            }
-            // retain
-            $this->instances[$service] = $instance;
+        if (isset($this->instances[$service])) {
+            return $this->instances[$service];
         }
-
-        // done
+        
+        // instantiate it from its definition
+        $instance = $this->services[$service];
+        
+        // lazy-load as needed
+        if ($instance instanceof LazyInterface) {
+            $instance = $instance();
+        }
+        
+        // retain and return
+        $this->instances[$service] = $instance;
         return $this->instances[$service];
     }
 
@@ -409,9 +411,15 @@ class Container implements ContainerInterface
         // base configs
         list($params, $setter) = $this->getUnified($class);
         
-        // merge configs
-        $params = $this->mergeParams($params, $merge_params);
-        $setter = array_merge($setter, $merge_setter);
+        // merge param configs if needed
+        if ($merge_params) {
+            $params = $this->mergeParams($params, $merge_params);
+        }
+        
+        // merge setter configs if needed
+        if ($merge_setter) {
+            $setter = array_merge($setter, $merge_setter);
+        }
 
         // create the new instance
         $rclass = $this->getReflection($class);
@@ -493,13 +501,16 @@ class Container implements ContainerInterface
      */
     protected function getReflection($class)
     {
-        if (! isset($this->reflection[$class])) {
-            try {
-                $this->reflection[$class] = new ReflectionClass($class);
-            } catch (ReflectionException $e) {
-                throw new Exception\ReflectionFailure($class, 0, $e);
-            }
+        if (isset($this->reflection[$class])) {
+            return $this->reflection[$class];
         }
+        
+        try {
+            $this->reflection[$class] = new ReflectionClass($class);
+        } catch (ReflectionException $e) {
+            throw new Exception\ReflectionFailure($class, 0, $e);
+        }
+        
         return $this->reflection[$class];
     }
 
@@ -521,67 +532,81 @@ class Container implements ContainerInterface
         }
 
         // fetch the values for parents so we can inherit them
-        $pclass = get_parent_class($class);
-        if ($pclass) {
-            // parent class values
-            list($parent_params, $parent_setter) = $this->getUnified($pclass);
-        } else {
-            // no more parents
-            $parent_params = array();
-            $parent_setter = array();
+        $parent_params = array();
+        $parent_setter = array();
+        $parent = get_parent_class($class);
+        if ($parent) {
+            list($parent_params, $parent_setter) = $this->getUnified($parent);
         }
 
         // stores the unified config and setter values
-        $unified_params = array();
-        $unified_setter = array();
-
-        // reflect on the class
-        $rclass = $this->getReflection($class);
-
-        // does it have a constructor?
-        $rctor = $rclass->getConstructor();
-        if ($rctor) {
-            // reflect on what params to pass, in which order
-            $params = $rctor->getParameters();
-            foreach ($params as $param) {
-                $name = $param->name;
-                $explicit = isset($this->params[$class][$name]);
-                if ($explicit) {
-                    // use the explicit value for this class
-                    $unified_params[$name] = $this->params[$class][$name];
-                } elseif (isset($parent_params[$name])) {
-                    // use the implicit value for the parent class
-                    $unified_params[$name] = $parent_params[$name];
-                } elseif ($param->isDefaultValueAvailable()) {
-                    // use the external value from the constructor
-                    $unified_params[$name] = $param->getDefaultValue();
-                } else {
-                    // no value, use a null placeholder
-                    $unified_params[$name] = null;
-                }
-            }
-        }
-
-        // merge the setters
-        if (isset($this->setter[$class])) {
-            $unified_setter = array_merge($parent_setter, $this->setter[$class]);
-        } else {
-            $unified_setter = $parent_setter;
-        }
-
-        // look for setters inside traits
-        if (function_exists('class_uses')) {
-            $uses = class_uses($class);
-            foreach ($uses as $use) {
-                if (isset($this->setter[$use])) {
-                    $unified_setter = array_merge($this->setter[$use], $unified_setter);
-                }
-            }
-        }
+        $unified_params = $this->getUnifiedParams($class, $parent_params);
+        $unified_setter = $this->getUnifiedSetter($class, $parent_setter);
 
         // done, return the unified values
         $this->unified[$class][0] = $unified_params;
         $this->unified[$class][1] = $unified_setter;
         return $this->unified[$class];
+    }
+    
+    protected function getUnifiedParams($class, $parent_params)
+    {
+        $rclass = $this->getReflection($class);
+        $rctor = $rclass->getConstructor();
+        if (! $rctor) {
+            return array();
+        }
+        
+        // reflect on what params to pass, in which order
+        $unified_params = array();
+        $rparams = $rctor->getParameters();
+        foreach ($rparams as $rparam) {
+            $name = $rparam->name;
+            $explicit = isset($this->params[$class][$name]);
+            if ($explicit) {
+                // use the explicit value for this class
+                $unified_params[$name] = $this->params[$class][$name];
+            } elseif (isset($parent_params[$name])) {
+                // use the implicit value for the parent class
+                $unified_params[$name] = $parent_params[$name];
+            } elseif ($rparam->isDefaultValueAvailable()) {
+                // use the external value from the constructor
+                $unified_params[$name] = $rparam->getDefaultValue();
+            } else {
+                // no value, use a null placeholder
+                $unified_params[$name] = null;
+            }
+        }
+        
+        // done
+        return $unified_params;
+    }
+    
+    protected function getUnifiedSetter($class, $parent_setter)
+    {
+        // look for non-trait setters
+        $unified_setter = $parent_setter;
+        if (isset($this->setter[$class])) {
+            $unified_setter = array_merge(
+                $unified_setter,
+                $this->setter[$class]
+            );
+        }
+        
+        // look for setters inside traits
+        if (function_exists('class_uses')) {
+            $uses = class_uses($class);
+            foreach ($uses as $use) {
+                if (isset($this->setter[$use])) {
+                    $unified_setter = array_merge(
+                        $this->setter[$use],
+                        $unified_setter
+                    );
+                }
+            }
+        }
+
+        // done
+        return $unified_setter;
     }
 }
