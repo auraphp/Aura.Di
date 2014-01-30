@@ -532,63 +532,64 @@ class Container implements ContainerInterface
         }
 
         // fetch the values for parents so we can inherit them
-        $parent_params = array();
-        $parent_setter = array();
         $parent = get_parent_class($class);
         if ($parent) {
-            list($parent_params, $parent_setter) = $this->getUnified($parent);
+            // convert from string to array of params and setter values
+            $parent = $this->getUnified($parent);
+        } else {
+            // convert to a pair of empty arrays for params and setter values
+            $parent = array(array(), array());
         }
 
-        // stores the unified config and setter values
-        $unified_params = $this->getUnifiedParams($class, $parent_params);
-        $unified_setter = $this->getUnifiedSetter($class, $parent_setter);
+        // stores the unified params and setter values
+        $this->unified[$class][0] = $this->getUnifiedParams($class, $parent[0]);
+        $this->unified[$class][1] = $this->getUnifiedSetter($class, $parent[1]);
 
         // done, return the unified values
-        $this->unified[$class][0] = $unified_params;
-        $this->unified[$class][1] = $unified_setter;
         return $this->unified[$class];
     }
     
-    protected function getUnifiedParams($class, $parent_params)
+    protected function getUnifiedParams($class, array $parent)
     {
         $rclass = $this->getReflection($class);
         $rctor = $rclass->getConstructor();
         if (! $rctor) {
+            // no constructor, so no need to pass params
             return array();
         }
         
         // reflect on what params to pass, in which order
-        $unified_params = array();
+        $unified = array();
         $rparams = $rctor->getParameters();
         foreach ($rparams as $rparam) {
             $name = $rparam->name;
             $explicit = isset($this->params[$class][$name]);
             if ($explicit) {
                 // use the explicit value for this class
-                $unified_params[$name] = $this->params[$class][$name];
-            } elseif (isset($parent_params[$name])) {
-                // use the implicit value for the parent class
-                $unified_params[$name] = $parent_params[$name];
+                $unified[$name] = $this->params[$class][$name];
+            } elseif (isset($parent[$name])) {
+                // use the implicit value from the parent class
+                $unified[$name] = $parent[$name];
             } elseif ($rparam->isDefaultValueAvailable()) {
-                // use the external value from the constructor
-                $unified_params[$name] = $rparam->getDefaultValue();
+                // use the reflected value from the constructor
+                $unified[$name] = $rparam->getDefaultValue();
             } else {
                 // no value, use a null placeholder
-                $unified_params[$name] = null;
+                $unified[$name] = null;
             }
         }
         
         // done
-        return $unified_params;
+        return $unified;
     }
     
-    protected function getUnifiedSetter($class, $parent_setter)
+    protected function getUnifiedSetter($class, array $parent)
     {
         // look for non-trait setters
-        $unified_setter = $parent_setter;
+        $unified = $parent;
         if (isset($this->setter[$class])) {
-            $unified_setter = array_merge(
-                $unified_setter,
+            $unified = array_merge(
+                $unified,
                 $this->setter[$class]
             );
         }
@@ -598,15 +599,15 @@ class Container implements ContainerInterface
             $uses = class_uses($class);
             foreach ($uses as $use) {
                 if (isset($this->setter[$use])) {
-                    $unified_setter = array_merge(
+                    $unified = array_merge(
                         $this->setter[$use],
-                        $unified_setter
+                        $unified
                     );
                 }
             }
         }
 
         // done
-        return $unified_setter;
+        return $unified;
     }
 }
