@@ -531,25 +531,15 @@ class Container implements ContainerInterface
             return $this->unified[$class];
         }
 
-        // fetch the values for parents so we can inherit them
-        $parent = get_parent_class($class);
-        if ($parent) {
-            // convert from string to array of params and setter values
-            $parent = $this->getUnified($parent);
-        } else {
-            // convert to a pair of empty arrays for params and setter values
-            $parent = array(array(), array());
-        }
-
-        // stores the unified params and setter values
-        $this->unified[$class][0] = $this->getUnifiedParams($class, $parent[0]);
-        $this->unified[$class][1] = $this->getUnifiedSetter($class, $parent[1]);
+        // store the unified params and setter values
+        $this->unified[$class][0] = $this->getUnifiedParams($class);
+        $this->unified[$class][1] = $this->getUnifiedSetter($class);
 
         // done, return the unified values
         return $this->unified[$class];
     }
     
-    protected function getUnifiedParams($class, array $parent)
+    protected function getUnifiedParams($class)
     {
         $rclass = $this->getReflection($class);
         $rctor = $rclass->getConstructor();
@@ -567,9 +557,6 @@ class Container implements ContainerInterface
             if ($explicit) {
                 // use the explicit value for this class
                 $unified[$name] = $this->params[$class][$name];
-            } elseif (isset($parent[$name])) {
-                // use the implicit value from the parent class
-                $unified[$name] = $parent[$name];
             } elseif ($rparam->isDefaultValueAvailable()) {
                 // use the reflected value from the constructor
                 $unified[$name] = $rparam->getDefaultValue();
@@ -583,24 +570,21 @@ class Container implements ContainerInterface
         return $unified;
     }
     
-    protected function getUnifiedSetter($class, array $parent)
+    protected function getUnifiedSetter($class)
     {
         // look for non-trait setters
-        $unified = $parent;
+        $unified = array();
         if (isset($this->setter[$class])) {
-            $unified = array_merge(
-                $unified,
-                $this->setter[$class]
-            );
+            $unified = $this->setter[$class];
         }
         
         // look for setters inside traits
         if (function_exists('class_uses')) {
-            $uses = class_uses($class);
-            foreach ($uses as $use) {
-                if (isset($this->setter[$use])) {
+            $traits = class_uses($class);
+            foreach ($traits as $trait) {
+                if (isset($this->setter[$trait])) {
                     $unified = array_merge(
-                        $this->setter[$use],
+                        $this->setter[$trait],
                         $unified
                     );
                 }

@@ -4,7 +4,9 @@ use Aura\Di\Factory;
 
 require '../autoload.php';
 
-class Foo {}
+class Foo {
+    public function __construct($param = null) {}
+}
 
 class Bar extends Foo {}
 
