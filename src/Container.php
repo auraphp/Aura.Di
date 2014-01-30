@@ -11,9 +11,9 @@
 namespace Aura\Di;
 
 use Closure;
-use UnexpectedValueException;
 use ReflectionClass;
 use ReflectionException;
+use UnexpectedValueException;
 
 /**
  * 
