@@ -62,16 +62,14 @@ You can instantiate a `Container` as follows:
 ```php
 <?php
 use Aura\Di\Container;
-use Aura\Di\Config;
 use Aura\Di\Factory;
 
-$di = new Container(new Config, new Factory);
+$di = new Container(new Factory);
 ?>
 ```
 
-The `Container` is the DI container proper. The `Config` is for collection,
-retrieval, and merging of setters and constructor params, and the `Factory` is
-for creating lazy-loading and instance-factory objects.
+The `Container` is the DI container proper. The `Factory` is for creating
+lazy-loading and instance-factory objects.
 
 
 ### Setting Services
@@ -523,9 +521,9 @@ class Bar extends Foo
 ?>
 ```
 
-... you do not need to add a new setter value for it; the `Container` reads all
-parent setters and applies them. (If you do add a setter value for that class,
-it will override the parent setter.)
+... you do not need to add a new setter value for it; the `Container` reads
+all parent setters and applies them. (If you do add a setter value for that
+class, it will override the parent setter.)
 
 
 ## Conclusion
