@@ -10,8 +10,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->config  = new Config;
-        $this->container = new Container($this->config, new Factory);
+        $this->container = new Container(new Factory);
     }
     
     protected function tearDown()
@@ -83,12 +82,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $foo = $lazy();
         
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $foo);
-    }
-    
-    public function testMagicGet()
-    {
-        $this->assertSame($this->container->params, $this->config->getParams());
-        $this->assertSame($this->container->setter, $this->config->getSetter());
     }
     
     public function testMagicGetNoSuchProperty()
@@ -225,8 +218,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstanceWithSetter()
     {
         $class = 'Aura\Di\MockChildClass';
-        $setter = $this->config->getSetter();
-        $setter['Aura\Di\MockChildClass']['setFake'] = 'fake_value';
+        $this->container->setter['Aura\Di\MockChildClass']['setFake'] = 'fake_value';
         
         $actual = $this->container->newInstance('Aura\Di\MockChildClass', array(
             'foo' => 'gir',
@@ -243,8 +235,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         });
         
         $class = 'Aura\Di\MockChildClass';
-        $setter = $this->config->getSetter();
-        $setter['Aura\Di\MockChildClass']['setFake'] = $lazy;
+        $this->container->setter['Aura\Di\MockChildClass']['setFake'] = $lazy;
         
         $actual = $this->container->newInstance('Aura\Di\MockChildClass', array(
             'foo' => 'gir',
@@ -257,8 +248,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstanceWithNonExistentSetter()
     {
         $class = 'Aura\Di\MockOtherClass';
-        $setter = $this->config->getSetter();
-        $setter['Aura\Di\MockOtherClass']['setFakeNotExists'] = 'fake_value';
+        $this->container->setter['Aura\Di\MockOtherClass']['setFakeNotExists'] = 'fake_value';
         $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
         $actual = $this->container->newInstance('Aura\Di\MockOtherClass');
     }

@@ -12,10 +12,15 @@ namespace Aura\Di;
 
 use Closure;
 use UnexpectedValueException;
+use ReflectionClass;
 
 /**
  * 
  * Dependency injection container.
+ * 
+ * FUTURE NOTE: The problem with caching unified config values is that they
+ * are likely to depend on $_SERVER, etc. In those cases, the values will be
+ * as they were *at the time of caching* and not at the time of retrieval.
  * 
  * @package Aura.Di
  * 
@@ -24,31 +29,40 @@ class Container implements ContainerInterface
 {
     /**
      * 
-     * A Config object to get parameters for object instantiation and
-     * ReflectionClass instances.
+     * Constructor params in the form `$params[$class][$name] = $value`.
      * 
-     * @var Config
+     * @var array
      * 
      */
-    protected $config;
+    protected $params = array();
 
     /**
      * 
-     * A convenient reference to the Config::$params object.
+     * Setter definitions in the form of `$setter[$class][$method] = $value`.
      * 
-     * @var \ArrayObject
+     * @var array
      * 
      */
-    protected $params;
+    protected $setter = array();
 
     /**
      * 
-     * A convenient reference to the Config::$setter object.
+     * An array of retained ReflectionClass instances.
      * 
-     * @var \ArrayObject
+     * @var array
      * 
      */
-    protected $setter;
+    protected $reflection = array();
+
+    /**
+     * 
+     * Constructor params and setter definitions, unified across class
+     * defaults, inheritance hierarchies, and configuration.
+     * 
+     * @var array
+     * 
+     */
+    protected $unified = array();
 
     /**
      * 
@@ -86,17 +100,14 @@ class Container implements ContainerInterface
      * 
      * Constructor.
      * 
-     * @param Config $config A config object for params, setters, reflects,
+     * @param Config $config A config object for params, setters, reflections,
      * etc.
      * 
      * @param Factory $factory A factory to create support objects.
      * 
      */
-    public function __construct(Config $config, Factory $factory)
+    public function __construct(Factory $factory)
     {
-        $this->config  = $config;
-        $this->params  = $this->config->getParams();
-        $this->setter  = $this->config->getSetter();
         $this->factory = $factory;
     }
 
@@ -110,7 +121,7 @@ class Container implements ContainerInterface
      * @return mixed
      * 
      */
-    public function __get($key)
+    public function &__get($key)
     {
         if ($this->isLocked()) {
             throw new Exception\ContainerLocked;
@@ -226,7 +237,7 @@ class Container implements ContainerInterface
             $instance = $this->services[$service];
             // lazy-load as needed
             if ($instance instanceof LazyInterface) {
-                $instance = $instance->__invoke();
+                $instance = $instance();
             }
             // retain
             $this->instances[$service] = $instance;
@@ -391,14 +402,14 @@ class Container implements ContainerInterface
         array $merge_setter = array()
     ) {
         // base configs
-        list($params, $setter) = $this->config->fetch($class);
+        list($params, $setter) = $this->getUnified($class);
         
         // merge configs
         $params = $this->mergeParams($params, $merge_params);
         $setter = array_merge($setter, $merge_setter);
 
         // create the new instance
-        $rclass = $this->config->getReflect($class);
+        $rclass = $this->getReflection($class);
         $object = $rclass->newInstanceArgs($params);
 
         // call setters after creation
@@ -407,7 +418,7 @@ class Container implements ContainerInterface
             if (method_exists($object, $method)) {
                 // lazy-load setter values as needed
                 if ($value instanceof LazyInterface) {
-                    $value = $value->__invoke();
+                    $value = $value();
                 }
                 // call the setter
                 $object->$method($value);
@@ -450,7 +461,7 @@ class Container implements ContainerInterface
             
             // lazy-load as needed
             if ($val instanceof LazyInterface) {
-                $val = $val->__invoke();
+                $val = $val();
             }
             
             // retain the merged value
@@ -462,5 +473,110 @@ class Container implements ContainerInterface
         
         // done
         return $params;
+    }
+    
+    /**
+     * 
+     * Returns a ReflectionClass for a named class.
+     *
+     * @param string $class The class to reflect on.
+     * 
+     * @return ReflectionClass
+     * 
+     * @throws Exception\ReflectionFailure Could not reflect on the class.
+     * 
+     */
+    protected function getReflection($class)
+    {
+        if (! isset($this->reflection[$class])) {
+            try {
+                $this->reflection[$class] = new ReflectionClass($class);
+            } catch (ReflectionException $e) {
+                throw new Exception\ReflectionFailure($class, 0, $e);
+            }
+        }
+        return $this->reflection[$class];
+    }
+
+    /**
+     * 
+     * Fetches the unified constructor params and setter values for a class.
+     * 
+     * @param string $class The class name to fetch values for.
+     * 
+     * @return array An array with two elements; 0 is the constructor values 
+     * for the class, and 1 is the setter methods and values for the class.
+     * 
+     */
+    protected function getUnified($class)
+    {
+        // have values already been unified for this class?
+        if (isset($this->unified[$class])) {
+            return $this->unified[$class];
+        }
+
+        // fetch the values for parents so we can inherit them
+        $pclass = get_parent_class($class);
+        if ($pclass) {
+            // parent class values
+            list($parent_params, $parent_setter) = $this->getUnified($pclass);
+        } else {
+            // no more parents
+            $parent_params = array();
+            $parent_setter = array();
+        }
+
+        // stores the unified config and setter values
+        $unified_params = array();
+        $unified_setter = array();
+
+        // reflect on the class
+        $rclass = $this->getReflection($class);
+
+        // does it have a constructor?
+        $rctor = $rclass->getConstructor();
+        if ($rctor) {
+            // reflect on what params to pass, in which order
+            $params = $rctor->getParameters();
+            foreach ($params as $param) {
+                $name = $param->name;
+                $explicit = isset($this->params[$class][$name]);
+                if ($explicit) {
+                    // use the explicit value for this class
+                    $unified_params[$name] = $this->params[$class][$name];
+                } elseif (isset($parent_params[$name])) {
+                    // use the implicit value for the parent class
+                    $unified_params[$name] = $parent_params[$name];
+                } elseif ($param->isDefaultValueAvailable()) {
+                    // use the external value from the constructor
+                    $unified_params[$name] = $param->getDefaultValue();
+                } else {
+                    // no value, use a null placeholder
+                    $unified_params[$name] = null;
+                }
+            }
+        }
+
+        // merge the setters
+        if (isset($this->setter[$class])) {
+            $unified_setter = array_merge($parent_setter, $this->setter[$class]);
+        } else {
+            $unified_setter = $parent_setter;
+        }
+
+        // look for setters inside traits
+        if (function_exists('class_uses')) {
+            $uses = class_uses($class);
+            foreach ($uses as $use) {
+                if (isset($this->setter[$use])) {
+                    $unified_setter = array_merge($this->setter[$use], $unified_setter);
+                }
+            }
+        }
+
+        // done, return the unified values
+        $this->unified[$class][0] = $unified_params;
+        $this->unified[$class][1] = $unified_setter;
+        return $this->unified[$class];
     }
 }
