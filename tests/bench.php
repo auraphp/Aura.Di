@@ -13,7 +13,7 @@ class Zim extends Dib {}
 
 class Gir extends Zim {}
 
-$di = require '../scripts/instance.php';
+$di = require dirname(__DIR__) . '/scripts/instance.php';
 $k = 10000;
 
 $before = microtime(true);
