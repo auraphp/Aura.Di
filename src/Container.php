@@ -19,10 +19,6 @@ use UnexpectedValueException;
  * 
  * Dependency injection container.
  * 
- * FUTURE NOTE: The problem with caching unified config values is that they
- * are likely to depend on $_SERVER, etc. In those cases, the values will be
- * as they were *at the time of caching* and not at the time of retrieval.
- * 
  * @package Aura.Di
  * 
  */
@@ -168,7 +164,7 @@ class Container implements ContainerInterface
      * 
      * Does a particular service definition exist?
      * 
-     * @param string $key The service key to look up.
+     * @param string $service The service key to look up.
      * 
      * @return bool
      * 
@@ -447,7 +443,7 @@ class Container implements ContainerInterface
      * Returns the params after merging with overides; also invokes Lazy param
      * values.
      * 
-     * @param array &$params The constructor parameters.
+     * @param array $params The constructor parameters.
      * 
      * @param array $merge_params An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
@@ -483,6 +479,15 @@ class Container implements ContainerInterface
         }
     }
     
+    /**
+     * 
+     * Loads the lazy object in an array of params.
+     * 
+     * @param array $params An array of params.
+     * 
+     * @return null
+     * 
+     */
     protected function loadLazyParams(&$params)
     {
         foreach ($params as $key => $val) {
@@ -553,6 +558,17 @@ class Container implements ContainerInterface
         return $this->unified[$class];
     }
     
+    /**
+     * 
+     * Returns the unified constructor params for a class.
+     * 
+     * @param string $class The class name to return values for.
+     * 
+     * @param string $parent The parent unified params.
+     * 
+     * @return array The unified params.
+     * 
+     */
     protected function getUnifiedParams($class, array $parent)
     {
         $rclass = $this->getReflection($class);
@@ -587,6 +603,17 @@ class Container implements ContainerInterface
         return $unified;
     }
     
+    /**
+     * 
+     * Returns the unified setters for a class.
+     * 
+     * @param string $class The class name to return values for.
+     * 
+     * @param string $parent The parent unified setters.
+     * 
+     * @return array The unified setters.
+     * 
+     */
     protected function getUnifiedSetter($class, array $parent)
     {
         // look for non-trait setters

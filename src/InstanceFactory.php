@@ -59,7 +59,7 @@ class InstanceFactory
      * 
      * Constructor.
      * 
-     * @param ContainerInterface $container
+     * @param ContainerInterface $container The service container.
      * 
      * @param string $class The class to create.
      * 

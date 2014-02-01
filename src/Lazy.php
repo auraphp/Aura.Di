@@ -21,7 +21,7 @@ class Lazy implements LazyInterface
 {
     /**
      * 
-     * The callable.
+     * The callable to invoke.
      * 
      * @var callable
      * 
@@ -41,7 +41,9 @@ class Lazy implements LazyInterface
      * 
      * Constructor.
      * 
-     * @return null
+     * @param callable $callable The callable to invoke.
+     * 
+     * @param array $params Arguments for the callable.
      * 
      */
     public function __construct($callable, array $params = array())

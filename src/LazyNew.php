@@ -39,8 +39,22 @@ class LazyNew implements LazyInterface
      */
     protected $class;
     
+    /**
+     * 
+     * Params for the instantiation.
+     * 
+     * @var array
+     * 
+     */
     protected $params = array();
     
+    /**
+     * 
+     * Setters for the instantiation.
+     * 
+     * @var array
+     * 
+     */
     protected $setters = array();
     
     /**
@@ -49,9 +63,11 @@ class LazyNew implements LazyInterface
      * 
      * @param Container $container The service container.
      * 
-     * @param string $service The service to retrieve.
+     * @param string $class The class to instantiate.
      * 
-     * @return null
+     * @param array $params Params for the instantiation.
+     * 
+     * @param array $setter Setters for the instantiation.
      * 
      */
     public function __construct(Container $container, $class, array $params, array $setters)
@@ -71,6 +87,10 @@ class LazyNew implements LazyInterface
      */
     public function __invoke()
     {
-        return $this->container->newInstance($this->class, $this->params, $this->setters);
+        return $this->container->newInstance(
+            $this->class,
+            $this->params,
+            $this->setters
+        );
     }
 }
