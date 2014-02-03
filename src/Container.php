@@ -412,9 +412,9 @@ class Container implements ContainerInterface
         // merge param configs and load lazy objects
         if ($merge_params) {
             $this->mergeParams($params, $merge_params);
-        } else {
-            $this->loadLazyParams($params);
         }
+
+        $this->loadLazyParams($params);
         
         // and create the new instance
         $rclass = $this->getReflection($class);
@@ -467,12 +467,7 @@ class Container implements ContainerInterface
                 // named override
                 $val = $merge_params[$key];
             }
-            
-            // load lazy objects as we go
-            if ($val instanceof LazyInterface) {
-                $val = $val();
-            }
-            
+
             // retain the merged value
             $params[$key] = $val;
             
