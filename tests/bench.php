@@ -19,6 +19,7 @@ class Zim extends Dib {}
 class Gir extends Zim {}
 
 $di = new Container(new Factory);
+$di->params['Foo']['param'] = 'test';
 $k = 10000;
 
 $before = microtime(true);
