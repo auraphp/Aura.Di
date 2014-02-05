@@ -286,7 +286,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual_params);
     }
-    
+
     /**
      * coverage for the "merged already" portion of the fetch() method
      */
@@ -296,18 +296,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $actual = $this->container->getUnified('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual);
     }
-    
-    public function testHonorsParentParams()
-    {
-        $expect = array(
-            'foo' => 'bar',
-            'zim' => null,
-        );
-        
-        list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
-        $this->assertSame($expect, $actual_params);
-    }
-    
+
     public function testHonorsExplicitParams()
     {
         $this->container->params['Aura\Di\MockParentClass'] = array('foo' => 'zim');
@@ -316,23 +305,34 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockParentClass');
         $this->assertSame($expect, $actual_params);
     }
-    
+
     public function testHonorsExplicitParentParams()
     {
         $this->container->params['Aura\Di\MockParentClass'] = array('foo' => 'dib');
         
         $expect = array(
-            'foo' => 'dib',
-            'zim' => null,
+            'foo' => 'dib'
         );
         
         list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
+        array_splice($actual_params, 1);
         $this->assertSame($expect, $actual_params);
         
         // for test coverage of the mock class
         $child = new \Aura\Di\MockChildClass('bar', new \Aura\Di\MockOtherClass);
     }
-    
+
+    public function testHonorsExplicitParentParamsOnly()
+    {
+        $expect = array(
+            'foo' => null
+        );
+
+        list($actual_params, $actual_setter) = $this->container->getUnified('Aura\Di\MockChildClass');
+        array_splice($actual_params, 1);
+        $this->assertSame($expect, $actual_params);
+    }
+
     public function testHonorsParentSetter()
     {
         $this->container->setter['Aura\Di\MockParentClass']['setFake'] = 'fake1';

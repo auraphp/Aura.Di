@@ -10,8 +10,6 @@
  */
 namespace Aura\Di;
 
-use Aura\Di\Container;
-
 /**
  * 
  * A factory to create support objects for the Container.
@@ -37,7 +35,7 @@ class Factory
      * 
      */
     public function newInstanceFactory(
-        Container $container,
+        ContainerInterface $container,
         $class,
         array $params = array(),
         array $setter = array()
@@ -65,14 +63,14 @@ class Factory
      * 
      * Returns a new LazyGet.
      * 
-     * @param Container $container The service container.
+     * @param ContainerInterface $container The service container.
      * 
      * @param string $service The service to retrieve.
      * 
      * @return LazyGet
      * 
      */
-    public function newLazyGet(Container $container, $service)
+    public function newLazyGet(ContainerInterface $container, $service)
     {
         return new LazyGet($container, $service);
     }
@@ -95,7 +93,7 @@ class Factory
      * 
      * Returns a new LazyNew.
      * 
-     * @param Container $container The service container.
+     * @param ContainerInterface $container The service container.
      * 
      * @param string $class The class to instantiate.
      * 
@@ -107,7 +105,7 @@ class Factory
      * 
      */
     public function newLazyNew(
-        Container $container,
+        ContainerInterface $container,
         $class,
         array $params,
         array $setter

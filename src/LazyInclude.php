@@ -33,9 +33,7 @@ class LazyInclude implements LazyInterface
      * Constructor.
      * 
      * @param string $file The file to include.
-     * 
-     * @return null
-     * 
+     *
      */
     public function __construct($file)
     {

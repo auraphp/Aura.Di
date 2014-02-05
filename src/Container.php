@@ -96,10 +96,7 @@ class Container implements ContainerInterface
     /**
      * 
      * Constructor.
-     * 
-     * @param Config $config A config object for params, setters, reflections,
-     * etc.
-     * 
+     *
      * @param Factory $factory A factory to create support objects.
      * 
      */
@@ -116,7 +113,10 @@ class Container implements ContainerInterface
      * @param string $key The property to retrieve ('params' or 'setter(s)').
      * 
      * @return mixed
-     * 
+     *
+     * @throws Exception\ContainerLocked
+     *
+     * @throws UnexpectedValueException
      */
     public function &__get($key)
     {
@@ -397,6 +397,8 @@ class Container implements ContainerInterface
      * passed to the setter method.
      * 
      * @return object
+     *
+     * @throws Exception\SetterMethodNotFound
      * 
      */
     public function newInstance(
@@ -410,9 +412,9 @@ class Container implements ContainerInterface
         // merge param configs and load lazy objects
         if ($merge_params) {
             $this->mergeParams($params, $merge_params);
-        } else {
-            $this->loadLazyParams($params);
         }
+
+        $this->loadLazyParams($params);
         
         // and create the new instance
         $rclass = $this->getReflection($class);
@@ -465,12 +467,7 @@ class Container implements ContainerInterface
                 // named override
                 $val = $merge_params[$key];
             }
-            
-            // load lazy objects as we go
-            if ($val instanceof LazyInterface) {
-                $val = $val();
-            }
-            
+
             // retain the merged value
             $params[$key] = $val;
             
@@ -540,36 +537,46 @@ class Container implements ContainerInterface
             return $this->unified[$class];
         }
 
+        // stores and return the unified params and setter values
+        return $this->unified[$class] = array(
+            $this->getUnifiedParams($class),
+            $this->getUnifiedSetter($class)
+        );
+    }
+
+    /**
+     *
+     * Returns the parents constructor explicit params for a class.
+     *
+     * @param string $class The class name to return values for.
+     *
+     * @return array The class parents explicit params.
+     *
+     */
+    protected function getExplicitParentsParams($class) {
         // fetch the values for parents so we can inherit them
         $parent = get_parent_class($class);
         if ($parent) {
-            // convert from string to array of params and setter values
-            $parent = $this->getUnified($parent);
-        } else {
-            // convert to a pair of empty arrays for params and setter values
-            $parent = array(array(), array());
+            // use recursion to get all parents explicit params
+            return array_merge(
+                $this->getExplicitParentsParams($parent),
+                isset($this->params[$parent]) ? $this->params[$parent] : array()
+            );
         }
 
-        // stores the unified params and setter values
-        $this->unified[$class][0] = $this->getUnifiedParams($class, $parent[0]);
-        $this->unified[$class][1] = $this->getUnifiedSetter($class, $parent[1]);
-
-        // done, return the unified values
-        return $this->unified[$class];
+        return array();
     }
-    
+
     /**
      * 
      * Returns the unified constructor params for a class.
      * 
      * @param string $class The class name to return values for.
-     * 
-     * @param string $parent The parent unified params.
-     * 
+     *
      * @return array The unified params.
      * 
      */
-    protected function getUnifiedParams($class, array $parent)
+    protected function getUnifiedParams($class)
     {
         $rclass = $this->getReflection($class);
         $rctor = $rclass->getConstructor();
@@ -577,6 +584,8 @@ class Container implements ContainerInterface
             // no constructor, so no need to pass params
             return array();
         }
+
+        $parent = $this->getExplicitParentsParams($class);
         
         // reflect on what params to pass, in which order
         $unified = array();
@@ -588,7 +597,7 @@ class Container implements ContainerInterface
                 // use the explicit value for this class
                 $unified[$name] = $this->params[$class][$name];
             } elseif (isset($parent[$name])) {
-                // use the implicit value from the parent class
+                // use the explicit value from the parent class
                 $unified[$name] = $parent[$name];
             } elseif ($rparam->isDefaultValueAvailable()) {
                 // use the reflected value from the constructor
@@ -609,15 +618,21 @@ class Container implements ContainerInterface
      * 
      * @param string $class The class name to return values for.
      * 
-     * @param string $parent The parent unified setters.
-     * 
      * @return array The unified setters.
      * 
      */
-    protected function getUnifiedSetter($class, array $parent)
+    protected function getUnifiedSetter($class)
     {
+        // fetch the values for parents so we can inherit them
+        $parent = get_parent_class($class);
+        if ($parent) {
+            // use recursion to get all parents setters
+            $unified = $this->getUnifiedSetter($parent);
+        } else {
+            $unified = array();
+        }
+
         // look for non-trait setters
-        $unified = $parent;
         if (isset($this->setter[$class])) {
             $unified = array_merge(
                 $unified,

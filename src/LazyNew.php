@@ -10,8 +10,6 @@
  */
 namespace Aura\Di;
 
-use Aura\Di\Container;
-
 /**
  * 
  * Wraps a callable specifically for the purpose of lazy-loading an object.
@@ -61,16 +59,16 @@ class LazyNew implements LazyInterface
      * 
      * Constructor.
      * 
-     * @param Container $container The service container.
+     * @param ContainerInterface $container The service container.
      * 
      * @param string $class The class to instantiate.
      * 
      * @param array $params Params for the instantiation.
      * 
-     * @param array $setter Setters for the instantiation.
+     * @param array $setters Setters for the instantiation.
      * 
      */
-    public function __construct(Container $container, $class, array $params, array $setters)
+    public function __construct(ContainerInterface $container, $class, array $params, array $setters)
     {
         $this->container = $container;
         $this->class = $class;
