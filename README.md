@@ -424,7 +424,7 @@ When we create an instance of the `BlogController` and run it ...
 
 ```php
 <?php
-$blog_controller = $di->newInstance('Aura\Example\BlogController');
+$blog_controller = $di->newInstance('Example\Package\BlogController');
 echo $blog_controller->exec();
 ?>
 ```
