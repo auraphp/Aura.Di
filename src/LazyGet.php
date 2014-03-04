@@ -10,8 +10,6 @@
  */
 namespace Aura\Di;
 
-use Aura\Di\Container;
-
 /**
  * 
  * Wraps a callable specifically for the purpose of lazy-loading an object.
