@@ -2,7 +2,7 @@
 use Aura\Di\Container;
 use Aura\Di\Factory;
 
-require '../autoload.php';
+require dirname(__DIR__) . '/autoload.php';
 
 class Foo {
     public function __construct($param = null) {}

@@ -97,9 +97,6 @@ class Container implements ContainerInterface
      * 
      * Constructor.
      * 
-     * @param Config $config A config object for params, setters, reflections,
-     * etc.
-     * 
      * @param Factory $factory A factory to create support objects.
      * 
      */
@@ -116,6 +113,10 @@ class Container implements ContainerInterface
      * @param string $key The property to retrieve ('params' or 'setter(s)').
      * 
      * @return mixed
+     *
+     * @throws Exception\ContainerLocked
+     *
+     * @throws \UnexpectedValueException
      * 
      */
     public function &__get($key)
@@ -397,6 +398,8 @@ class Container implements ContainerInterface
      * passed to the setter method.
      * 
      * @return object
+     *
+     * @throws Exception\SetterMethodNotFound
      * 
      */
     public function newInstance(
@@ -564,7 +567,7 @@ class Container implements ContainerInterface
      * 
      * @param string $class The class name to return values for.
      * 
-     * @param string $parent The parent unified params.
+     * @param array $parent The parent unified params.
      * 
      * @return array The unified params.
      * 
@@ -609,7 +612,7 @@ class Container implements ContainerInterface
      * 
      * @param string $class The class name to return values for.
      * 
-     * @param string $parent The parent unified setters.
+     * @param array $parent The parent unified setters.
      * 
      * @return array The unified setters.
      * 
