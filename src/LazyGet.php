@@ -45,8 +45,6 @@ class LazyGet implements LazyInterface
      * 
      * @param string $service The service to retrieve.
      * 
-     * @return null
-     * 
      */
     public function __construct(Container $container, $service)
     {
