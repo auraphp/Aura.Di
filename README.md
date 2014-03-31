@@ -502,9 +502,12 @@ in the `Container`:
 <?php
 // after construction, call Foo::setDb() and inject a service object.
 // we override the default 'hostname' param for the instantiation.
-$di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew('Example\Package\Database', array(
-    'hostname' => 'example.com',
-));
+$di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew(
+    'Example\Package\Database',
+    array(
+        'hostname' => 'example.com',
+    )
+);
 
 // create a foo_service; on get('foo_service'), the Container will create the
 // Foo object, then call setDb() on it per the setter specification above.
@@ -535,5 +538,5 @@ class, it will override the parent setter.)
 If we construct our dependencies properly with params, setters, services, and
 factories, we will only need to get one object directly from DI container. All
 object creation will then happen through the DI container via factory objects
-and/or the `Container` object. We will never need to use the DI container itself
-in any of the created objects.
+and/or the `Container` object. We will never need to use the DI container 
+itself in any of the created objects.
