@@ -10,8 +10,6 @@
  */
 namespace Aura\Di;
 
-use Aura\Di\Container;
-
 /**
  * 
  * Wraps a callable specifically for the purpose of lazy-loading an object.
@@ -46,8 +44,6 @@ class LazyGet implements LazyInterface
      * @param Container $container The service container.
      * 
      * @param string $service The service to retrieve.
-     * 
-     * @return null
      * 
      */
     public function __construct(Container $container, $service)

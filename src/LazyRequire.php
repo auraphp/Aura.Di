@@ -34,8 +34,6 @@ class LazyRequire implements LazyInterface
      * 
      * @param string $file The file to require.
      * 
-     * @return null
-     * 
      */
     public function __construct($file)
     {

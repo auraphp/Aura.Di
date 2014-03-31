@@ -25,7 +25,7 @@ class Factory
      * 
      * Returns a new InstanceFactory.
      * 
-     * @param ContainerInterface $container The service container.
+     * @param Container $container The service container.
      * 
      * @param string $class The class to create.
      * 
