@@ -70,8 +70,12 @@ class LazyNew implements LazyInterface
      * @param array $setters Setters for the instantiation.
      * 
      */
-    public function __construct(Container $container, $class, array $params, array $setters)
-    {
+    public function __construct(
+        Container $container,
+        $class,
+        array $params,
+        array $setters
+    ) {
         $this->container = $container;
         $this->class = $class;
         $this->params = $params;
