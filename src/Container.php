@@ -619,15 +619,8 @@ class Container implements ContainerInterface
      */
     protected function getUnifiedSetter($class, array $parent)
     {
-        // look for non-trait setters
         $unified = $parent;
-        if (isset($this->setter[$class])) {
-            $unified = array_merge(
-                $unified,
-                $this->setter[$class]
-            );
-        }
-        
+
         // look for setters inside interfaces
         $interfaces = class_implements($class);
         foreach ($interfaces as $interface) {
@@ -639,6 +632,14 @@ class Container implements ContainerInterface
             }
         }
         
+        // look for non-trait setters
+        if (isset($this->setter[$class])) {
+            $unified = array_merge(
+                $unified,
+                $this->setter[$class]
+            );
+        }
+
         // look for setters inside traits
         if (function_exists('class_uses')) {
             $uses = class_uses($class);
