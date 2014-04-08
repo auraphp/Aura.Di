@@ -230,13 +230,26 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('fake_value', $actual->getFake());
     }
     
-    public function testNewInstanceWithSetterInterface()
+    public function testHonorsInterfacesAndOverrides()
     {
-        $this->container->setter['Aura\Di\MockInterface']['setFoo'] = 'fake_value';
+        $this->container->setter['Aura\Di\MockInterface']['setFoo'] = 'initial';
+        $this->container->setter['Aura\Di\MockInterfaceClass2']['setFoo'] = 'override';
         
+        // "inherits" initial value from interface
         $actual = $this->container->newInstance('Aura\Di\MockInterfaceClass');
-        
-        $this->assertSame('fake_value', $actual->getFoo());
+        $this->assertSame('initial', $actual->getFoo());
+
+        // uses initial value "inherited" from parent
+        $actual = $this->container->newInstance('Aura\Di\MockInterfaceClass1');
+        $this->assertSame('initial', $actual->getFoo());
+
+        // overrides the initial "inherited" value
+        $actual = $this->container->newInstance('Aura\Di\MockInterfaceClass2');
+        $this->assertSame('override', $actual->getFoo());
+
+        // uses the "inherited" overridde value
+        $actual = $this->container->newInstance('Aura\Di\MockInterfaceClass3');
+        $this->assertSame('override', $actual->getFoo());
     }
     
     public function testnewInstanceWithLazySetter()

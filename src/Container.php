@@ -621,7 +621,7 @@ class Container implements ContainerInterface
     {
         $unified = $parent;
 
-        // look for setters inside interfaces
+        // look for interface setters
         $interfaces = class_implements($class);
         foreach ($interfaces as $interface) {
             if (isset($this->setter[$interface])) {
