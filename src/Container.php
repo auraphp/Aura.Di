@@ -623,6 +623,12 @@ class Container implements ContainerInterface
 
         // look for interface setters
         $interfaces = class_implements($class);
+        if ($parent) {
+            $interfaces = array_diff(
+                $interfaces,
+                class_implements(get_parent_class($class))
+            );
+        }
         foreach ($interfaces as $interface) {
             if (isset($this->setter[$interface])) {
                 $unified = array_merge(
