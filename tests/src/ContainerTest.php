@@ -230,6 +230,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('fake_value', $actual->getFake());
     }
     
+    public function testNewInstanceWithSetterInterface()
+    {
+        $this->container->setter['Aura\Di\MockInterface']['setFoo'] = 'fake_value';
+        
+        $actual = $this->container->newInstance('Aura\Di\MockInterfaceClass');
+        
+        $this->assertSame('fake_value', $actual->getFoo());
+    }
+    
     public function testnewInstanceWithLazySetter()
     {
         $lazy = $this->container->lazy(function() {
