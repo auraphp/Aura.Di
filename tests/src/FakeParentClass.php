@@ -1,6 +1,6 @@
 <?php
 namespace Aura\Di;
-class MockParentClass
+class FakeParentClass
 {
     protected $foo;
     

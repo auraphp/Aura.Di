@@ -1,6 +1,6 @@
 <?php
 namespace Aura\Di;
-class MockInterfaceClass implements MockInterface
+class FakeInterfaceClass implements FakeInterface
 {
     protected $foo;
 

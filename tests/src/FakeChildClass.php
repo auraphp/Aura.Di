@@ -1,12 +1,12 @@
 <?php
 namespace Aura\Di;
-class MockChildClass extends MockParentClass
+class FakeChildClass extends FakeParentClass
 {
     protected $zim;
     
     protected $fake;
     
-    public function __construct($foo, MockOtherClass $zim)
+    public function __construct($foo, FakeOtherClass $zim)
     {
         parent::__construct($foo);
         $this->zim = $zim;

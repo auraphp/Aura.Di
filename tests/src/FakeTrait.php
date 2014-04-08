@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Di;
 
-trait MockTrait
+trait FakeTrait
 {
     protected $fake;
 

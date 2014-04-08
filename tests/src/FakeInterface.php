@@ -1,6 +1,6 @@
 <?php
 namespace Aura\Di;
-interface MockInterface
+interface FakeInterface
 {
     public function setFoo($foo);
     public function getFoo();

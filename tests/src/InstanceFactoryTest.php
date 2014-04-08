@@ -23,10 +23,10 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
     
     public function test__invoke()
     {
-        $other = $this->container->newInstance('Aura\Di\MockOtherClass');
+        $other = $this->container->newInstance('Aura\Di\FakeOtherClass');
         
         $factory = $this->newInstanceFactory(
-            'Aura\Di\MockChildClass',
+            'Aura\Di\FakeChildClass',
             array(
                 'foo' => 'foofoo',
                 'zim' => $other,
@@ -38,8 +38,8 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
         
         $actual = $factory();
         
-        $this->assertInstanceOf('Aura\Di\MockChildClass', $actual);
-        $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
+        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getZim());
         $this->assertSame('foofoo', $actual->getFoo());
         $this->assertSame('fakefake', $actual->getFake());
         

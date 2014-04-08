@@ -1,5 +1,5 @@
 <?php
 namespace Aura\Di;
-class MockOtherClass
+class FakeOtherClass
 {
 }
