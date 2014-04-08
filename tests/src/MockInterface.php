@@ -2,6 +2,6 @@
 namespace Aura\Di;
 interface MockInterface
 {
-	public function setFoo($foo);
-	public function getFoo();
+    public function setFoo($foo);
+    public function getFoo();
 }

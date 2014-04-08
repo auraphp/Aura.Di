@@ -629,15 +629,15 @@ class Container implements ContainerInterface
         }
         
         // look for setters inside interfaces
-		$interfaces = class_implements($class);
-		foreach ($interfaces as $interface) {
-			if (isset($this->setter[$interface])) {
-				$unified = array_merge(
-					$this->setter[$interface],
-					$unified
-				);
-			}
-		}
+        $interfaces = class_implements($class);
+        foreach ($interfaces as $interface) {
+            if (isset($this->setter[$interface])) {
+                $unified = array_merge(
+                    $this->setter[$interface],
+                    $unified
+                );
+            }
+        }
         
         // look for setters inside traits
         if (function_exists('class_uses')) {
