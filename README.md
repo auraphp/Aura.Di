@@ -533,7 +533,7 @@ all parent setters and applies them. (If you do add a setter value for that
 class, it will override the parent setter.)
 
 
-## Conclusion
+### Conclusion
 
 If we construct our dependencies properly with params, setters, services, and
 factories, we will only need to get one object directly from DI container. All
