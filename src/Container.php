@@ -10,9 +10,6 @@
  */
 namespace Aura\Di;
 
-use Closure;
-use ReflectionClass;
-use ReflectionException;
 use UnexpectedValueException;
 
 /**
@@ -97,12 +94,14 @@ class Container implements ContainerInterface
      * 
      * Constructor.
      * 
-     * @param Factory $factory A factory to create support objects.
+     * @param Factory $factory A factory to create objects.
      * 
      */
     public function __construct(Factory $factory)
     {
         $this->factory = $factory;
+        $this->params =& $this->factory->params;
+        $this->setter =& $this->factory->setter;
     }
 
     /**
@@ -323,7 +322,7 @@ class Container implements ContainerInterface
         array $params = array(),
         array $setter = array()
     ) {
-        return $this->factory->newLazyNew($this, $class, $params, $setter);
+        return $this->factory->newLazyNew($class, $params, $setter);
     }
     
     /**
@@ -374,7 +373,6 @@ class Container implements ContainerInterface
         array $setters = array()
     ) {
         return $this->factory->newInstanceFactory(
-            $this,
             $class,
             $params,
             $setters
@@ -407,253 +405,10 @@ class Container implements ContainerInterface
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
-        // base configs
-        list($params, $setter) = $this->getUnified($class);
-        
-        // merge param configs and load lazy objects
-        if ($merge_params) {
-            $this->mergeParams($params, $merge_params);
-        } else {
-            $this->loadLazyParams($params);
-        }
-        
-        // and create the new instance
-        $rclass = $this->getReflection($class);
-        $object = $rclass->newInstanceArgs($params);
-
-        // call setters after creation
-        $setter = array_merge($setter, $merge_setter);
-        foreach ($setter as $method => $value) {
-            // does the specified setter method exist?
-            if (method_exists($object, $method)) {
-                // lazy-load setter values as needed
-                if ($value instanceof LazyInterface) {
-                    $value = $value();
-                }
-                // call the setter
-                $object->$method($value);
-            } else {
-                throw new Exception\SetterMethodNotFound("$class::$method");
-            }
-        }
-        
-        // done!
-        return $object;
-    }
-    
-    /**
-     * 
-     * Returns the params after merging with overides; also invokes Lazy param
-     * values.
-     * 
-     * @param array $params The constructor parameters.
-     * 
-     * @param array $merge_params An array of override parameters; the key may
-     * be the name *or* the numeric position of the constructor parameter, and
-     * the value is the parameter value to use.
-     * 
-     * @return array
-     * 
-     */
-    protected function mergeParams(&$params, array $merge_params = array())
-    {
-        $pos = 0;
-        foreach ($params as $key => $val) {
-            
-            // positional overrides take precedence over named overrides
-            if (array_key_exists($pos, $merge_params)) {
-                // positional override
-                $val = $merge_params[$pos];
-            } elseif (array_key_exists($key, $merge_params)) {
-                // named override
-                $val = $merge_params[$key];
-            }
-            
-            // load lazy objects as we go
-            if ($val instanceof LazyInterface) {
-                $val = $val();
-            }
-            
-            // retain the merged value
-            $params[$key] = $val;
-            
-            // next position
-            $pos += 1;
-        }
-    }
-    
-    /**
-     * 
-     * Loads the lazy object in an array of params.
-     * 
-     * @param array $params An array of params.
-     * 
-     * @return null
-     * 
-     */
-    protected function loadLazyParams(&$params)
-    {
-        foreach ($params as $key => $val) {
-            if ($val instanceof LazyInterface) {
-                $params[$key] = $val();
-            }
-        }
-    }
-    
-    /**
-     * 
-     * Returns a ReflectionClass for a named class.
-     *
-     * @param string $class The class to reflect on.
-     * 
-     * @return ReflectionClass
-     * 
-     * @throws Exception\ReflectionFailure Could not reflect on the class.
-     * 
-     */
-    protected function getReflection($class)
-    {
-        if (isset($this->reflection[$class])) {
-            return $this->reflection[$class];
-        }
-        
-        try {
-            $this->reflection[$class] = new ReflectionClass($class);
-        } catch (ReflectionException $e) {
-            throw new Exception\ReflectionFailure($class, 0, $e);
-        }
-        
-        return $this->reflection[$class];
-    }
-
-    /**
-     * 
-     * Returns the unified constructor params and setter values for a class.
-     * 
-     * @param string $class The class name to return values for.
-     * 
-     * @return array An array with two elements; 0 is the constructor params 
-     * for the class, and 1 is the setter methods and values for the class.
-     * 
-     */
-    public function getUnified($class)
-    {
-        // have values already been unified for this class?
-        if (isset($this->unified[$class])) {
-            return $this->unified[$class];
-        }
-
-        // fetch the values for parents so we can inherit them
-        $parent = get_parent_class($class);
-        if ($parent) {
-            // convert from string to array of params and setter values
-            $parent = $this->getUnified($parent);
-        } else {
-            // convert to a pair of empty arrays for params and setter values
-            $parent = array(array(), array());
-        }
-
-        // stores the unified params and setter values
-        $this->unified[$class][0] = $this->getUnifiedParams($class, $parent[0]);
-        $this->unified[$class][1] = $this->getUnifiedSetter($class, $parent[1]);
-
-        // done, return the unified values
-        return $this->unified[$class];
-    }
-    
-    /**
-     * 
-     * Returns the unified constructor params for a class.
-     * 
-     * @param string $class The class name to return values for.
-     * 
-     * @param array $parent The parent unified params.
-     * 
-     * @return array The unified params.
-     * 
-     */
-    protected function getUnifiedParams($class, array $parent)
-    {
-        $rclass = $this->getReflection($class);
-        $rctor = $rclass->getConstructor();
-        if (! $rctor) {
-            // no constructor, so no need to pass params
-            return array();
-        }
-        
-        // reflect on what params to pass, in which order
-        $unified = array();
-        $rparams = $rctor->getParameters();
-        foreach ($rparams as $rparam) {
-            $name = $rparam->name;
-            $explicit = isset($this->params[$class][$name]);
-            if ($explicit) {
-                // use the explicit value for this class
-                $unified[$name] = $this->params[$class][$name];
-            } elseif (isset($parent[$name])) {
-                // use the implicit value from the parent class
-                $unified[$name] = $parent[$name];
-            } elseif ($rparam->isDefaultValueAvailable()) {
-                // use the reflected value from the constructor
-                $unified[$name] = $rparam->getDefaultValue();
-            } else {
-                // no value, use a null placeholder
-                $unified[$name] = null;
-            }
-        }
-        
-        // done
-        return $unified;
-    }
-    
-    /**
-     * 
-     * Returns the unified setters for a class.
-     * 
-     * @param string $class The class name to return values for.
-     * 
-     * @param array $parent The parent unified setters.
-     * 
-     * @return array The unified setters.
-     * 
-     */
-    protected function getUnifiedSetter($class, array $parent)
-    {
-        $unified = $parent;
-
-        // look for interface setters
-        $interfaces = class_implements($class);
-        foreach ($interfaces as $interface) {
-            if (isset($this->setter[$interface])) {
-                $unified = array_merge(
-                    $this->setter[$interface],
-                    $unified
-                );
-            }
-        }
-        
-        // look for non-trait setters
-        if (isset($this->setter[$class])) {
-            $unified = array_merge(
-                $unified,
-                $this->setter[$class]
-            );
-        }
-
-        // look for setters inside traits
-        if (function_exists('class_uses')) {
-            $uses = class_uses($class);
-            foreach ($uses as $use) {
-                if (isset($this->setter[$use])) {
-                    $unified = array_merge(
-                        $this->setter[$use],
-                        $unified
-                    );
-                }
-            }
-        }
-
-        // done
-        return $unified;
+        return $this->factory->newInstance(
+            $class,
+            $merge_params,
+            $merge_setter
+        );
     }
 }

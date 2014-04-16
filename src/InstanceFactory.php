@@ -21,12 +21,12 @@ class InstanceFactory
 {
     /**
      * 
-     * The container.
+     * The object factory.
      * 
-     * @var ContainerInterface
+     * @var Factory
      * 
      */
-    protected $container;
+    protected $factory;
     
     /**
      * 
@@ -59,7 +59,7 @@ class InstanceFactory
      * 
      * Constructor.
      * 
-     * @param ContainerInterface $container The service container.
+     * @param Factory $factory The object factory.
      * 
      * @param string $class The class to create.
      * 
@@ -69,12 +69,12 @@ class InstanceFactory
      * 
      */
     public function __construct(
-        ContainerInterface $container,
+        Factory $factory,
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        $this->container = $container;
+        $this->factory = $factory;
         $this->class = $class;
         $this->params = $params;
         $this->setter = $setter;
@@ -96,7 +96,7 @@ class InstanceFactory
     public function __invoke()
     {
         $params = array_merge($this->params, func_get_args());
-        return $this->container->newInstance(
+        return $this->factory->newInstance(
             $this->class,
             $params,
             $this->setter

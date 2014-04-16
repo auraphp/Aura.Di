@@ -61,7 +61,7 @@ class LazyNew implements LazyInterface
      * 
      * Constructor.
      * 
-     * @param Container $container The service container.
+     * @param Factory $factory The object factory.
      * 
      * @param string $class The class to instantiate.
      * 
@@ -71,12 +71,12 @@ class LazyNew implements LazyInterface
      * 
      */
     public function __construct(
-        Container $container,
+        Factory $factory,
         $class,
         array $params,
         array $setters
     ) {
-        $this->container = $container;
+        $this->factory = $factory;
         $this->class = $class;
         $this->params = $params;
         $this->setters = $setters;
@@ -91,7 +91,7 @@ class LazyNew implements LazyInterface
      */
     public function __invoke()
     {
-        return $this->container->newInstance(
+        return $this->factory->newInstance(
             $this->class,
             $this->params,
             $this->setters
