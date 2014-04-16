@@ -24,21 +24,21 @@ class Container implements ContainerInterface
 {
     /**
      * 
-     * Constructor params in the form `$params[$class][$name] = $value`.
+     * A reference to the Factory $params.
      * 
      * @var array
      * 
      */
-    protected $params = array();
+    protected $params;
 
     /**
      * 
-     * Setter definitions in the form of `$setter[$class][$method] = $value`.
+     * A reference to the Factory $setter.
      * 
      * @var array
      * 
      */
-    protected $setter = array();
+    protected $setter;
 
     /**
      * 

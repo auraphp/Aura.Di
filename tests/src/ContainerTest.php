@@ -18,9 +18,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testMagicGet()
     {
-        $this->assertTrue(is_array($this->container->params));
-        $this->assertTrue(is_array($this->container->setter));
-        $this->assertTrue(is_array($this->container->setters));
+        $this->container->params['foo'] = 'bar';
+        $this->container->setter['baz'] = 'dib';
+        $this->container->setters['zim'] = 'gir';
+
+        $expect = array('foo' => 'bar');
+        $this->assertSame($expect, $this->container->params);
+
+        $expect = array('baz' => 'dib', 'zim' => 'gir');
+        $this->assertSame($expect, $this->container->setter);
+        $this->assertSame($expect, $this->container->setters);
     }
 
     public function testHasGet()
