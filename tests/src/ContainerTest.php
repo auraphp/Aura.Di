@@ -16,6 +16,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         parent::tearDown();
     }
     
+    public function testMagicGet()
+    {
+        $this->assertTrue(is_array($this->container->params));
+        $this->assertTrue(is_array($this->container->setter));
+        $this->assertTrue(is_array($this->container->setters));
+    }
+
     public function testHasGet()
     {
         $expect = new \StdClass;
