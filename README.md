@@ -65,15 +65,12 @@ You can instantiate a `Container` as follows:
 
 ```php
 <?php
-use Aura\Di\Container;
-use Aura\Di\Factory;
+use Aura\Di\ContainerBuilder;
 
-$di = new Container(new Factory);
+$container_builder = new ContainerBuilder;
+$di = $container_builder->newInstance();
 ?>
 ```
-
-The `Container` is the DI container proper. The `Factory` is for creating
-lazy-loading and instance-factory objects.
 
 
 ### Setting Services
