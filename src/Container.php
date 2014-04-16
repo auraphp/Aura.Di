@@ -42,25 +42,6 @@ class Container implements ContainerInterface
 
     /**
      * 
-     * An array of retained ReflectionClass instances.
-     * 
-     * @var array
-     * 
-     */
-    protected $reflection = array();
-
-    /**
-     * 
-     * Constructor params and setter definitions, unified across class
-     * defaults, inheritance hierarchies, and configuration.
-     * 
-     * @var array
-     * 
-     */
-    protected $unified = array();
-
-    /**
-     * 
      * Retains named service definitions.
      * 
      * @var array
