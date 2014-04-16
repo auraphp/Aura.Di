@@ -20,6 +20,10 @@ use ReflectionException;
  * 
  * @package Aura.Di
  * 
+ * @property-read array $params Constructor params for classes.
+ * 
+ * @property-read array $setter Setter definitions for classes/interfaces.
+ * 
  */
 class Factory
 {

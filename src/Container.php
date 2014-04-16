@@ -19,6 +19,12 @@ use UnexpectedValueException;
  * 
  * @package Aura.Di
  * 
+ * @property-read array $params A reference to the Factory $params.
+ * 
+ * @property-read array $setter A reference to the Factory $setter.
+ * 
+ * @property-read array $setters A reference to the Factory $setter.
+ * 
  */
 class Container implements ContainerInterface
 {
