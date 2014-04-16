@@ -24,6 +24,15 @@ class Container implements ContainerInterface
 {
     /**
      * 
+     * A factory to create objects.
+     * 
+     * @var Factory
+     * 
+     */
+    protected $factory;
+
+    /**
+     * 
      * A reference to the Factory $params.
      * 
      * @var array
