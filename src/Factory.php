@@ -10,7 +10,6 @@
  */
 namespace Aura\Di;
 
-use Closure;
 use ReflectionClass;
 use ReflectionException;
 

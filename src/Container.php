@@ -10,6 +10,7 @@
  */
 namespace Aura\Di;
 
+use Closure;
 use UnexpectedValueException;
 
 /**
