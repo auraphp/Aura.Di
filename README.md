@@ -9,6 +9,8 @@ following features:
 
 - inheritable configuration of setters and constructor params
 
+- configuration of setters across interfaces and traits
+
 When combined with factory classes, you can completely separate object
 configuration, object construction, and object usage, allowing for great
 flexibility and increased testability.
@@ -20,36 +22,26 @@ desirable, is beyond the scope of this document. For more information about
 
 ## Foreword
 
-### Requirements
+### Installation
 
 This library requires PHP 5.3 or later, and has no userland dependencies.
 
-### Installation
+It is installable and autoloadable via Composer as [aura/di](https://packagist.org/packages/aura/di).
 
-This library is installable and autoloadable via Composer with the following
-`require` element in your `composer.json` file:
+Alternatively, [download a release](https://github.com/auraphp/Aura.Di/releases) or clone this repository, then require or include its _autoload.php_ file.
 
-    "require": {
-        "aura/di": "2.*@dev"
-    }
-    
-Alternatively, download or clone this repository, then require or include its
-_autoload.php_ file.
+### Quality
 
-### Tests
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?s=cf82e0a9aed31c10a6d493175d067b9156dcb264)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+[![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?s=ea28d15243b0a075c9b0e94ec93cec893e2a0ada)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+[![Build Status](https://travis-ci.org/auraphp/Aura.PACKAGE.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.PACKAGE)
 
-[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Di)
-
-This library has 100% code coverage with [PHPUnit][]. To run the tests at the
-command line, go to the _tests_ directory and issue `phpunit`.
-
-[phpunit]: http://phpunit.de/manual/
-
-### PSR Compliance
+To run the [PHPUnit][] tests at the command line, go to the _tests_ directory and issue `phpunit`.
 
 This library attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If
 you notice compliance oversights, please send a patch via pull request.
 
+[PHPUnit]: http://phpunit.de/manual/
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
@@ -71,7 +63,6 @@ $container_builder = new ContainerBuilder;
 $di = $container_builder->newInstance();
 ?>
 ```
-
 
 ### Setting Services
 
