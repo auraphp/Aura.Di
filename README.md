@@ -57,10 +57,10 @@ You can instantiate a `Container` as follows:
 
 ```php
 <?php
-use Aura\Di\ContainerBuilder;
+use Aura\Di\Container;
+use Aura\Di\Factory;
 
-$container_builder = new ContainerBuilder;
-$di = $container_builder->newInstance();
+$di = new Container(new Factory());
 ?>
 ```
 
