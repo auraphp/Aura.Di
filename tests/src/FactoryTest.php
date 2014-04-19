@@ -83,7 +83,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     
     public function testHonorsTraitSetter()
     {
-        if (phpversion() < '5.4') {
+        if (!function_exists('class_uses')) {
             $this->markTestSkipped("No traits before PHP 5.4");
         }
         
@@ -97,7 +97,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsOverrideTraitSetter()
     {
-        if (phpversion() < '5.4') {
+        if (!function_exists('class_uses')) {
             $this->markTestSkipped("No traits before PHP 5.4");
         }
         
