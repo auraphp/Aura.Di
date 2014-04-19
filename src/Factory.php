@@ -441,7 +441,7 @@ class Factory
 
         // look for setters inside traits
         if (function_exists('class_uses')) {
-            $uses = class_uses($class);
+            $uses = $this->getAllTraitsForEntity($class);
             foreach ($uses as $use) {
                 if (isset($this->setter[$use])) {
                     $unified = array_merge(
@@ -454,5 +454,23 @@ class Factory
 
         // done
         return $unified;
+    }
+
+    /**
+     *
+     * Returns all traits used by a class, and the traits used by those traits.
+     *
+     * @param string|object $entity The class or trait to look at for used traits.
+     *
+     * @return array All traits used by the requested class or trait.
+     *
+     */
+    protected function getAllTraitsForEntity($entity)
+    {
+        $traits = class_uses($entity);
+        foreach ($traits as $trait) {
+            $traits = array_merge($traits, $this->getAllTraitsForEntity($trait));
+        }
+        return $traits;
     }
 }
