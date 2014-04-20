@@ -395,7 +395,7 @@ $di->params['Example\Package\ModelFactory'] = array(
     'map' => array(
         'blog' => $di->newFactory('Example\Package\BlogModel'),
         'wiki' => $di->newFactory('Example\Package\WikiModel'),
-    ],
+    ),
 );
 
 // default params for page controllers
