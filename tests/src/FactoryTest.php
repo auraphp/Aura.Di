@@ -83,7 +83,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     
     public function testHonorsTraitSetter()
     {
-        if (phpversion() < '5.4') {
+        if (!function_exists('class_uses')) {
             $this->markTestSkipped("No traits before PHP 5.4");
         }
         
@@ -92,20 +92,34 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         list($actual_config, $actual_setter) = $this->factory->getUnified('Aura\Di\FakeClassWithTrait');
         $expect = array('setFake' => 'fake1');
         $this->assertSame($expect, $actual_setter);
-        
+    }
+
+    public function testHonorsChildTraitSetter()
+    {
+        if (!function_exists('class_uses')) {
+            $this->markTestSkipped("No traits before PHP 5.4");
+        }
+
+        $this->factory->setter['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake1';
+
+        list($actual_config, $actual_setter) = $this->factory->getUnified('Aura\Di\FakeClassWithTrait');
+        $expect = array('setChildFake' => 'fake1');
+        $this->assertSame($expect, $actual_setter);
     }
 
     public function testHonorsOverrideTraitSetter()
     {
-        if (phpversion() < '5.4') {
+        if (!function_exists('class_uses')) {
             $this->markTestSkipped("No traits before PHP 5.4");
         }
         
         $this->factory->setter['Aura\Di\FakeTrait']['setFake'] = 'fake1';
-        $this->factory->setter['Aura\Di\FakeClassWithTrait']['setFake'] = 'fake2';
-        
+        $this->factory->setter['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake2';
+        $this->factory->setter['Aura\Di\FakeClassWithTrait']['setFake'] = 'fake3';
+        $this->factory->setter['Aura\Di\FakeClassWithTrait']['setChildFake'] = 'fake4';
+
         list($actual_config, $actual_setter) = $this->factory->getUnified('Aura\Di\FakeClassWithTrait');
-        $expect = array('setFake' => 'fake2');
+        $expect = array('setChildFake' => 'fake4', 'setFake' => 'fake3');
         $this->assertSame($expect, $actual_setter);
     }
     
