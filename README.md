@@ -57,10 +57,10 @@ You can instantiate a `Container` as follows:
 
 ```php
 <?php
-use Aura\Di\ContainerBuilder;
+use Aura\Di\Container;
+use Aura\Di\Factory;
 
-$container_builder = new ContainerBuilder;
-$di = $container_builder->newInstance();
+$di = new Container(new Factory());
 ?>
 ```
 
@@ -395,7 +395,7 @@ $di->params['Example\Package\ModelFactory'] = array(
     'map' => array(
         'blog' => $di->newFactory('Example\Package\BlogModel'),
         'wiki' => $di->newFactory('Example\Package\WikiModel'),
-    ],
+    ),
 );
 
 // default params for page controllers

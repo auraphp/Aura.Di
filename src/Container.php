@@ -180,8 +180,8 @@ class Container implements ContainerInterface
      * __invoke() method.)
      * 
      * @param string $service The service key.
-     * 
-     * @param object $val The service object; if a Closure, is treated as a
+     *
+     * @param object|callable $val The service object; if a Closure, is treated as a
      * Lazy.
      * 
      * @throws Exception\ContainerLocked when the Container is locked.
