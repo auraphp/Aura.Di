@@ -1,23 +1,23 @@
 <?php
 /**
- * 
+ *
  * This file is part of Aura for PHP.
- * 
+ *
  * @package Aura.Di
- * 
+ *
  * @license http://opensource.org/licenses/bsd-license.php BSD
- * 
+ *
  */
 namespace Aura\Di;
 
 use Aura\Di\Container;
 
 /**
- * 
+ *
  * Wraps a callable specifically for the purpose of lazy-loading an object.
- * 
+ *
  * @package Aura.Di
- * 
+ *
  */
 class LazyNew extends InstanceFactory implements LazyInterface
 {
