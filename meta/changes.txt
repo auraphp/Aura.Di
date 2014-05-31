@@ -1,11 +1,5 @@
-- [CHG] Config now throws Exception\SetterMethodNotFound when a setter method
-  is configured but does not exist on the class
+Hygeine release.
 
-- [CHG] Container::set() now throws Exception\ServiceNotObject when the
-  service being set is not an object.
-
-- [CHG] Config now throws Exception\ReflectionFailure when reflection fails.
-
-- [DOC] Typo fixes and clarifications; add PHP 5.5 to Travis build
-
-- [DEL] Remove unused exceptions ContainerExists and ContainerNotFound
+- Add test for #38 -- looks OK
+- Merge pull request #32 from harikt/patch-dev
+- Add a benching script
