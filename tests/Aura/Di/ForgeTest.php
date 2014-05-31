@@ -138,4 +138,15 @@ class ForgeTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\MockOtherClass', $actual->getZim());
         $this->assertSame('keepme', $actual->getFoo());
     }
+
+    public function testSetterWithoutConstructor()
+    {
+        $setter = $this->config->getSetter();
+        $setter['Aura\Di\FakeWithNoCtor']['setFake'] = 'fake_value';
+
+        $actual = $this->forge->newInstance('Aura\Di\FakeWithNoCtor');
+
+        $this->assertInstanceOf('Aura\Di\FakeWithNoCtor', $actual);
+        $this->assertSame('fake_value', $actual->getFake());
+    }
 }
