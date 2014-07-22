@@ -10,6 +10,7 @@
  */
 namespace Aura\Di;
 
+use ArrayObject;
 use ReflectionClass;
 use ReflectionException;
 
@@ -23,6 +24,8 @@ use ReflectionException;
  * @property-read array $params Constructor params for classes.
  *
  * @property-read array $setter Setter definitions for classes/interfaces.
+ *
+ * @property-read ArrayObject $values Aribtrary values.
  *
  */
 class Factory
@@ -47,6 +50,15 @@ class Factory
 
     /**
      *
+     * Arbitrary values in the form of `$values[$key] = $value`.
+     *
+     * @var ArrayObject
+     *
+     */
+    protected $values;
+
+    /**
+     *
      * An array of retained ReflectionClass instances.
      *
      * @var array
@@ -63,6 +75,11 @@ class Factory
      *
      */
     protected $unified = array();
+
+    public function __construct()
+    {
+        $this->values = new ArrayObject(array());
+    }
 
     /**
      *
@@ -178,6 +195,11 @@ class Factory
     public function newLazyRequire($file)
     {
         return new LazyRequire($file);
+    }
+
+    public function newLazyValue($key)
+    {
+        return new LazyValue($this->values, $key);
     }
 
     /**
