@@ -50,7 +50,7 @@ class Container implements ContainerInterface
      *
      * An arbitrary set of values.
      *
-     * @var ArrayObject
+     * @var array
      *
      */
     protected $values;

@@ -10,7 +10,6 @@
  */
 namespace Aura\Di;
 
-use ArrayObject;
 use ReflectionClass;
 use ReflectionException;
 
@@ -25,7 +24,7 @@ use ReflectionException;
  *
  * @property-read array $setter Setter definitions for classes/interfaces.
  *
- * @property-read ArrayObject $values Aribtrary values.
+ * @property-read array $values Aribtrary values.
  *
  */
 class Factory
@@ -52,10 +51,10 @@ class Factory
      *
      * Arbitrary values in the form of `$values[$key] = $value`.
      *
-     * @var ArrayObject
+     * @var array
      *
      */
-    protected $values;
+    protected $values = array();
 
     /**
      *
@@ -75,11 +74,6 @@ class Factory
      *
      */
     protected $unified = array();
-
-    public function __construct()
-    {
-        $this->values = new ArrayObject(array());
-    }
 
     /**
      *

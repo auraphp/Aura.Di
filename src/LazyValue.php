@@ -10,8 +10,6 @@
  */
 namespace Aura\Di;
 
-use ArrayObject;
-
 /**
  *
  * Lazy-loads an arbitrary value.
@@ -23,9 +21,9 @@ class LazyValue implements LazyInterface
 {
     /**
      *
-     * The values object.
+     * The values.
      *
-     * @var ArrayObject
+     * @var array
      *
      */
     protected $values;
@@ -43,14 +41,14 @@ class LazyValue implements LazyInterface
      *
      * Constructor.
      *
-     * @param ArrayObject $values The arbitrary values.
+     * @param array $values The arbitrary values.
      *
      * @param string $key The value key to retrieve.
      *
      */
-    public function __construct(ArrayObject $values, $key)
+    public function __construct(array &$values, $key)
     {
-        $this->values = $values;
+        $this->values =& $values;
         $this->key = $key;
     }
 
