@@ -338,12 +338,12 @@ class ModelFactory
 {
     // a map of model names to factory closures
     protected $map = array();
-    
+
     public function __construct($map = array())
     {
         $this->map = $map;
     }
-    
+
     public function newInstance($model_name)
     {
         $factory = $this->map[$model_name];
@@ -520,11 +520,20 @@ class Bar extends Foo
 all parent setters and applies them. (If you do add a setter value for that
 class, it will override the parent setter.)
 
+### TBD
+
+- Lazy values
+
+- Config files
+
+- ContainerBuilder
+
+- Redo Factory examples to use entities, not models
 
 ### Conclusion
 
 If we construct our dependencies properly with params, setters, services, and
 factories, we will only need to get one object directly from DI container. All
 object creation will then happen through the DI container via factory objects
-and/or the `Container` object. We will never need to use the DI container 
+and/or the `Container` object. We will never need to use the DI container
 itself in any of the created objects.
