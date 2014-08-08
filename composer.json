@@ -19,5 +19,10 @@
         "psr-0": {
             "Aura\\Di": "src/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "1.1.x-dev"
+        }
     }
 }
