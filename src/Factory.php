@@ -24,7 +24,7 @@ use ReflectionException;
  *
  * @property-read array $setter Setter definitions for classes/interfaces.
  *
- * @property-read array $values Aribtrary values.
+ * @property-read array $values Arbitrary values.
  *
  */
 class Factory
