@@ -520,6 +520,15 @@ class Bar extends Foo
 all parent setters and applies them. (If you do add a setter value for that
 class, it will override the parent setter.)
 
+### TBD
+
+- Lazy values
+
+- Config files
+
+- ContainerBuilder
+
+- Redo Factory examples to use entities, not models
 
 ### Conclusion
 

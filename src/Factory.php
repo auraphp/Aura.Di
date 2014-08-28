@@ -24,6 +24,8 @@ use ReflectionException;
  *
  * @property-read array $setter Setter definitions for classes/interfaces.
  *
+ * @property-read array $values Arbitrary values.
+ *
  */
 class Factory
 {
@@ -44,6 +46,15 @@ class Factory
      *
      */
     protected $setter = array();
+
+    /**
+     *
+     * Arbitrary values in the form of `$values[$key] = $value`.
+     *
+     * @var array
+     *
+     */
+    protected $values = array();
 
     /**
      *
@@ -178,6 +189,11 @@ class Factory
     public function newLazyRequire($file)
     {
         return new LazyRequire($file);
+    }
+
+    public function newLazyValue($key)
+    {
+        return new LazyValue($this->values, $key);
     }
 
     /**
