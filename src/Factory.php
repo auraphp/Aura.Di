@@ -385,24 +385,37 @@ class Factory
         $rparams = $rctor->getParameters();
         foreach ($rparams as $rparam) {
             $name = $rparam->name;
-            $explicit = isset($this->params[$class][$name]);
-            if ($explicit) {
-                // use the explicit value for this class
-                $unified[$name] = $this->params[$class][$name];
-            } elseif (isset($parent[$name])) {
-                // use the implicit value from the parent class
-                $unified[$name] = $parent[$name];
-            } elseif ($rparam->isDefaultValueAvailable()) {
-                // use the reflected value from the constructor
-                $unified[$name] = $rparam->getDefaultValue();
-            } else {
-                // no value, use a null placeholder
-                $unified[$name] = null;
-            }
+            $unified[$name] = $this->getUnifiedParam(
+                $rparam,
+                $class,
+                $parent,
+                $name
+            );
         }
 
         // done
         return $unified;
+    }
+
+    protected function getUnifiedParam($rparam, $class, $parent, $name)
+    {
+        if (isset($this->params[$class][$name])) {
+            // use the explicit value for this class
+            return $this->params[$class][$name];
+        }
+
+        if (isset($parent[$name])) {
+            // use the implicit value from the parent class
+            return $parent[$name];
+        }
+
+        if ($rparam->isDefaultValueAvailable()) {
+            // use the reflected value from the constructor
+            return $rparam->getDefaultValue();
+        }
+
+        // no recognized value, return a null placeholder
+        return null;
     }
 
     /**
