@@ -410,11 +410,22 @@ class Factory
         }
 
         if ($rparam->isDefaultValueAvailable()) {
-            // use the reflected value from the constructor
+            // use the default value
             return $rparam->getDefaultValue();
         }
 
-        // no recognized value, return a null placeholder
+        if ($rparam->isArray()) {
+            // use an empty array
+            return array();
+        }
+
+        $typehint = $rparam->getClass();
+        if ($typehint && $typehint->isInstantiable()) {
+            // use a lazy-new-instance of the typehinted class
+            return $this->newLazyNew($typehint->name);
+        }
+
+        // use a null as a placeholder
         return null;
     }
 
