@@ -82,7 +82,7 @@ class Factory
      * @var array
      *
      */
-    protected $revolve = array();
+    protected $resolve = array();
 
     /**
      *
