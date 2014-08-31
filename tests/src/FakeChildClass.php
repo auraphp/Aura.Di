@@ -6,7 +6,7 @@ class FakeChildClass extends FakeParentClass
 
     protected $fake;
 
-    public function __construct($foo, FakeOtherClass $zim)
+    public function __construct($foo, $zim = null)
     {
         parent::__construct($foo);
         $this->zim = $zim;

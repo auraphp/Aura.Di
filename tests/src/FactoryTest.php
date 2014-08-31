@@ -33,7 +33,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         );
 
         list($actual_params, $actual_setter) = $this->factory->getUnified('Aura\Di\FakeChildClass');
-        $this->assertSame($expect['foo'], $actual_params['foo']);
+        $this->assertSame($expect, $actual_params);
     }
 
     public function testHonorsExplicitParams()
@@ -55,7 +55,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         );
 
         list($actual_params, $actual_setter) = $this->factory->getUnified('Aura\Di\FakeChildClass');
-        $this->assertSame($expect['foo'], $actual_params['foo']);
+        $this->assertSame($expect, $actual_params);
 
         // for test coverage of the mock class
         $child = new \Aura\Di\FakeChildClass('bar', new \Aura\Di\FakeOtherClass);
@@ -137,19 +137,17 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual);
     }
 
+    public function testAutoResolveImplicit()
+    {
+        $object = $this->factory->newInstance('Aura\Di\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\FakeParentClass', $object->fake);
+    }
+
     public function testAutoResolveExplicit()
     {
         $this->factory->resolve['Aura\Di\FakeParentClass'] = $this->factory->newLazyNew('Aura\Di\FakeChildClass');
         $object = $this->factory->newInstance('Aura\Di\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\FakeChildClass', $object->fake);
-    }
-
-    public function testAutoResolveNewInstance()
-    {
-        $object = $this->factory->newInstance('Aura\Di\FakeChildClass');
-        $this->assertSame('bar', $object->getFoo());
-        $this->assertNull($object->getFake());
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $object->getZim());
     }
 
     public function testAutoResolveArrayAndNull()
