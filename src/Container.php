@@ -48,6 +48,15 @@ class Container implements ContainerInterface
 
     /**
      *
+     * An arbitrary set of values.
+     *
+     * @var array
+     *
+     */
+    protected $values;
+
+    /**
+     *
      * A reference to the Factory $setter.
      *
      * @var array
@@ -108,6 +117,7 @@ class Container implements ContainerInterface
         $this->factory = $factory;
         $this->params =& $this->factory->params;
         $this->setter =& $this->factory->setter;
+        $this->values =& $this->factory->values;
         $this->resolve =& $this->factory->resolve;
     }
 
@@ -137,6 +147,10 @@ class Container implements ContainerInterface
 
         if ($key == 'setter' || $key == 'setters') {
             return $this->setter;
+        }
+
+        if ($key == 'value' || $key == 'values') {
+            return $this->values;
         }
 
         if ($key == 'resolve') {
@@ -362,6 +376,20 @@ class Container implements ContainerInterface
     public function lazyInclude($file)
     {
         return $this->factory->newLazyInclude($file);
+    }
+
+    /**
+     *
+     * Returns a lazy for an arbitrary value.
+     *
+     * @param string $key The arbitrary value key.
+     *
+     * @return LazyValue
+     *
+     */
+    public function lazyValue($key)
+    {
+        return $this->factory->newLazyValue($key);
     }
 
     /**

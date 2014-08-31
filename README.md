@@ -32,8 +32,8 @@ Alternatively, [download a release](https://github.com/auraphp/Aura.Di/releases)
 
 ### Quality
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?s=cf82e0a9aed31c10a6d493175d067b9156dcb264)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
-[![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?s=ea28d15243b0a075c9b0e94ec93cec893e2a0ada)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?b=develop-2)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+[![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?b=develop-2)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
 [![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Di)
 
 To run the [PHPUnit][] tests at the command line, go to the _tests_ directory and issue `phpunit`.
@@ -338,12 +338,12 @@ class ModelFactory
 {
     // a map of model names to factory closures
     protected $map = array();
-    
+
     public function __construct($map = array())
     {
         $this->map = $map;
     }
-    
+
     public function newInstance($model_name)
     {
         $factory = $this->map[$model_name];
@@ -520,11 +520,20 @@ class Bar extends Foo
 all parent setters and applies them. (If you do add a setter value for that
 class, it will override the parent setter.)
 
+### TBD
+
+- Lazy values
+
+- Config files
+
+- ContainerBuilder
+
+- Redo Factory examples to use entities, not models
 
 ### Conclusion
 
 If we construct our dependencies properly with params, setters, services, and
 factories, we will only need to get one object directly from DI container. All
 object creation will then happen through the DI container via factory objects
-and/or the `Container` object. We will never need to use the DI container 
+and/or the `Container` object. We will never need to use the DI container
 itself in any of the created objects.
