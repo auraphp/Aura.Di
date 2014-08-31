@@ -520,13 +520,90 @@ class Bar extends Foo
 all parent setters and applies them. (If you do add a setter value for that
 class, it will override the parent setter.)
 
+### Lazy values
+
+Sometimes you may want to pass api keys which may change often.
+The easiest way to that is via with the help of lazy values.
+
+
+```php
+$di->value['github_api_key'] = 'hello';
+$di->params['Example']['api'] = $di->lazyValue('github_api_key');
+
+class Example
+{
+    protected $api;
+
+    public function __construct($api)
+    {
+        $this->api = $api;
+    }
+}
+
+$di->set('example', $di->lazyNew('Example'));
+```
+
+Now if you get the `Example` object via `$example = $di->get('example');`
+you can notice the value of `github_api_key` key will be injected.
+
+### ContainerBuilder
+
+Container Builder helps to solve [Two-Stage Config](http://auraphp.com/blog/2014/04/07/two-stage-config/).
+After a long period of consideration, research, and experiment, we have
+found a non-static solution for programmatic configuration through a DI
+container. It is part of a two-stage configuration process,
+implemented through a ContainerBuilder.
+
+The two stages are `define` and `modify`:
+
+    In the `define` stage, the Config object defines constructor params,
+    setter method values, and services. This is the equivalent of the
+    previous single-stage Solar and Aura v1 configuration system.
+
+    The ContainerBuilder then locks the Container so that its definitions
+    cannot be changed, and then begins the `modify` stage. In this second
+    stage, we retrieve service objects from the Container and modify
+    them programmatically.
+
+```php
+use Aura\Di\ContainerBuilder;
+$services = array();
+$config_classes = array(
+    'Aura\Cli\_Config',
+    'Aura\Router\_Config',
+    'Aura\Web\_Config'
+);
+$container_builder = new ContainerBuilder();
+$di = $container_builder->newInstance($services, $config_classes);
+```
+
+### Config files
+
+```php
+namespace Vendor\Package;
+use Aura\Di\Config;
+use Aura\Di\Container;
+class Common extends Config
+{
+    public function define(Container $di)
+    {
+        // your di configuration params, setter injection
+    }
+
+    public function modify(Container $di)
+    {
+        // you can get the objects via $di->get()
+        // example get router object
+    }
+}
+```
+
+You can also have a look at other examples of [Aura.Cli](https://github.com/auraphp/Aura.Cli/blob/2.0.0/config/Common.php),
+[Aura.Html](https://github.com/auraphp/Aura.Html/blob/2.0.0/config/Common.php),
+[Aura.Router](https://github.com/auraphp/Aura.Router/blob/2.0.0/config/Common.php),
+[Aura.View](https://github.com/auraphp/Aura.View/blob/2.0.0/config/Common.php).
+
 ### TBD
-
-- Lazy values
-
-- Config files
-
-- ContainerBuilder
 
 - Redo Factory examples to use entities, not models
 
