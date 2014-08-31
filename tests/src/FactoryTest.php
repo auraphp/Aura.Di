@@ -137,6 +137,13 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual);
     }
 
+    public function testAutoResolveExplicit()
+    {
+        $this->factory->resolve['Aura\Di\FakeParentClass'] = $this->factory->newLazyNew('Aura\Di\FakeChildClass');
+        $object = $this->factory->newInstance('Aura\Di\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\FakeChildClass', $object->fake);
+    }
+
     public function testAutoResolveNewInstance()
     {
         $object = $this->factory->newInstance('Aura\Di\FakeChildClass');

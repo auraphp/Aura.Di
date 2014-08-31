@@ -57,6 +57,15 @@ class Container implements ContainerInterface
 
     /**
      *
+     * A reference to the Factory $resolve.
+     *
+     * @var array
+     *
+     */
+    protected $resolve;
+
+    /**
+     *
      * Retains named service definitions.
      *
      * @var array
@@ -99,6 +108,7 @@ class Container implements ContainerInterface
         $this->factory = $factory;
         $this->params =& $this->factory->params;
         $this->setter =& $this->factory->setter;
+        $this->resolve =& $this->factory->resolve;
     }
 
     /**
@@ -121,12 +131,16 @@ class Container implements ContainerInterface
             throw new Exception\ContainerLocked;
         }
 
-        if ($key == 'params') {
+        if ($key == 'param' || $key == 'params') {
             return $this->params;
         }
 
         if ($key == 'setter' || $key == 'setters') {
             return $this->setter;
+        }
+
+        if ($key == 'resolve') {
+            return $this->resolve;
         }
 
         throw new UnexpectedValueException($key);

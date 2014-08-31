@@ -66,7 +66,16 @@ class Factory
 
     /**
      *
-     * Returns a reference to the $params array.
+     * Auto-resolve these typehints to these values.
+     *
+     * @var array
+     *
+     */
+    protected $revolve = array();
+
+    /**
+     *
+     * Returns a reference to various property arrays.
      *
      * @return array
      *
@@ -419,10 +428,15 @@ class Factory
             return array();
         }
 
-        $typehint = $rparam->getClass();
-        if ($typehint && $typehint->isInstantiable()) {
+        $rtype = $rparam->getClass();
+        if ($rtype && isset($this->resolve[$rtype->name])) {
+            // use an explict auto-resolution
+            return $this->resolve[$rtype->name];
+        }
+
+        if ($rtype && $rtype->isInstantiable()) {
             // use a lazy-new-instance of the typehinted class
-            return $this->newLazyNew($typehint->name);
+            return $this->newLazyNew($rtype->name);
         }
 
         // use a null as a placeholder

@@ -316,4 +316,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('keepme', $actual->getFoo());
     }
 
+    public function testResolve()
+    {
+        $this->container->resolve['Aura\Di\FakeParentClass'] = $this->container->lazyNew('Aura\Di\FakeChildClass');
+        $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
+        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual->fake);
+    }
 }
