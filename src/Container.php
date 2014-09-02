@@ -66,12 +66,12 @@ class Container implements ContainerInterface
 
     /**
      *
-     * A reference to the Factory $resolve.
+     * A reference to the Factory $types.
      *
      * @var array
      *
      */
-    protected $resolve;
+    protected $types;
 
     /**
      *
@@ -118,7 +118,7 @@ class Container implements ContainerInterface
         $this->params =& $this->factory->params;
         $this->setter =& $this->factory->setter;
         $this->values =& $this->factory->values;
-        $this->resolve =& $this->factory->resolve;
+        $this->types =& $this->factory->types;
     }
 
     /**
@@ -153,8 +153,8 @@ class Container implements ContainerInterface
             return $this->values;
         }
 
-        if ($key == 'resolve') {
-            return $this->resolve;
+        if ($key == 'type' || $key == 'types') {
+            return $this->types;
         }
 
         throw new UnexpectedValueException($key);

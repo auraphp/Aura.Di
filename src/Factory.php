@@ -82,7 +82,7 @@ class Factory
      * @var array
      *
      */
-    protected $resolve = array();
+    protected $types = array();
 
     /**
      *
@@ -445,9 +445,9 @@ class Factory
         }
 
         $rtype = $rparam->getClass();
-        if ($rtype && isset($this->resolve[$rtype->name])) {
+        if ($rtype && isset($this->types[$rtype->name])) {
             // use an explict auto-resolution
-            return $this->resolve[$rtype->name];
+            return $this->types[$rtype->name];
         }
 
         if ($rtype && $rtype->isInstantiable()) {
