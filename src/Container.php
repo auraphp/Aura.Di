@@ -107,6 +107,24 @@ class Container implements ContainerInterface
 
     /**
      *
+     * A map of magic __get() names and their underlying properties.
+     *
+     * @var array
+     *
+     */
+    protected $magic_props = array(
+        'param' => 'params',
+        'params' => 'params',
+        'setter' => 'setter',
+        'setters' => 'setter',
+        'value' => 'values',
+        'values' => 'values',
+        'type' => 'types',
+        'types' => 'types'
+    );
+
+    /**
+     *
      * Constructor.
      *
      * @param Factory $factory A factory to create objects.
@@ -141,20 +159,9 @@ class Container implements ContainerInterface
             throw new Exception\ContainerLocked;
         }
 
-        if ($key == 'param' || $key == 'params') {
-            return $this->params;
-        }
-
-        if ($key == 'setter' || $key == 'setters') {
-            return $this->setter;
-        }
-
-        if ($key == 'value' || $key == 'values') {
-            return $this->values;
-        }
-
-        if ($key == 'type' || $key == 'types') {
-            return $this->types;
+        if (isset($this->magic_props[$key])) {
+            $prop = $this->magic_props[$key];
+            return $this->$prop;
         }
 
         throw new UnexpectedValueException($key);
