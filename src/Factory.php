@@ -77,7 +77,16 @@ class Factory
 
     /**
      *
-     * Returns a reference to the $params array.
+     * Auto-resolve these typehints to these values.
+     *
+     * @var array
+     *
+     */
+    protected $types = array();
+
+    /**
+     *
+     * Returns a reference to various property arrays.
      *
      * @return array
      *
@@ -401,24 +410,53 @@ class Factory
         $rparams = $rctor->getParameters();
         foreach ($rparams as $rparam) {
             $name = $rparam->name;
-            $explicit = isset($this->params[$class][$name]);
-            if ($explicit) {
-                // use the explicit value for this class
-                $unified[$name] = $this->params[$class][$name];
-            } elseif (isset($parent[$name])) {
-                // use the implicit value from the parent class
-                $unified[$name] = $parent[$name];
-            } elseif ($rparam->isDefaultValueAvailable()) {
-                // use the reflected value from the constructor
-                $unified[$name] = $rparam->getDefaultValue();
-            } else {
-                // no value, use a null placeholder
-                $unified[$name] = null;
-            }
+            $unified[$name] = $this->getUnifiedParam(
+                $rparam,
+                $class,
+                $parent,
+                $name
+            );
         }
 
         // done
         return $unified;
+    }
+
+    protected function getUnifiedParam($rparam, $class, $parent, $name)
+    {
+        if (isset($this->params[$class][$name])) {
+            // use the explicit value for this class
+            return $this->params[$class][$name];
+        }
+
+        if (isset($parent[$name])) {
+            // use the implicit value from the parent class
+            return $parent[$name];
+        }
+
+        if ($rparam->isDefaultValueAvailable()) {
+            // use the default value
+            return $rparam->getDefaultValue();
+        }
+
+        if ($rparam->isArray()) {
+            // use an empty array
+            return array();
+        }
+
+        $rtype = $rparam->getClass();
+        if ($rtype && isset($this->types[$rtype->name])) {
+            // use an explict auto-resolution
+            return $this->types[$rtype->name];
+        }
+
+        if ($rtype && $rtype->isInstantiable()) {
+            // use a lazy-new-instance of the typehinted class
+            return $this->newLazyNew($rtype->name);
+        }
+
+        // use a null as a placeholder
+        return null;
     }
 
     /**

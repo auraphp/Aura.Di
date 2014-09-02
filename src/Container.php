@@ -66,6 +66,15 @@ class Container implements ContainerInterface
 
     /**
      *
+     * A reference to the Factory $types.
+     *
+     * @var array
+     *
+     */
+    protected $types;
+
+    /**
+     *
      * Retains named service definitions.
      *
      * @var array
@@ -109,6 +118,7 @@ class Container implements ContainerInterface
         $this->params =& $this->factory->params;
         $this->setter =& $this->factory->setter;
         $this->values =& $this->factory->values;
+        $this->types =& $this->factory->types;
     }
 
     /**
@@ -141,6 +151,10 @@ class Container implements ContainerInterface
 
         if ($key == 'value' || $key == 'values') {
             return $this->values;
+        }
+
+        if ($key == 'type' || $key == 'types') {
+            return $this->types;
         }
 
         throw new UnexpectedValueException($key);
