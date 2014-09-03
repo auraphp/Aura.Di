@@ -88,6 +88,8 @@ class Factory
      *
      * Returns a reference to various property arrays.
      *
+     * @param string $key The property name to return.
+     *
      * @return array
      *
      */
@@ -200,6 +202,15 @@ class Factory
         return new LazyRequire($file);
     }
 
+    /**
+     *
+     * Returns a new LazyValue.
+     *
+     * @param string $key The value key to use.
+     *
+     * @return LazyValue
+     *
+     */
     public function newLazyValue($key)
     {
         return new LazyValue($this->values, $key);
@@ -422,6 +433,21 @@ class Factory
         return $unified;
     }
 
+    /**
+     *
+     * Returns a unified param.
+     *
+     * @param ReflectionParameter $rparam A parameter reflection.
+     *
+     * @param string $class The class name to return values for.
+     *
+     * @param array $parent The parent unified params.
+     *
+     * @param string $name The param name.
+     *
+     * @return array The unified param.
+     *
+     */
     protected function getUnifiedParam($rparam, $class, $parent, $name)
     {
         if (isset($this->params[$class][$name])) {
