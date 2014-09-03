@@ -3,22 +3,24 @@
 The Aura.Di package provides a dependency injection container system with the
 following features:
 
-- native support for constructor- and setter-based injection
+- constructor and setter injection
 
-- lazy-loading of services
-
-- inheritable configuration of setters and constructor params
+- explicit and implicit auto-resolution of typehinted constructor parameter values
 
 - configuration of setters across interfaces and traits
 
-When combined with factory classes, you can completely separate object
-configuration, object construction, and object usage, allowing for great
-flexibility and increased testability.
+- inheritance of constructor parameter and setter method values
+
+- lazy-loaded services, values, and instances
+
+- instance factories
 
 Fully describing the nature and benefits of dependency injection, while
 desirable, is beyond the scope of this document. For more information about
 "inversion of control" and "dependency injection" please consult
 <http://martinfowler.com/articles/injection.html> by Martin Fowler.
+
+Finally, please note that this package is intended for use as a **dependency injection** system, not as a **service locator** system. If you use it as a service locator, that's bad, and you should feel bad.
 
 ## Foreword
 
@@ -50,567 +52,523 @@ you notice compliance oversights, please send a patch via pull request.
 
 To ask questions, provide feedback, or otherwise communicate with other Aura users, please join our [Google Group](http://groups.google.com/group/auraphp), follow [@auraphp on Twitter](http://twitter.com/auraphp), or chat with us on #auraphp on Freenode.
 
-
 ## Getting Started
 
-You can instantiate a `Container` as follows:
+### Instantiation
+
+We instantiate a _Container_ like so:
 
 ```php
 <?php
 use Aura\Di\Container;
 use Aura\Di\Factory;
 
-$di = new Container(new Factory());
+$di = new Container(new Factory);
 ?>
 ```
 
-### Setting Services
+We can then set shared services on the container. Additionlly, we can add default constructor parameters and setter method values to be used on new class instances, along with other values as well.
 
-For the following examples, we will set a service that should return a
-database connection. The hypothetical database connection class is defined as
-follows:
+### Setting And Getting Services
+
+A "service" is an object stored in the _Container_ under a unique name. Any time you `get()` the named service, you always get back the same object instance.
 
 ```php
 <?php
-namespace Example\Package;
-
-class Database
+// define the Example class
+class Example
 {
-    public function __construct($hostname, $username, $password)
+    // ...
+}
+
+// set the service
+$di->set('service_name', new Example);
+
+// get the service
+$service1 = $di->get('service_name');
+$service2 = $di->get('service_name');
+
+// the two service objects are the same
+var_dump($service1 === $service2); // true
+?>
+```
+
+That usage is great if we want to create the _Example_ instance at the same time we set the service. However, we generally want to create the service instance at the moment we *get* it, not at the moment we *set* it.
+
+The technique of delaying instantiation until `get()` time is called "lazy loading." To lazy-load an instance, use the `lazyNew()` method on the _Container_ and give it the class name to be created:
+
+```php
+<?php
+// set the service as a lazy-loaded new instance
+$di->set('service_name', $di->lazyNew('Example'));
+?>
+```
+
+Now the service is created only when we we `get()` it, and not before. This lets us set as many services as we want, but only incur the overhead of creating the instances we actually use.
+
+### Constructor Injection
+
+When we use the _Container_ to instantiate a new object, we often need to inject (i.e., set) constructor parameter values in various ways.
+
+#### Default Parameter Values
+
+We can define default values for constructor parameters using the `$di->params` array on the _Container_.
+
+Let's look at a class that takes some constructor parameters:
+
+```php
+<?php
+class ExampleWithParams
+{
+    protected $foo;
+    protected $bar;
+    public function __construct($foo, $bar)
     {
-        // ... make the database connection
+        $this->foo = $foo;
+        $this->bar = $bar;
     }
 }
 ?>
 ```
 
-We will proceed from naive service creation to a more sophisticated idiom in
-four steps. Each of the variations is a valid use of the DI container with its
-own strengths and weaknesses.
+If we were to try to set a service using `$di->lazyNew('Example')`, the instantiation would fail. The `$foo` param is required, and the _Container_ does not know what to use for that value.
 
-#### Variation 1: Eager Loading
-
-In this variation, we create a service by instantiating an object with the
-`new` operator.
+To remedy this, we tell the _Container_ what values to use for each _Example_ constructor parameter by name using the `$di->params` array:
 
 ```php
 <?php
-$di->set('database', new \Example\Package\Database(
-    'localhost', 'user', 'passwd'
+$di->params['Example']['foo'] = 'foo_value';
+$di->params['Example']['bar'] = 'bar_value';
+?>
+```
+
+Now when a service is defined with `$di->lazyNew('Example')`, the instantiation will work correctly. Each time we create an _Example_ instance through the _Container_, it will apply the `$di->params['Example']` values.
+
+#### Instance-Specfic Parameter Values
+
+If we want to override the default `$di->params` values for a specific new instance, we can pass a `$params` array as the second argument to `lazyNew()` to merge with the default values. For example:
+
+```php
+<?php
+$di->set('service_name', $di->lazyNew(
+    'Example',
+    array(
+        'bar' => 'alternative_bar_value',
+    )
 ));
 ?>
 ```
 
-This causes the database object to be created at the time we *set* the service
-into the container. That means it is always created, even if we never retrieve
-it from the container.
+This will leave the `$foo` parameter default in place, and override the `$bar` parameter value, for just that instance of the _Example_.
 
-#### Variation 2: Lazy Loading
+#### Lazy-Loaded Services As Parameter Values
 
-In this variation, we create a service by wrapping it in a closure, still
-using the `new` operator.
+Sometimes a class will need another service as one of its parameters. By way of example, the following class needs a database connection:
 
 ```php
 <?php
-$di->set('database', function () {
-    return new \Example\Package\Database('localhost', 'user', 'passwd');
-});
-?>
-```
-
-This causes the database object to be created at the time we *get* the service
-from the container, using `$di->get('database')`. Wrapping the object
-instantiation inside a closure allows for lazy-loading of the database object;
-if we never make a call to `$di->get('database')`, the object will never be
-created.
-
-#### Variation 3: Constructor Params
-
-In this variation, we will move away from using the `new` operator, and use
-the `$di->newInstance()` method instead. We still wrap the instantiation in a
-closure for lazy-loading.
-
-```php
-<?php
-$di->set('database', function () use ($di) {
-    return $di->newInstance('Example\Package\Database', array(
-        'hostname' => 'localhost',
-        'username' => 'user',
-        'password' => 'passwd',
-    ));
-});
-?>
-```
-
-The `newInstance()` method uses the `Config` object to reflect on the
-constructor method of the class to be instantiated. We can then pass
-constructor parameters based on their names as an array of key-value pairs.
-The order of the pairs does not matter; missing parameters will use the
-defaults as defined by the class constructor.
-
-#### Variation 4: Class Constructor Params
-
-In this variation, we define a configuration for the `Database` class
-separately from the lazy-load instantiation of the `Database` object.
-
-```php
-<?php
-$di->params['Example\Package\Database'] = array(
-    'hostname' => 'localhost',
-    'username' => 'user',
-    'password' => 'passwd',
-);
-
-$di->set('database', function () use ($di) {
-    return $di->newInstance('Example\Package\Database');
-});
-?>
-```
-
-As part of the object-creation process, the `Config` examines the `$di->params`
-values for the class being instantiated. Those values are merged with the
-class constructor defaults at instantiation time, and passed to the
-constructor (again, the order does not matter, only that the param key names
-match the constructor param names).
-
-At this point, we have successfully separated object configuration from object
-instantiation, and allow for lazy-loading of service objects from the
-container.
-
-#### Variation 5: Call The lazyNew() Method
-
-In this variation, we call the `lazyNew()` method, which encapsulates the
-"use a closure to return a new instance" idiom.
-
-```php
-<?php
-$di->params['Example\Package\Database'] = array(
-    'hostname' => 'localhost',
-    'username' => 'user',
-    'password' => 'passwd',
-);
-
-$di->set('database', $di->lazyNew('Example\Package\Database'));
-?>
-```
-
-#### Variation 5a: Override Class Constructor Params
-
-In this variation, we override the `$di->params` values that will be used at
-instantiation time.
-
-```php
-<?php
-$di->params['Example\Package\Database'] = array(
-    'hostname' => 'localhost',
-    'username' => 'user',
-    'password' => 'passwd',
-);
-
-$di->set('database', $di->lazyNew('Example\Package\Database', array(
-    'hostname' => 'example.com',
-));
-?>
-```
-
-The instantiation-time values take precedence over the configuration values,
-which themselves take precedence over the constructor defaults.
-
-
-### Getting Services
-
-To get a service object from the container, call `$di->get()`.
-
-```php
-<?php
-$db = $di->get('database');
-?>
-```
-
-This will retrieve the service object from the container; if it was set using
-a closure, the closure will be invoked to create the object at that time. Once
-the object is created, it is retained in the container for future use; getting
-the same service multiple times will return the exact same object instance.
-
-
-### Constructor Params Inheritance
-
-For the following examples, we will add an `AbstractModel` class and two
-concrete classes called `BlogModel` and `WikiModel`. The idea is that all
-`AbstractModel` classes need a `Database` connection to interact with one or
-more tables in the database.
-
-```php
-<?php
-namespace Example\Package;
-
-abstract class AbstractModel
+class ExampleNeedsService
 {
     protected $db;
-
-    public function __construct(Database $db)
+    public function __construct($db)
     {
         $this->db = $db;
     }
 }
-
-class BlogModel extends AbstractModel
-{
-    // ...
-}
-
-class WikiModel extends AbstractModel
-{
-    // ...
-}
 ?>
 ```
 
-We will create services for the `BlogModel` and `WikiModel`, and inject the
-database service into them as part of the service definition. Using config
-inheritance provided by the DI container, we can define the database service
-injection through class configuration.
+To inject a shared service as a parameter value, use `$di->lazyGet()` so that the service object is not created until the _ExampleNeedsService_ object is created:
 
 ```php
 <?php
-// default params for the Database class
-$di->params['Example\Package\Database'] = array(
-    'hostname' => 'localhost',
-    'username' => 'user',
-    'password' => 'passwd',
-);
-
-// default params for the AbstractModel class
-$di->params['Example\Package\AbstractModel'] = array(
-    'db' => $di->lazyGet('database'),
-);
-
-// define the database service
-$di->set('database', $di->lazyNew('Example\Package\Database'));
-
-// define the blog_model service
-$di->set('blog_model', $di->lazyNew('Example\Package\BlogModel'));
-
-// define the wiki_model service
-$di->set('wiki_model', $di->lazyNew('Example\Package\WikiModel'));
+$di->params['ExampleNeedsService']['db'] = $di->lazyGet('db_service');
 ?>
 ```
 
-We do not need to set the value of the `'db'` param for the `BlogModel` and
-`WikiModel` directly. Instead, the params for the `AbstractModel` class are
-automatically inherited by the child `BlogModel` and `WikiModel` classes, so
-the `'db'` constructor param for all `Model` classes automatically gets the
-`'database'` service. (We can override that at instantiation time if we like.)
+This keeps the service from being created until the very moment it is needed. If we never instantiate anything that needs the service, the service itself will never be instantiated.
 
-Note the use of the `lazyGet()` method. This is a special method intended for
-use with params and setters. If we used `$di->get()`, the container would
-instantiate the service at that time. However, using `$di->lazyGet()` allows
-the service to be instantiated only when the object being configured is
-instantiated. Think of it as a lazy-loading wrapper around the service (which
-itself may be lazy-loaded).
+#### Auto-Resolution Of Parameter Values
 
-We do not need to write our classes in any special way to get the benefit of
-this configuration system. Any class with constructor params will be
-recognized by the configuration system, so long as we instantiate it via
-`$di->newInstance()`or `$di->lazyNew()`.
+If there is no `$di->params` value for a parameter, the _Container_ will fill in the constructor default value.
 
+If the parameter is typehinted as an `array` but there is no `$di->params` value and also no default value, the _Container_ will fill in an empty `array()`.
 
-### Factories and Dependency Fulfillment
+If the parameter is typehinted to a class but there is no `$di->params` value for that parameter and also no default value, the _Container_ will fill in a `lazyNew()` call to the typehinted class.
 
-Creating a service for each of the model objects in our application can become
-tiresome. We may need to create other models, and we don't want to have to
-create a separate service for each one. In addition, we may need to create
-model objects from within another object. Finally, we don't want to create
-model objects until we actually need them. This is where we can make use of
-factories.
-
-Below, we will define three new classes: a factory to create model objects for
-us, an abstract `PageController` class that uses the model factory, and a
-`BlogController` class that needs an instance of a blog model. We will
-populate the `ModelFactory` with a map of model names to factory objects that
-will create the mapped objects.
+For example, look at the following class; it has a parameter with a default value, a parameter typehinted as an array with no default, and a parameter typehinted to a class with no default:
 
 ```php
 <?php
-namespace Example\Package;
-
-class ModelFactory
+class ExampleForAutoResolution
 {
-    // a map of model names to factory closures
-    protected $map = array();
-
-    public function __construct($map = array())
+    public function __construct($foo = 'bar', array $baz, Example $dib)
     {
-        $this->map = $map;
-    }
-
-    public function newInstance($model_name)
-    {
-        $factory = $this->map[$model_name];
-        $model = $factory();
-        return $model;
-    }
-}
-
-abstract class PageController
-{
-    protected $model_factory;
-
-    public function __construct(ModelFactory $model_factory)
-    {
-        $this->model_factory = $model_factory;
-    }
-}
-
-class BlogController extends PageController
-{
-    public function exec()
-    {
-        $blog_model = $this->model_factory->newInstance('blog');
-        // ... get data from the blog model and return it ...
+        // ...
     }
 }
 ?>
 ```
 
-Now we can set up the DI container as follows:
+For each relevant `$di->params['ExampleForAutoResolution']` element that is missing, the _Container_ will auto-resolve the missing elements to these values:
 
 ```php
 <?php
-// default params for database connections
-$di->params['Example\Package\Database'] = array(
-    'hostname' => 'localhost',
-    'username' => 'user',
-    'password' => 'passwd',
-);
-
-// default params for the AbstractModel class
-$di->params['Example\Package\AbstractModel'] = array(
-    'db' => $di->lazyGet('database'),
-);
-
-// default params for the model factory
-$di->params['Example\Package\ModelFactory'] = array(
-    // a map of model names to model factories
-    'map' => array(
-        'blog' => $di->newFactory('Example\Package\BlogModel'),
-        'wiki' => $di->newFactory('Example\Package\WikiModel'),
-    ),
-);
-
-// default params for page controllers
-$di->params['Example\Package\PageController'] = array(
-    'model_factory' => $di->lazyGet('model_factory'),
-);
-
-// the database service; note that we can use lazyNew() and the
-// container will do all the setup for us
-$di->set('database', $di->lazyNew('Example\Package\Database'));
-
-// the model factory service
-$di->set('model_factory', $di->lazyNew('Example\Package\ModelFactory'));
+$di->params['ExampleForAutoResolution']['foo'] = 'bar';
+$di->params['ExampleForAutoResolution']['baz'] = array();
+$di->params['ExampleForAutoResolution']['dib'] = $di->lazyNew('Example');
 ?>
 ```
 
-When we create an instance of the `BlogController` and run it ...
+We can set any combination of these explicitly, and those that are not explicitly set will be filled in automatically for us.
+
+#### Directing Auto-Resolution Typehints To Specific Values
+
+We can direct the auto-resolution of class-typehinted constructor parameters to specific values by using the `$di->types` array.
 
 ```php
 <?php
-$blog_controller = $di->newInstance('Example\Package\BlogController');
-echo $blog_controller->exec();
+// auto-resolve all 'ExampleInteface' typehints to a new 'Example' instance
+$di->types['ExampleInterface'] = $di->lazyNew('Example');
+
+// auto-resolve all 'DbInterface' typehints to a shared service
+$di->types['DbInterface'] = $di->lazyGet('db_service');
+
+// auto-resolve all 'ExampleParent' typehints to a different concrete class
+$di->types['ExampleParent'] = $di->lazyNew('ExampleChild');
 ?>
 ```
 
-... a series of events occurs to fulfill all the dependencies in two steps.
-The first step is the instantiation of the `BlogController`:
+This allows us to avoid having to specify `$di->params` for every typehinted constructor parameter in every class.  Note that we can still specify explicit params on a specific class to override the auto-resolution.
 
-- The `BlogController` instance inherits its params from `PageController`
-
-- The `PageController` params get the `'model_factory'` service
-
-- The `ModelFactory` params get the `Database` object, creating the
-  database connection at that time
-
-The second step is the invocation of `ModelFactory::newInstance()` within
-`BlogController::exec()`:
-
-- `BlogController::exec()` invokes `ModelFactory::newInstance()`
-
-- `ModelFactory::newInstance()` creates a new class and passes in the
-  `Database` object
-
-At the end of all this, the `BlogController::exec()` method has been able to
-retrieve a fully-configured `BlogModel` object without having to specify any
-configuration locally.
-
+(Note that we cannot auto-resolve an `array` typehint; such typehints are always resolved to an empty `array()` when no default value is present.)
 
 ### Setter Injection
 
-Until this point, we have been working via constructor injection. However, we
-can work via setter injection as well.
+This package supports setter injection in addition to constructor injection. (These can be combined as needed.)
 
-Given the following example class ...
+#### Setter Method Values
+
+After the _Container_ constructs a new instance of an object, we can specify that certain methods should be called with certain values immediately after instantiation by using the `$di->setter` array.  Say we have class like the following:
 
 ```php
 <?php
-namespace Example\Package;
+class ExampleWithSetter
+{
+    protected $foo;
 
-class Foo {
-
-    protected $db;
-
-    public function setDb(Database $db)
+    public function setFoo($foo)
     {
-        $this->db = $db;
+        $this->foo = $foo;
     }
 }
 ?>
 ```
 
-... we can define values that should be injected via setter methods:
-
+We can specify that, by default, the `setFoo()` method should be called with a specific value after construction like so:
 
 ```php
 <?php
-// after construction, the Container will call Foo::setDb()
-// and inject the 'database' service object
-$di->setter['Example\Package\Foo']['setDb'] = $di->lazyGet('database');
-
-// create a foo_service; on get('foo_service'), the Container will create the
-// Foo object, then call setDb() on it per the setter specification above.
-$di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
+$di->setter['ExampleWithSetter']['setFoo'] = 'foo_value';
 ?>
 ```
 
-Note that we use `lazyGet()` for the injection. As with constructor params, we
-could tell the class to use a new `Database` object instead of the shared one
-in the `Container`:
+The value can be any valid value: a literal, a call to `lazyNew()` or `lazyGet()`, and so on.
+
+Note, however, that auto-resolution *does not apply* to setter methods. This is because the _Container_ does not know which methods are setters and which are "normal use" methods.
+
+#### Setters In Traits and Interfaces
+
+If a class uses a setter method via a trait, or implements an interface with a setter method, we can specify the default value for that setter method in relation to the trait or interface. That value will then be applied by default in every class that uses that trait or implements that interface.
+
+For example, let's say we have this trait, interface, and class:
 
 ```php
 <?php
-// after construction, call Foo::setDb() and inject a service object.
-// we override the default 'hostname' param for the instantiation.
-$di->setter['Example\Package\Foo']['setDb'] = $di->lazyNew(
-    'Example\Package\Database',
+trait ExampleFooTrait
+{
+    public function setFoo($foo)
+    {
+        $this->foo = $foo;
+    }
+}
+
+interface ExampleBarInterface
+{
+    public function setBar($bar);
+}
+
+class ExampleWithTraitAndInterface implements ExampleBarInterface
+{
+    use ExampleFooTrait;
+
+    protected $foo;
+    protected $bar;
+
+    public function setBar($bar)
+    {
+        $this->bar = $bar;
+    }
+}
+?>
+```
+
+We then define the default setter method values on the trait and interface:
+
+```php
+<?php
+$di->setter['ExampleFooTrait']['setFoo'] = 'foo_value';
+$di->setter['ExampleBarInterface']['setBar'] = 'bar_value';
+?>
+```
+
+When we call `$di->lazyNew('ExampleWithTraitAndInterface')`, those setter methods will be called by the _Container_ with those values.
+
+Note that if we have class-specific `$di->setter` values, those will take precedence over the trait and interface setter values.
+
+#### Instance-Specific Setter Values
+
+As with constructor injection, we can note instance-specific setter values to use in place of the defaults. We do so via the third argument to `$di->lazyNew()`. For example:
+
+```php
+<?php
+$di->set('service_name', $di->lazyNew(
+    'ExampleWithSetters',
+    array(), // no $params overrides
     array(
-        'hostname' => 'example.com',
+        'setFoo' => 'alternative_foo_value',
     )
-);
-
-// create a foo_service; on get('foo_service'), the Container will create the
-// Foo object, then call setDb() on it per the setter specification above.
-$di->set('foo_service', $di->lazyNew('Example\Package\Foo'));
+));
 ?>
 ```
 
-Setter configurations are inherited. If you have a class that extends
-`Example\Package\Foo` like so ...
+### Lazy Values
+
+Sometimes we know that a parameter needs to be specified, but we don't know what it will be until later.  Perhaps it is the result of looking up an API key from an environment variable. In these and other cases, we can tell a constructor parameter or setter method to use a "lazy value" and then specify that value elsewhere.
+
+For example, we can configure the _Example_ constructor parameters to use lazy values like so:
 
 ```php
 <?php
-namespace Example\Package;
-class Bar extends Foo
+$di->params['Example']['foo'] = $di->lazyValue('fooval');
+$di->params['Example']['bar'] = $di->lazyValue('barval');
+?>
+```
+
+We can then specify at some later time the values of `fooval` and `barval` using the `$di->values` array:
+
+```php
+<?php
+$di->values['fooval'] = 'lazy value for foo';
+$di->values['barval'] = 'lazy value for bar';
+?>
+```
+
+### Lazy Include and Require
+
+Occasionally we will need to `include` a file that returns a value, such as data file that returns a PHP array:
+
+```php
+<?php
+// /path/to/data.php
+return array(
+    'foo' => 'bar',
+    'baz' => 'dib',
+    'zim' => 'gir'
+);
+?>
+```
+
+We could set a constructor parameter or setter method value to `include "/path/to/data.php"`, but that would cause the file to be read filesystem at that moment, instead of at instantiation time.  To lazy-load a file as a value, call `$di->lazyInclude()` or `$di->lazyRequire()` (depending on your preference for warning levels).
+
+```php
+<?php
+$di->params['ExampleNeedsInclude']['data'] = $di->lazyInclude('/path/to/data.php');
+$di->params['ExampleNeedsRequire']['data'] = $di->lazyRequire('/path/to/data.php');
+?>
+```
+
+### Generic Lazy Calls
+
+It may be that we have a complex bit of logic we need to execute for a value. If none of the existing `$di->lazy*()` methods meet our needs, we can wrap an anonymous function or other callable in a `lazy()` call, and the callable's return will be used as the value.
+
+```php
+<?php
+$di->params['Example']['foo'] = $di->lazy(function () {
+    // complex calculations, and then:
+    return $result;
+});
+?>
+```
+
+Beware of relying on this too much; if we do, it probably means we need to separate our configuration concerns better than we are currently doing.
+
+### Instance Factory Objects
+
+Occasionally, a class will need to receive not just an instance, but a factory that is capable of creating a new instance over and over.  For example, say we have a class like the following:
+
+```php
+<?php
+class ExampleNeedsFactory
 {
-    // ...
+    protected $struct_factory;
+
+    public function __construct($struct_factory)
+    {
+        $this->struct_factory = $struct_factory;
+    }
+
+    public function getStruct(array $data)
+    {
+        $struct = $this->struct_factory->__invoke($data);
+        return $struct;
+    }
+}
+
+class ExampleStruct
+{
+    public function __construct(array $data)
+    {
+        foreach ($data as $key => $val) {
+            $this->$key = $val;
+        }
+    }
 }
 ?>
 ```
 
-... you do not need to add a new setter value for it; the `Container` reads
-all parent setters and applies them. (If you do add a setter value for that
-class, it will override the parent setter.)
-
-### Lazy values
-
-Sometimes you may want to pass api keys which may change often.
-The easiest way to that is via with the help of lazy values.
-
+We can inject an _InstanceFactory_ that creates only _ExampleStruct_ objects using `$di->newFactory()`.
 
 ```php
-$di->value['github_api_key'] = 'hello';
-$di->params['Example']['api'] = $di->lazyValue('github_api_key');
+<?php
+$di->params['ExampleNeedsFactory']['struct_factory'] = $di->newFactory('ExampleStruct');
+?>
+```
 
-class Example
+Note that the arguments passed to the factory `__invoke()` method will be passed to the underlying instance constructor sequentially, not by name. This means the `__invoke()` method works more like the native `new` keyword, and not like `$di->lazyNew()`.  These arguments override any `$di->params` values that have been set for the class being factoried; without the overrides, all existing `$di->params` values for that class will be honored. (Values from `$di->setter` for the class will also be honored, but cannot be overriddden.)
+
+Do not feel limited by the _InstanceFactory_ implementation. We can create and inject factory objects of our own if we like. The _InstanceFactory_ returned by the `$di->newFactory()` method is an occasional convenience, nothing more.
+
+### Inheritance Of Parent Values
+
+Whether by constructor parameters or setter methods, each class "inherits" the values of its parents by default. This means we can set a value on a parent class, and the child class will use it (that is, unless we set an overriding value on the child class).
+
+For example, let's say we have this parent class and this child class:
+
+```php
+<?php
+class ExampleParent
 {
-    protected $api;
+    protected $foo;
+    protected $bar;
 
-    public function __construct($api)
+    public function __construct($foo)
     {
-        $this->api = $api;
+        $this->foo = $foo;
+    }
+
+    public function setBar($bar)
+    {
+        $this->bar = $bar;
     }
 }
 
-$di->set('example', $di->lazyNew('Example'));
+class ExampleChild extends ExampleParent
+{
+    protected $baz;
+
+    public function setBaz($baz)
+    {
+        $this->baz = $baz;
+    }
+}
+?>
 ```
 
-Now if you get the `Example` object via `$example = $di->get('example');`
-you can notice the value of `github_api_key` key will be injected.
-
-### ContainerBuilder
-
-Container Builder helps to solve [Two-Stage Config](http://auraphp.com/blog/2014/04/07/two-stage-config/).
-After a long period of consideration, research, and experiment, we have
-found a non-static solution for programmatic configuration through a DI
-container. It is part of a two-stage configuration process,
-implemented through a ContainerBuilder.
-
-The two stages are `define` and `modify`:
-
-    In the `define` stage, the Config object defines constructor params,
-    setter method values, and services. This is the equivalent of the
-    previous single-stage Solar and Aura v1 configuration system.
-
-    The ContainerBuilder then locks the Container so that its definitions
-    cannot be changed, and then begins the `modify` stage. In this second
-    stage, we retrieve service objects from the Container and modify
-    them programmatically.
+We can specify the default values for every class that extends _ExampleParent_ through the `$di->params` and `$di->setter` values for the _ExampleParent_.
 
 ```php
+<?php
+$di->params['ExampleParent']['foo'] = 'parent_foo';
+$di->setter['ExampleParent']['setBar'] = 'parent_bar';
+?>
+```
+
+When we call `$di->lazyNew('ExampleChild')`, the child class will have inherited the defaults from the parent.
+
+We can always override the inherited values by specifying them for the child class directly:
+
+```php
+<?php
+$di->params['ExampleChild']['foo'] = 'child_foo';
+$di->setter['ExampleChild']['setBaz'] = 'child_baz';
+?>
+```
+
+Note that classes extended from the child class will then inherit those new values. In this way, constructor parameter and setter method values are propagated down the inheritance hierarchy.
+
+
+### Container Builder and Config Classes
+
+The _ContainerBuilder_ helps to build _Container_ objects from _Config_ classes and pre-existing service objects. It works using a [two-stage configuration system](http://auraphp.com/blog/2014/04/07/two-stage-config/).
+
+The two stages are "define" and "modify". In the "define" stage, the _Config_ object defines constructor parameter values, setter method values, services, and so on. The _ContainerBuilder_ then locks the _Container_ so that these definitions cannot be changed, and begins the "modify" stage. In the "modify" stage, we may `get()` services from the _Container_ and modify them programmatically if needed.
+
+To build a _Container_ using the _ContainerBuilder_, we do something like the following:
+
+```php
+<?php
 use Aura\Di\ContainerBuilder;
+
+// pre-existing service objects as ['service_name' => $object_instance]
 $services = array();
+
+// config classes to call define() and modify() on
 $config_classes = array(
-    'Aura\Cli\_Config',
-    'Aura\Router\_Config',
-    'Aura\Web\_Config'
+    'Aura\Cli\_Config\Common',
+    'Aura\Router\_Config\Common',
+    'Aura\Web\_Config\Common',
 );
-$container_builder = new ContainerBuilder();
+
+//
+$container_builder = new ContainerBuilder;
 $di = $container_builder->newInstance($services, $config_classes);
+?>
 ```
 
-### Config files
+A configuration class looks like the following:
 
 ```php
-namespace Vendor\Package;
+<?php
+namespace Vendor\Package\_Config;
+
 use Aura\Di\Config;
 use Aura\Di\Container;
+
 class Common extends Config
 {
     public function define(Container $di)
     {
-        // your di configuration params, setter injection
+        $di->set('log_service', $di->lazyNew('Logger'));
+        $di->params['Logger']['dir'] = '/path/to/logs';
     }
 
     public function modify(Container $di)
     {
-        // you can get the objects via $di->get()
-        // example get router object
+        $log = $di->get('log_service');
+        $log->debug('Finished config.');
     }
 }
+?>
 ```
 
-You can also have a look at other examples of [Aura.Cli](https://github.com/auraphp/Aura.Cli/blob/2.0.0/config/Common.php),
-[Aura.Html](https://github.com/auraphp/Aura.Html/blob/2.0.0/config/Common.php),
-[Aura.Router](https://github.com/auraphp/Aura.Router/blob/2.0.0/config/Common.php),
-[Aura.View](https://github.com/auraphp/Aura.View/blob/2.0.0/config/Common.php).
+Here are some example _Config_ classes from other Aura packages:
 
-### TBD
-
-- Redo Factory examples to use entities, not models
+- [Aura.Cli](https://github.com/auraphp/Aura.Cli/blob/2.0.0/config/Common.php)
+- [Aura.Html](https://github.com/auraphp/Aura.Html/blob/2.0.0/config/Common.php)
+- [Aura.Router](https://github.com/auraphp/Aura.Router/blob/2.0.0/config/Common.php)
+- [Aura.View](https://github.com/auraphp/Aura.View/blob/2.0.0/config/Common.php)
 
 ### Conclusion
 
-If we construct our dependencies properly with params, setters, services, and
-factories, we will only need to get one object directly from DI container. All
-object creation will then happen through the DI container via factory objects
-and/or the `Container` object. We will never need to use the DI container
-itself in any of the created objects.
+If we construct our dependencies properly with params, setters, services, and factories, we will only need to get one object directly from the _Container_ in our bootstrap file. All object creation will then occur within _Container_ itself or the various factory objects. We will never need to use the _Container_ itself in any of our application objects.
