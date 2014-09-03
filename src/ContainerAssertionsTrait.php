@@ -23,6 +23,34 @@ trait ContainerAssertionsTrait
 {
     /**
      *
+     * The Container.
+     *
+     * @var Container
+     *
+     */
+    protected $di;
+
+    /**
+     *
+     * Sets a new Container into $this->di.
+     *
+     * @param array $config_classes Use these config classes.
+     *
+     * @param array $services Use these predefined service object.
+     *
+     * @return null
+     *
+     */
+    protected function setUpContainer(
+        array $config_classes = array(),
+        array $services = array()
+    ) {
+        $builder = new ContainerBuilder;
+        $this->di = $builder->newInstance($services, $config_classes);
+    }
+
+    /**
+     *
      * Asserts the container gets a particular class for a named
      * service.
      *
