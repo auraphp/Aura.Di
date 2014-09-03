@@ -133,7 +133,7 @@ class ExampleWithParams
 
 If we were to try to set a service using `$di->lazyNew('ExampleWithParams')`, the instantiation would fail. The `$foo` param is required, and the _Container_ does not know what to use for that value.
 
-To remedy this, we tell the _Container_ what values to use for each _Example_ constructor parameter by name using the `$di->params` array:
+To remedy this, we tell the _Container_ what values to use for each _ExampleWithParams_ constructor parameter by name using the `$di->params` array:
 
 ```php
 <?php
@@ -142,7 +142,7 @@ $di->params['ExampleWithParams']['bar'] = 'bar_value';
 ?>
 ```
 
-Now when a service is defined with `$di->lazyNew('Example')`, the instantiation will work correctly. Each time we create an _Example_ instance through the _Container_, it will apply the `$di->params['Example']` values.
+Now when a service is defined with `$di->lazyNew('ExampleWithParams')`, the instantiation will work correctly. Each time we create an _ExampleWithParams_ instance through the _Container_, it will apply the `$di->params['ExampleWithParams']` values.
 
 #### Instance-Specific Parameter Values
 
@@ -159,7 +159,7 @@ $di->set('service_name', $di->lazyNew(
 ?>
 ```
 
-This will leave the `$foo` parameter default in place, and override the `$bar` parameter value, for just that instance of the _Example_.
+This will leave the `$foo` parameter default in place, and override the `$bar` parameter value, for just that instance of the _ExampleWithParams_.
 
 #### Lazy-Loaded Services As Parameter Values
 
