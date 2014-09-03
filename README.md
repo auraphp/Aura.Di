@@ -131,7 +131,7 @@ class ExampleWithParams
 ?>
 ```
 
-If we were to try to set a service using `$di->lazyNew('Example')`, the instantiation would fail. The `$foo` param is required, and the _Container_ does not know what to use for that value.
+If we were to try to set a service using `$di->lazyNew('ExampleWithParams')`, the instantiation would fail. The `$foo` param is required, and the _Container_ does not know what to use for that value.
 
 To remedy this, we tell the _Container_ what values to use for each _Example_ constructor parameter by name using the `$di->params` array:
 
@@ -151,7 +151,7 @@ If we want to override the default `$di->params` values for a specific new insta
 ```php
 <?php
 $di->set('service_name', $di->lazyNew(
-    'Example',
+    'ExampleWithParams',
     array(
         'bar' => 'alternative_bar_value',
     )
