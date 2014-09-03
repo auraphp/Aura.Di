@@ -137,14 +137,14 @@ To remedy this, we tell the _Container_ what values to use for each _Example_ co
 
 ```php
 <?php
-$di->params['Example']['foo'] = 'foo_value';
-$di->params['Example']['bar'] = 'bar_value';
+$di->params['ExampleWithParams']['foo'] = 'foo_value';
+$di->params['ExampleWithParams']['bar'] = 'bar_value';
 ?>
 ```
 
 Now when a service is defined with `$di->lazyNew('Example')`, the instantiation will work correctly. Each time we create an _Example_ instance through the _Container_, it will apply the `$di->params['Example']` values.
 
-#### Instance-Specfic Parameter Values
+#### Instance-Specific Parameter Values
 
 If we want to override the default `$di->params` values for a specific new instance, we can pass a `$params` array as the second argument to `lazyNew()` to merge with the default values. For example:
 
