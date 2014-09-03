@@ -9,7 +9,7 @@
         "di container",
         "dependency injection container"
     ],
-    "homepage": "https://github.com/auraphp/Aura.Di/releases",
+    "homepage": "https://github.com/auraphp/Aura.Di",
     "license": "BSD-2-Clause",
     "authors": [
         {
