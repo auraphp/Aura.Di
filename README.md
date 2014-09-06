@@ -278,6 +278,8 @@ The value can be any valid value: a literal, a call to `lazyNew()` or `lazyGet()
 
 Note, however, that auto-resolution *does not apply* to setter methods. This is because the _Container_ does not know which methods are setters and which are "normal use" methods.
 
+Note also that this works only with explicitly-defined setter methods. Setter methods that exist only via magic `__call()` will not be honored.
+
 #### Setters In Traits and Interfaces
 
 If a class uses a setter method via a trait, or implements an interface with a setter method, we can specify the default value for that setter method in relation to the trait or interface. That value will then be applied by default in every class that uses that trait or implements that interface.
