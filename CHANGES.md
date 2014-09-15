@@ -10,4 +10,4 @@ Second beta release.
 
 - ADD: Auto-resolution of typehinted constructor parameters, and of array typehints with no default value, along with directed auto-resolution.
 
-- ADD: ContainerAssertionsTrait so that outehr packages can more easily test their container config classes.
+- ADD: ContainerAssertionsTrait so that other packages can more easily test their container config classes.

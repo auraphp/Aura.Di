@@ -12,6 +12,7 @@ namespace Aura\Di;
 
 use ReflectionClass;
 use ReflectionException;
+use ReflectionParameter;
 
 
 /**
