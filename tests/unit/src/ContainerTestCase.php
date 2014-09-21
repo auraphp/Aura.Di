@@ -1,25 +1,7 @@
 <?php
-/**
- *
- * This file is part of Aura for PHP.
- *
- * @package Aura.Di
- *
- * @license http://opensource.org/licenses/bsd-license.php BSD
- *
- */
 namespace Aura\Di;
 
-/**
- *
- * Use this trait in \PHPUnit_Framework_TestCase classes to test
- * Container service and new instance configurations. The Container
- * must be in the $this->di property.
- *
- * @package Aura.Di
- *
- */
-trait ContainerAssertionsTrait
+class ContainerTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      *
@@ -45,7 +27,7 @@ trait ContainerAssertionsTrait
         array $config_classes = array(),
         array $services = array()
     ) {
-        $builder = new ContainerBuilder;
+        $builder = new ContainerBuilder();
         $this->di = $builder->newInstance($services, $config_classes);
     }
 

@@ -1,23 +1,21 @@
 <?php
 namespace Aura\Di;
 
-use StdClass;
+use stdClass;
 
-class ContainerAssertionsTraitTest extends \PHPUnit_Framework_TestCase
+class ContainerTestCaseTest extends ContainerTestCase
 {
-    use ContainerAssertionsTrait;
-
     protected function setUp()
     {
         $this->setUpContainer(
             array(),
-            array('service' => new StdClass)
+            array('service' => new stdClass)
         );
     }
 
     public function testAssertGet()
     {
-        $this->assertGet('service', 'StdClass');
+        $this->assertGet('service', 'stdClass');
     }
 
     public function testAssertNewInstance()
