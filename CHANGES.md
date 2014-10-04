@@ -1,13 +1,6 @@
-Second beta release.
+- DOC: In README, note that magic-call setters will not work.
 
-- REF: Extract object creation from Container into Factory
-
-- DOC: Complete README rewrite, update docblocks
-
-- ADD: The Factory now supports setters from traits.
-
-- ADD: LazyValue functionality.
-
-- ADD: Auto-resolution of typehinted constructor parameters, and of array typehints with no default value, along with directed auto-resolution.
-
-- ADD: ContainerAssertionsTrait so that outehr packages can more easily test their container config classes.
+- BRK: Related to testing under PHP 5.3, remove the ContainerAssertionsTrait.
+  The trait is not 5.3 compatible, so it has to go. Instead, you can extend the
+  Aura\Di\_Config\AbstractContainerTest in tests/container/src/ and override the
+  provideGet() and provideNewInstance() methods. Sorry for the hassle.
