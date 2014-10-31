@@ -68,7 +68,7 @@ $di = new Container(new Factory);
 ?>
 ```
 
-We can then set shared services on the container. Additionlly, we can add default constructor parameters and setter method values to be used on new class instances, along with other values as well.
+We can then set shared services on the container. Additionally, we can add default constructor parameters and setter method values to be used on new class instances, along with other values as well.
 
 ### Setting And Getting Services
 
