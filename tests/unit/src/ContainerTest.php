@@ -4,11 +4,13 @@ namespace Aura\Di;
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
+    protected $factory;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->container = new Container(new Factory);
+        $this->factory = new Factory;
+        $this->container = new Container($this->factory);
     }
 
     protected function tearDown()
@@ -330,5 +332,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
         $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual->fake);
+    }
+
+    public function testSetAutoResolve()
+    {
+        $this->assertTrue($this->factory->auto_resolve);
+        $this->container->setAutoResolve(false);
+        $this->assertFalse($this->factory->auto_resolve);
+
+        $this->container->lock();
+        $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
+        $this->container->setAutoResolve(true);
     }
 }

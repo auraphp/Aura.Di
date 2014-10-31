@@ -156,4 +156,14 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(), $object->array);
         $this->assertNull($object->empty);
     }
+
+    public function testAutoResolveDisabled()
+    {
+        $this->factory->setAutoResolve(false);
+        $this->setExpectedException(
+            'Aura\Di\Exception\MissingParam',
+            'Aura\Di\FakeResolveClass::$fake'
+        );
+        $this->factory->newInstance('Aura\Di\FakeResolveClass');
+    }
 }

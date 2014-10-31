@@ -194,6 +194,24 @@ class Container implements ContainerInterface
 
     /**
      *
+     * Enables and disables auto-resolution.
+     *
+     * @param bool $auto_resolve True to enable, false to disable.
+     *
+     * @return null
+     *
+     */
+    public function setAutoResolve($auto_resolve)
+    {
+        if ($this->isLocked()) {
+            throw new Exception\ContainerLocked;
+        }
+
+        $this->factory->setAutoResolve($auto_resolve);
+    }
+
+    /**
+     *
      * Does a particular service definition exist?
      *
      * @param string $service The service key to look up.

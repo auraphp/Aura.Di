@@ -77,6 +77,15 @@ class Factory
 
     /**
      *
+     * Is auto-resolution enabled or disabled?
+     *
+     * @var bool
+     *
+     */
+    protected $auto_resolve = true;
+
+    /**
+     *
      * Auto-resolve these typehints to these values.
      *
      * @var array
@@ -96,6 +105,20 @@ class Factory
     public function &__get($key)
     {
         return $this->$key;
+    }
+
+    /**
+     *
+     * Enables and disables auto-resolution.
+     *
+     * @param bool $auto_resolve True to enable, false to disable.
+     *
+     * @return null
+     *
+     */
+    public function setAutoResolve($auto_resolve)
+    {
+        $this->auto_resolve = (bool) $auto_resolve;
     }
 
     /**
@@ -463,6 +486,10 @@ class Factory
         if ($rparam->isDefaultValueAvailable()) {
             // use the default value
             return $rparam->getDefaultValue();
+        }
+
+        if (! $this->auto_resolve) {
+            throw new Exception\MissingParam("{$class}::\${$name}");
         }
 
         if ($rparam->isArray()) {
