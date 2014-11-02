@@ -488,6 +488,26 @@ class Factory
             return $rparam->getDefaultValue();
         }
 
+        return $this->autoResolveParam($rparam, $class, $parent, $name);
+    }
+
+    /**
+     *
+     * Auto-resolves a unified param.
+     *
+     * @param ReflectionParameter $rparam A parameter reflection.
+     *
+     * @param string $class The class name to return values for.
+     *
+     * @param array $parent The parent unified params.
+     *
+     * @param string $name The param name.
+     *
+     * @return array The auto-resolved param.
+     *
+     */
+    protected function autoResolveParam($rparam, $class, $parent, $name)
+    {
         if (! $this->auto_resolve) {
             throw new Exception\MissingParam("{$class}::\${$name}");
         }
@@ -499,7 +519,7 @@ class Factory
 
         $rtype = $rparam->getClass();
         if ($rtype && isset($this->types[$rtype->name])) {
-            // use an explict auto-resolution
+            // use an explicit auto-resolution
             return $this->types[$rtype->name];
         }
 
