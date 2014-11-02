@@ -468,7 +468,7 @@ class Factory
      *
      * @param string $name The param name.
      *
-     * @return array The unified param.
+     * @return mixed The unified param value.
      *
      */
     protected function getUnifiedParam($rparam, $class, $parent, $name)
@@ -503,7 +503,7 @@ class Factory
      *
      * @param string $name The param name.
      *
-     * @return array The auto-resolved param.
+     * @return mixed The auto-resolved param value.
      *
      */
     protected function autoResolveParam($rparam, $class, $parent, $name)
