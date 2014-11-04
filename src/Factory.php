@@ -275,7 +275,16 @@ class Factory
             $this->loadLazyParams($params);
         }
 
-        // and create the new instance
+        // are there missing params? don't worry about it with auto-resolve.
+        if (! $this->auto_resolve) {
+            foreach ($params as $param) {
+                if ($param instanceof Exception\MissingParam) {
+                    throw $param;
+                }
+            }
+        }
+
+        // create the new instance
         $rclass = $this->getReflection($class);
         $object = $rclass->newInstanceArgs($params);
 
@@ -298,6 +307,7 @@ class Factory
         // done!
         return $object;
     }
+
 
     /**
      *
@@ -509,7 +519,7 @@ class Factory
     protected function autoResolveParam($rparam, $class, $parent, $name)
     {
         if (! $this->auto_resolve) {
-            throw new Exception\MissingParam("{$class}::\${$name}");
+            return new Exception\MissingParam("{$class}::\${$name}");
         }
 
         if ($rparam->isArray()) {
