@@ -278,8 +278,10 @@ class Factory
         // are there missing params? don't worry about it with auto-resolve.
         if (! $this->auto_resolve) {
             foreach ($params as $param) {
-                if ($param instanceof Exception\MissingParam) {
-                    throw $param;
+                if ($param instanceof MissingParam) {
+                    throw new Exception\MissingParam(
+                        $class. '::$' . $param->getName()
+                    );
                 }
             }
         }
@@ -519,7 +521,7 @@ class Factory
     protected function autoResolveParam($rparam, $class, $parent, $name)
     {
         if (! $this->auto_resolve) {
-            return new Exception\MissingParam("{$class}::\${$name}");
+            return new MissingParam($name);
         }
 
         if ($rparam->isArray()) {
