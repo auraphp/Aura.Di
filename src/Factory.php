@@ -485,12 +485,16 @@ class Factory
      */
     protected function getUnifiedParam($rparam, $class, $parent, $name)
     {
-        if (isset($this->params[$class][$name])) {
+        $explicit = isset($this->params[$class][$name])
+                 && ! $this->params[$class][$name] instanceof MissingParam;
+        if ($explicit) {
             // use the explicit value for this class
             return $this->params[$class][$name];
         }
 
-        if (isset($parent[$name])) {
+        $implicit = isset($parent[$name])
+                 && ! $parent[$name] instanceof MissingParam;
+        if ($implicit) {
             // use the implicit value from the parent class
             return $parent[$name];
         }
