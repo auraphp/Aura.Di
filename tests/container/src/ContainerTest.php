@@ -11,6 +11,11 @@ class ContainerTest extends AbstractContainerTest
         );
     }
 
+    protected function getAutoResolve()
+    {
+        return false;
+    }
+
     public function provideGet()
     {
         return array(

@@ -81,7 +81,7 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getAutoResolve()
     {
-        return false;
+        return true;
     }
 
     /**
