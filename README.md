@@ -191,8 +191,11 @@ This keeps the service from being created until the very moment it is needed. If
 
 #### Auto-Resolution Of Parameter Values
 
-> Auto-Resolution when looks nice, but is tedious to debug. Especially when you need to get the shared objects.
-> So _Container_ have a `setAutoResolve` method which helps you to turn off when building libraries.
+> WARNING: Auto-resolution turns out to be difficult to debug in many situations. We regret to say that we did not appreciate how difficult until after the feature was released as stable in a major version. As such, we cannot remove it until the next major version.
+>
+> To mitigate these difficulties, we recommend you *always* disable auto-resolution when developing shared packages. Further, we suggest you *consider* disabling auto-resolution when developing or debugging an application built on shared packages.
+>
+> You can disable auto-resolution by calling `$di->setAutoResolve(false)`.
 
 If there is no `$di->params` value for a parameter, the _Container_ will fill in the constructor default value.
 
