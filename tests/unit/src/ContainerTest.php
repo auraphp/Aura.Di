@@ -344,4 +344,22 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
         $this->container->setAutoResolve(true);
     }
+
+    public function testDisableAutoResolveWithMissingParam()
+    {
+        $this->container->setAutoResolve(false);
+        $this->setExpectedException(
+            'Aura\Di\Exception\MissingParam',
+            'Aura\Di\FakeResolveClass::$fake'
+        );
+        $this->container->newInstance('Aura\Di\FakeResolveClass');
+    }
+
+    public function testDisableAutoResolveWithoutMissingParam()
+    {
+        $this->container->setAutoResolve(false);
+        $this->container->params['Aura\Di\FakeResolveClass']['fake'] = $this->container->lazyNew('Aura\Di\FakeParentClass');
+        $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
+    }
 }
