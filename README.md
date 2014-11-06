@@ -542,9 +542,18 @@ $config_classes = array(
     'Aura\Web\_Config\Common',
 );
 
-//
+// should auto-resolve be enabled or disabled?
+// ENABLE_AUTO_RESOLVE is the default;
+// use DISABLE_AUTO_RESOLVE to disable it.
+$auto_resolve = ContainerBuilder::ENABLE_AUTO_RESOLVE;
+
+// use the builder to create a container
 $container_builder = new ContainerBuilder;
-$di = $container_builder->newInstance($services, $config_classes);
+$di = $container_builder->newInstance(
+    $services,
+    $config_classes,
+    $auto_resolve
+);
 ?>
 ```
 
