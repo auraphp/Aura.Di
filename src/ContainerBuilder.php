@@ -21,6 +21,24 @@ class ContainerBuilder
 {
     /**
      *
+     * Enable auto-resolution after the define() step.
+     *
+     * @const true
+     *
+     */
+    const ENABLE_AUTO_RESOLVE = true;
+
+    /**
+     *
+     * Disable auto-resolution after the define() step.
+     *
+     * @const true
+     *
+     */
+    const DISABLE_AUTO_RESOLVE = false;
+
+    /**
+     *
      * Creates a new DI container, adds pre-existing service objects, applies
      * Config classes to define() services, locks the container, and applies
      * the Config instances to modify() services.
@@ -36,7 +54,8 @@ class ContainerBuilder
      */
     public function newInstance(
         array $services = array(),
-        array $config_classes = array()
+        array $config_classes = array(),
+        $auto_resolve = self::ENABLE_AUTO_RESOLVE
     ) {
         $di = new Container(new Factory);
 
@@ -51,6 +70,7 @@ class ContainerBuilder
             $configs[] = $config;
         }
 
+        $di->setAutoResolve($auto_resolve);
         $di->lock();
 
         foreach ($configs as $config) {

@@ -43,7 +43,8 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
         $builder = new ContainerBuilder;
         $this->di = $builder->newInstance(
             $this->getServices(),
-            $this->getConfigClasses()
+            $this->getConfigClasses(),
+            $this->getAutoResolve()
         );
     }
 
@@ -69,6 +70,18 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
     protected function getConfigClasses()
     {
         return array();
+    }
+
+    /**
+     *
+     * Should auto-resolution be enabled?
+     *
+     * @return bool
+     *
+     */
+    protected function getAutoResolve()
+    {
+        return false;
     }
 
     /**
