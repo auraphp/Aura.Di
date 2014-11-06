@@ -191,12 +191,6 @@ This keeps the service from being created until the very moment it is needed. If
 
 #### Auto-Resolution Of Parameter Values
 
-> WARNING: Auto-resolution turns out to be difficult to debug in many situations. We regret to say that we did not appreciate how difficult until after the feature was released as stable in a major version. As such, we cannot remove it until the next major version.
->
-> To mitigate these difficulties, we recommend you *always* disable auto-resolution when developing shared packages. Further, we suggest you *consider* disabling auto-resolution when developing or debugging an application built on shared packages.
->
-> You can disable auto-resolution by calling `$di->setAutoResolve(false)`.
-
 If there is no `$di->params` value for a parameter, the _Container_ will fill in the constructor default value.
 
 If the parameter is typehinted as an `array` but there is no `$di->params` value and also no default value, the _Container_ will fill in an empty `array()`.
@@ -229,7 +223,7 @@ $di->params['ExampleForAutoResolution']['dib'] = $di->lazyNew('Example');
 
 We can set any combination of these explicitly, and those that are not explicitly set will be filled in automatically for us.
 
-#### Directing Auto-Resolution Typehints To Specific Values
+##### Directing Auto-Resolution Typehints To Specific Values
 
 We can direct the auto-resolution of class-typehinted constructor parameters to specific values by using the `$di->types` array.
 
@@ -249,6 +243,15 @@ $di->types['ExampleParent'] = $di->lazyNew('ExampleChild');
 This allows us to avoid having to specify `$di->params` for every typehinted constructor parameter in every class.  Note that we can still specify explicit params on a specific class to override the auto-resolution.
 
 (Note that we cannot auto-resolve an `array` typehint; such typehints are always resolved to an empty `array()` when no default value is present.)
+
+##### Disabling Auto-Resolution
+
+Auto-resolution turns out to be difficult to debug in many situations. We regret to say that we did not appreciate how difficult until after the feature was released as stable in a major version. As such, we cannot remove it until the next major version.
+
+To mitigate these difficulties, we recommend you *always* disable auto-resolution when developing shared packages. Further, we suggest you *consider* disabling auto-resolution when developing or debugging an application built on shared packages.
+
+You can disable auto-resolution by calling `$di->setAutoResolve(false)`.
+
 
 ### Setter Injection
 
