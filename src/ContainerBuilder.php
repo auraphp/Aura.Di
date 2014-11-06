@@ -49,6 +49,9 @@ class ContainerBuilder
      * @param array $config_classes A list of Config classes to instantiate and
      * invoke for configuring the container.
      *
+     * @param bool $auto_resolve Enable or disable auto-resolve after the
+     * define() step?
+     *
      * @return Container
      *
      */
