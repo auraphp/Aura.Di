@@ -275,7 +275,18 @@ class Factory
             $this->loadLazyParams($params);
         }
 
-        // and create the new instance
+        // are there missing params? don't worry about it with auto-resolve.
+        if (! $this->auto_resolve) {
+            foreach ($params as $param) {
+                if ($param instanceof MissingParam) {
+                    throw new Exception\MissingParam(
+                        $class. '::$' . $param->getName()
+                    );
+                }
+            }
+        }
+
+        // create the new instance
         $rclass = $this->getReflection($class);
         $object = $rclass->newInstanceArgs($params);
 
@@ -298,6 +309,7 @@ class Factory
         // done!
         return $object;
     }
+
 
     /**
      *
@@ -473,12 +485,16 @@ class Factory
      */
     protected function getUnifiedParam($rparam, $class, $parent, $name)
     {
-        if (isset($this->params[$class][$name])) {
+        $explicit = isset($this->params[$class][$name])
+                 && ! $this->params[$class][$name] instanceof MissingParam;
+        if ($explicit) {
             // use the explicit value for this class
             return $this->params[$class][$name];
         }
 
-        if (isset($parent[$name])) {
+        $implicit = isset($parent[$name])
+                 && ! $parent[$name] instanceof MissingParam;
+        if ($implicit) {
             // use the implicit value from the parent class
             return $parent[$name];
         }
@@ -509,7 +525,7 @@ class Factory
     protected function autoResolveParam($rparam, $class, $parent, $name)
     {
         if (! $this->auto_resolve) {
-            throw new Exception\MissingParam("{$class}::\${$name}");
+            return new MissingParam($name);
         }
 
         if ($rparam->isArray()) {
