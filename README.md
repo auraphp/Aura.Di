@@ -191,6 +191,9 @@ This keeps the service from being created until the very moment it is needed. If
 
 #### Auto-Resolution Of Parameter Values
 
+> Auto-Resolution when looks nice, but is tedious to debug. Especially when you need to get the shared objects.
+> So _Container_ have a `setAutoResolve` method which helps you to turn off when building libraries.
+
 If there is no `$di->params` value for a parameter, the _Container_ will fill in the constructor default value.
 
 If the parameter is typehinted as an `array` but there is no `$di->params` value and also no default value, the _Container_ will fill in an empty `array()`.
