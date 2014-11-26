@@ -615,7 +615,9 @@ class Factory
 
         if (is_object($entity) || class_exists($entity)) {
             do { // get traits from this class first, then all parent classes
-                $traits += array_values(class_uses($entity));
+                $traits = array_unique(array_merge(
+                    $traits, array_values(class_uses($entity))
+                ));
             } while($entity = get_parent_class($entity));
         }
 
