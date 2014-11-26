@@ -611,7 +611,7 @@ class Factory
      */
     protected function getAllTraitsForEntity($entity)
     {
-        $traits = [];
+        $traits = array();
 
         if (is_object($entity) || class_exists($entity)) {
             do { // get traits from this class first, then all parent classes
