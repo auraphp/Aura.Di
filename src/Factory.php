@@ -601,7 +601,8 @@ class Factory
 
     /**
      *
-     * Returns all traits used by a class, and the traits used by those traits.
+     * Returns all traits used by a class and its ancestors,
+     * and the traits used by those traits' and their ancestors.
      *
      * @param string|object $entity The class or trait to look at for used traits.
      *
@@ -610,10 +611,23 @@ class Factory
      */
     protected function getAllTraitsForEntity($entity)
     {
-        $traits = class_uses($entity);
-        foreach ($traits as $trait) {
-            $traits = array_merge($traits, $this->getAllTraitsForEntity($trait));
+        $traits = [];
+
+        if (is_object($entity) || class_exists($entity)) {
+            do { // get traits from this class first, then all parent classes
+                $traits += array_values(class_uses($entity));
+            } while($entity = get_parent_class($entity));
         }
+
+        if ($traits) { // get all parent traits
+            while (list($i, $trait) = each($traits)) {
+                foreach (array_values(class_uses($trait)) as $t) {
+                    $traits[] = $t;
+                }
+            }
+            $traits = array_unique($traits);
+        }
+
         return $traits;
     }
 }
