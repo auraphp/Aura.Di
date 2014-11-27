@@ -613,23 +613,20 @@ class Factory
     {
         $traits = array();
 
-        if (is_object($entity) || class_exists($entity)) {
-            do { // get traits from this class first, then all parent classes
-                $traits = array_unique(array_merge(
-                    $traits, array_values(class_uses($entity))
-                ));
-            } while($entity = get_parent_class($entity));
+        if (!is_object($entity) && !class_exists($entity)) {
+            return $traits;
         }
 
-        if ($traits) { // get all parent traits
-            while (list($i, $trait) = each($traits)) {
-                foreach (array_values(class_uses($trait)) as $t) {
-                    $traits[] = $t;
-                }
-            }
-            $traits = array_unique($traits);
+        // get traits from ancestor classes
+        do {
+            $traits += class_uses($entity);
+        } while($entity = get_parent_class($entity));
+
+        // get traits from ancestor traits
+        while (list($i, $trait) = each($traits)) {
+            foreach (class_uses($trait) as $t) { $traits[] = $t; }
         }
 
-        return $traits;
+        return array_unique($traits);
     }
 }
