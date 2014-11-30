@@ -620,13 +620,15 @@ class Factory
         // get traits from ancestor classes
         do {
             $traits += class_uses($entity);
-        } while($entity = get_parent_class($entity));
+        } while ($entity = get_parent_class($entity));
 
         // get traits from ancestor traits
         while (list($i, $trait) = each($traits)) {
-            foreach (class_uses($trait) as $t) { $traits[] = $t; }
+            foreach (class_uses($trait) as $key => $name) {
+                $traits[$key] = $name;
+            }
         }
 
-        return array_unique($traits);
+        return $traits;
     }
 }
