@@ -3,6 +3,8 @@ namespace Aura\Di;
 
 trait FakeChildTrait
 {
+    use FakeGrandchildTrait;
+
     protected $child_fake;
 
     public function setChildFake($fake)
