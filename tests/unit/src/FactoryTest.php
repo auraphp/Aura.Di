@@ -123,6 +123,18 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual_setter);
     }
 
+    public function testHonorsParentClassTraits()
+    {
+        $this->usesTraits();
+
+        $this->factory->setter['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
+        list($actual_config, $actual_setter) = $this->factory->getUnified(
+            'Aura\Di\FakeClassWithParentTrait'
+        );
+        $expect = array('setGrandchildFake' => 'fake1');
+        $this->assertSame($expect, $actual_setter);
+    }
+
     public function testHonorsOverrideTraitSetter()
     {
         $this->usesTraits();
