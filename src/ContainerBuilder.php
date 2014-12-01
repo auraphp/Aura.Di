@@ -58,7 +58,7 @@ class ContainerBuilder
     public function newInstance(
         array $services = array(),
         array $config_classes = array(),
-        $auto_resolve = self::ENABLE_AUTO_RESOLVE
+        $auto_resolve = self::DISABLE_AUTO_RESOLVE
     ) {
         $di = new Container(new Factory);
 
