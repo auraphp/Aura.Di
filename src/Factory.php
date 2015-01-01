@@ -388,7 +388,7 @@ class Factory
         }
 
         try {
-            $this->reflection[$class] = new ReflectionClass($class);
+            $this->reflection[$class] = new Reflection($class);
         } catch (ReflectionException $e) {
             throw new Exception\ReflectionFailure($class, 0, $e);
         }
