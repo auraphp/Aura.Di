@@ -29,10 +29,10 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
     {
         $this->container->setAutoResolve(false);
 
-        $this->container->params['Aura\Di\FakeParamsClass'] = [
-            'array' => [],
+        $this->container->params['Aura\Di\FakeParamsClass'] = array(
+            'array' => array(),
             'empty' => 'abc'
-        ];
+        );
 
         $instance = $this->container->newInstance('Aura\Di\FakeParamsClass');
 
@@ -41,7 +41,7 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
         $this->container = serialize($this->container);
         $this->container = unserialize($this->container);
 
-        $instance = $this->container->newInstance('Aura\Di\FakeParamsClass', ['array' => ['a' => 1]]);
+        $instance = $this->container->newInstance('Aura\Di\FakeParamsClass', array('array' => array('a' => 1)));
 
         $this->assertInstanceOf('Aura\Di\FakeParamsClass', $instance);
     }

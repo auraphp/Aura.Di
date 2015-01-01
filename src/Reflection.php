@@ -40,6 +40,10 @@ class Reflection implements \Serializable
      */
     public function __call($name, $arguments)
     {
+        if(!($this->reflection instanceof ReflectionClass)) {
+            $this->reflection = new ReflectionClass($this->class);
+        }
+
         return call_user_func_array([$this->reflection, $name], $arguments);
     }
 
@@ -52,6 +56,6 @@ class Reflection implements \Serializable
     public function unserialize($serialized)
     {
         $class = unserialize($serialized);
-        $this->__construct($class);
+        $this->class = $class;
     }
 }
