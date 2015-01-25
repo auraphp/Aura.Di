@@ -24,6 +24,8 @@ use UnexpectedValueException;
  * @property-read array $setter A reference to the Factory $setter.
  *
  * @property-read array $setters A reference to the Factory $setter.
+ * 
+ * @property-read array $types A reference to the Factory $types.
  *
  */
 class Container implements ContainerInterface
