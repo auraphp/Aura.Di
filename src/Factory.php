@@ -285,10 +285,14 @@ class Factory
                 }
             }
         }
-
+        
         // create the new instance
         $rclass = $this->getReflection($class);
-        $object = $rclass->newInstanceArgs($params);
+        if ($rclass->hasMethod('__construct')) {
+            $object = $rclass->newInstanceArgs($params);
+        } else {
+            $object = $rclass->newInstance();
+        }
 
         // call setters after creation
         $setter = array_merge($setter, $merge_setter);
