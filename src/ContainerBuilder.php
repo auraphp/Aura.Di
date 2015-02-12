@@ -61,6 +61,7 @@ class ContainerBuilder
         $auto_resolve = self::ENABLE_AUTO_RESOLVE
     ) {
         $di = new Container(new Factory);
+        $di->setAutoResolve($auto_resolve);
 
         foreach ($services as $key => $val) {
             $di->set($key, $val);
@@ -73,7 +74,6 @@ class ContainerBuilder
             $configs[] = $config;
         }
 
-        $di->setAutoResolve($auto_resolve);
         $di->lock();
 
         foreach ($configs as $config) {
