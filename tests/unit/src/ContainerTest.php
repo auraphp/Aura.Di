@@ -336,13 +336,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAutoResolve()
     {
-        $this->assertTrue($this->factory->auto_resolve);
-        $this->container->setAutoResolve(false);
         $this->assertFalse($this->factory->auto_resolve);
+        $this->container->setAutoResolve(true);
+        $this->assertTrue($this->factory->auto_resolve);
 
         $this->container->lock();
         $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
-        $this->container->setAutoResolve(true);
+        $this->container->setAutoResolve(false);
     }
 
     public function testDisableAutoResolveWithMissingParam()
