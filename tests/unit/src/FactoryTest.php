@@ -11,6 +11,13 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->factory = new Factory;
     }
 
+    protected function usesTraits()
+    {
+        if (!function_exists('class_uses')) {
+            $this->markTestSkipped("No traits before PHP 5.4");
+        }
+    }
+
     public function testReadsConstructorDefaults()
     {
         $expect = array('foo' => 'bar');
@@ -83,9 +90,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsTraitSetter()
     {
-        if (!function_exists('class_uses')) {
-            $this->markTestSkipped("No traits before PHP 5.4");
-        }
+        $this->usesTraits();
 
         $this->factory->setter['Aura\Di\FakeTrait']['setFake'] = 'fake1';
 
@@ -96,9 +101,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsChildTraitSetter()
     {
-        if (!function_exists('class_uses')) {
-            $this->markTestSkipped("No traits before PHP 5.4");
-        }
+        $this->usesTraits();
 
         $this->factory->setter['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake1';
 
@@ -107,11 +110,34 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual_setter);
     }
 
+    public function testHonorsGrandChildTraitSetter()
+    {
+        $this->usesTraits();
+
+        $this->factory->setter['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
+
+        list($actual_config, $actual_setter) = $this->factory->getUnified(
+            'Aura\Di\FakeClassWithTrait'
+        );
+        $expect = array('setGrandchildFake' => 'fake1');
+        $this->assertSame($expect, $actual_setter);
+    }
+
+    public function testHonorsParentClassTraits()
+    {
+        $this->usesTraits();
+
+        $this->factory->setter['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
+        list($actual_config, $actual_setter) = $this->factory->getUnified(
+            'Aura\Di\FakeClassWithParentTrait'
+        );
+        $expect = array('setGrandchildFake' => 'fake1');
+        $this->assertSame($expect, $actual_setter);
+    }
+
     public function testHonorsOverrideTraitSetter()
     {
-        if (!function_exists('class_uses')) {
-            $this->markTestSkipped("No traits before PHP 5.4");
-        }
+        $this->usesTraits();
 
         $this->factory->setter['Aura\Di\FakeTrait']['setFake'] = 'fake1';
         $this->factory->setter['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake2';
