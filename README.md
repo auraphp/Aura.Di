@@ -233,27 +233,33 @@ $di->params['ExampleForAutoResolution']['dib'] = $di->lazyNew('Example');
 
 We can set any combination of these explicitly, and those that are not explicitly set will be filled in automatically for us.
 
-##### Directing Auto-Resolution Typehints To Specific Values
+(Note that we cannot auto-resolve an `array` typehint; such typehints are always resolved to an empty `array()` when no default value is present.)
 
-We can direct the auto-resolution of class-typehinted constructor parameters to specific values by using the `$di->types` array.
+##### Explicitly Directing Auto-Resolution Typehints
+
+We can direct the auto-resolution of class-typehinted constructor parameters by using the `$di->types` array.  This allows us to avoid having to specify `$di->params` for every typehinted constructor parameter in every class.  (Note that we can still specify explicit params on a specific class to override the auto-resolution.)
+
+We can specify auto-resolution to a new instance of a class of our choosing ...
 
 ```php
 <?php
-// auto-resolve all 'ExampleInteface' typehints to a new 'Example' instance
+// auto-resolve all 'ExampleInterface' typehints to a new 'Example' instance
 $di->types['ExampleInterface'] = $di->lazyNew('Example');
-
-// auto-resolve all 'DbInterface' typehints to a shared service
-$di->types['DbInterface'] = $di->lazyGet('db_service');
 
 // auto-resolve all 'ExampleParent' typehints to a different concrete class
 $di->types['ExampleParent'] = $di->lazyNew('ExampleChild');
 ?>
 ```
 
-This allows us to avoid having to specify `$di->params` for every typehinted constructor parameter in every class.  Note that we can still specify explicit params on a specific class to override the auto-resolution.
+... or to a shared service (aka singleton) of our own choosing:
 
-(Note that we cannot auto-resolve an `array` typehint; such typehints are always resolved to an empty `array()` when no default value is present.)
-
+```php
+<?php
+// auto-resolve all 'Db' and 'DbInterface' typehints to a shared service
+$di->types['Db'] = $di->lazyGet('db_service');
+$di->types['DbInterface'] = $di->lazyGet('db_service');
+?>
+```
 
 ### Setter Injection
 
