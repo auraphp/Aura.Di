@@ -10,9 +10,7 @@
  */
 namespace Aura\Di;
 
-use ReflectionClass;
 use ReflectionException;
-
 
 /**
  *
@@ -58,7 +56,7 @@ class Factory
 
     /**
      *
-     * An array of retained ReflectionClass instances.
+     * An array of retained Reflection instances.
      *
      * @var array
      *
@@ -285,7 +283,7 @@ class Factory
                 }
             }
         }
-        
+
         // create the new instance
         $rclass = $this->getReflection($class);
         if ($rclass->hasMethod('__construct')) {
@@ -376,11 +374,11 @@ class Factory
 
     /**
      *
-     * Returns a ReflectionClass for a named class.
+     * Returns a Reflection for a named class.
      *
      * @param string $class The class to reflect on.
      *
-     * @return ReflectionClass
+     * @return Reflection
      *
      * @throws Exception\ReflectionFailure Could not reflect on the class.
      *
