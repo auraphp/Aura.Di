@@ -44,7 +44,7 @@ class Reflection implements \Serializable
             $this->reflection = new ReflectionClass($this->class);
         }
 
-        return call_user_func_array([$this->reflection, $name], $arguments);
+        return call_user_func_array(array($this->reflection, $name), $arguments);
     }
 
     public function serialize()
