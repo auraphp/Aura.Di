@@ -1,58 +1,117 @@
 <?php
-
+/**
+ *
+ * This file is part of Aura for PHP.
+ *
+ * @package Aura.Di
+ *
+ * @license http://opensource.org/licenses/bsd-license.php BSD
+ *
+ */
 namespace Aura\Di;
 
 use ReflectionClass;
+use Serializable;
 
-class Reflection implements \Serializable
+/**
+ *
+ * A ReflectionClass decorator that provides serialization that re-instantiates
+ * the underlying ReflectionClass on demand.
+ *
+ * @package Aura.Di
+ *
+ * @method hasMethod
+ * @method newInstanceArgs
+ * @method newInstance
+ * @method getConstructor
+ *
+ */
+class Reflection implements Serializable
 {
     /**
-     * The class that we are reflecting.
+     *
+     * The class on which we are reflecting.
      *
      * @var string
+     *
      */
     protected $class;
 
     /**
-     * The reflection class
+     *
+     * The decorated ReflectionClass instance.
      *
      * @var ReflectionClass
+     *
      */
     protected $reflection;
 
     /**
-     * The Constructor for our custom reflection class.
      *
-     * @param string $class
+     * Constructor.
+     *
+     * @param string $class The class on which we are reflecting.
+     *
      */
     public function __construct($class)
     {
         $this->class = $class;
-        $this->reflection = new ReflectionClass($class);
+        $this->setReflection();
     }
 
     /**
-     * We want to pass-thru to the Reflection classes.
      *
-     * @param $name
-     * @param $arguments
+     * Pass-through to decorated ReflectionClass methods.
+     *
+     * @param string $name The method name.
+     *
+     * @param array $args The method arguments.
+     *
      * @return mixed
+     *
      */
-    public function __call($name, $arguments)
+    public function __call($name, $args)
     {
-        if(!($this->reflection instanceof ReflectionClass)) {
-            $this->reflection = new ReflectionClass($this->class);
-        }
-
-        return call_user_func_array(array($this->reflection, $name), $arguments);
+        $this->setReflection();
+        return call_user_func_array(array($this->reflection, $name), $args);
     }
 
+    /**
+     *
+     * Sets the decorated ReflectionClass instance.
+     *
+     * @return null
+     *
+     */
+    protected function setReflection()
+    {
+        if (! $this->reflection) {
+            $this->reflection = new ReflectionClass($this->class);
+        }
+    }
+
+    /**
+     *
+     * Implements Serializer::serialize().
+     *
+     * @return string The serialized string.
+     *
+     */
     public function serialize()
     {
         $this->reflection = null;
         return serialize($this->class);
     }
 
+    /**
+     *
+     * Implements Serializer::unserialize().
+     *
+     * @param string $serialized The serialized string.
+     *
+     * @return null
+     *
+     */
     public function unserialize($serialized)
     {
         $class = unserialize($serialized);
