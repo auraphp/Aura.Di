@@ -18,10 +18,10 @@ use Serializable;
  *
  * @package Aura.Di
  *
- * @method hasMethod
- * @method newInstanceArgs
- * @method newInstance
- * @method getConstructor
+ * @method ReflectionMethod getConstructor()
+ * @method bool hasMethod(string $name)
+ * @method object newInstanceArgs(array $args)
+ * @method object newInstance()
  *
  */
 class Reflection implements Serializable
