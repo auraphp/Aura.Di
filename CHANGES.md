@@ -1,14 +1,11 @@
-This release incorporates functionality to optionally disable auto-resolution.
-By default it remains enabled, but this default may change in a future version.
+This release has a couple of feature improvements: traits in ancestor classes and in ancestor traits are now honored, and the DI container can now be serialized and unserialized (unless it contains closures).
 
-- Add Container::setAutoResolve(), Factory::setAutoResolve(), etc. to allow
-  disabling of auto-resolution
+- ADD: The Factory now gets all traits of ancestor classes & ancestor traits.
 
-- When auto-resolution is disabled, Factory::newInstance() now throws
-  Exception\MissingParam when a constructor param has not been defined
+- NEW: Class `Aura\Di\Reflection` decorates `ReflectionClass` to permit serialization of the DI Container for caching.
 
-- ContainerBuilder::newInstance() now takes a third param to enable/disable
-  auto-resolution
+- FIX: The ContainerBuilder now call setAutoResolve() early, rather than late.
 
-- AbstractContainerTest now allows you to enable/disable auto-resolve for the
-  tests via a new getAutoResolve() method
+- FIX: If the class being factories has no __construct() method, instantiate without constructor.
+
+- DOC: Update documentation and support files.

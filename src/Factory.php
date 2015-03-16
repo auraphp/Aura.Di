@@ -613,10 +613,6 @@ class Factory
     {
         $traits = array();
 
-        if (!is_object($entity) && !class_exists($entity)) {
-            return $traits;
-        }
-
         // get traits from ancestor classes
         do {
             $traits += class_uses($entity);
