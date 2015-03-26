@@ -38,10 +38,7 @@ Alternatively, [download a release](https://github.com/auraphp/Aura.Di/releases)
 [![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?b=develop-2)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
 [![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Di)
 
-To run the unit tests at the command line, issue `phpunit` at the package root. (This requires [PHPUnit][] to be available as `phpunit` and [Composer][] to be available as `composer`.)
-
-[PHPUnit]: http://phpunit.de/manual/
-[Composer]: http://getcomposer.org/
+To run the unit tests at the command line, issue `composer install` and then `phpunit` at the package root. This requires [Composer](http://getcomposer.org/) to be available as `composer`, and [PHPUnit](http://phpunit.de/manual/) to be available as `phpunit`.
 
 This library attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If
 you notice compliance oversights, please send a patch via pull request.
