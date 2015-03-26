@@ -25,17 +25,17 @@
             "Aura\\Di\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Aura\\Di\\": "tests/"
-        }
-    },
     "extra": {
         "aura": {
             "type": "library"
         },
         "branch-alias": {
             "dev-develop-2": "2.0.x-dev"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Di\\": "tests/"
         }
     }
 }
