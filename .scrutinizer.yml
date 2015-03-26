@@ -7,5 +7,4 @@ tools:
     php_pdepend: true
     php_analyzer: true
     php_cpd: true
-    external_code_coverage:
-        runs: 6
+    external_code_coverage: true
