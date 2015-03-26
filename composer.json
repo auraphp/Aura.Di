@@ -25,6 +25,11 @@
             "Aura\\Di\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Aura\\Di\\": "tests/"
+        }
+    },
     "extra": {
         "aura": {
             "type": "library"
