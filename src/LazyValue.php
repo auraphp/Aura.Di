@@ -19,12 +19,12 @@ class LazyValue implements LazyInterface
 {
     /**
      *
-     * The values.
+     * The resolver.
      *
-     * @var array
+     * @var Resolver
      *
      */
-    protected $values;
+    protected $resolver;
 
     /**
      *
@@ -44,9 +44,9 @@ class LazyValue implements LazyInterface
      * @param string $key The value key to retrieve.
      *
      */
-    public function __construct(array &$values, $key)
+    public function __construct(Resolver $resolver, $key)
     {
-        $this->values =& $values;
+        $this->resolver = $resolver;
         $this->key = $key;
     }
 
@@ -59,6 +59,6 @@ class LazyValue implements LazyInterface
      */
     public function __invoke()
     {
-        return $this->values[$this->key];
+        return $this->resolver->values[$this->key];
     }
 }

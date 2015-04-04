@@ -140,9 +140,9 @@ class Factory
      * @return LazyValue
      *
      */
-    public function newLazyValue($key)
+    public function newLazyValue(Resolver $resolver, $key)
     {
-        return new LazyValue($this->values, $key);
+        return new LazyValue($resolver, $key);
     }
 
 }

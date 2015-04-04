@@ -62,7 +62,7 @@ We instantiate a _Container_ like so:
 use Aura\Di\Container;
 use Aura\Di\Factory;
 
-$di = new Container(new Factory);
+$di = new Container(new Resolver(), new Factory());
 ?>
 ```
 
@@ -81,7 +81,7 @@ class Example
 }
 
 // set the service
-$di->set('service_name', new Example);
+$di->set('service_name', new Example());
 
 // get the service
 $service1 = $di->get('service_name');

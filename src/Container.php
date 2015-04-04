@@ -30,6 +30,8 @@ use UnexpectedValueException;
  */
 class Container implements ContainerInterface
 {
+    protected $resolver;
+
     /**
      *
      * A factory to create objects.
@@ -417,7 +419,7 @@ class Container implements ContainerInterface
      */
     public function lazyValue($key)
     {
-        return $this->factory->newLazyValue($key);
+        return $this->factory->newLazyValue($this->resolver, $key);
     }
 
     /**

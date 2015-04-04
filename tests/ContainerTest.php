@@ -9,8 +9,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->factory = new Factory;
-        $this->container = new Container($this->factory);
+        $this->resolver = new Resolver();
+        $this->factory = new Factory();
+        $this->container = new Container($this->resolver, $this->factory);
     }
 
     protected function tearDown()
@@ -326,8 +327,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar', $actual->getFoo());
     }
 
-    public function testResolve()
+    public function testAutoResolve()
     {
+        $this->container->setAutoResolve(true);
         $this->container->types['Aura\Di\FakeParentClass'] = $this->container->lazyNew('Aura\Di\FakeChildClass');
         $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
@@ -336,18 +338,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAutoResolve()
     {
-        $this->assertTrue($this->factory->auto_resolve);
-        $this->container->setAutoResolve(false);
-        $this->assertFalse($this->factory->auto_resolve);
+        $this->assertFalse($this->resolver->auto_resolve);
+        $this->container->setAutoResolve(true);
+        $this->assertTrue($this->resolver->auto_resolve);
 
         $this->container->lock();
         $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
         $this->container->setAutoResolve(true);
     }
 
-    public function testDisableAutoResolveWithMissingParam()
+    public function testResolveWithMissingParam()
     {
-        $this->container->setAutoResolve(false);
         $this->setExpectedException(
             'Aura\Di\Exception\MissingParam',
             'Aura\Di\FakeResolveClass::$fake'
@@ -355,9 +356,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->newInstance('Aura\Di\FakeResolveClass');
     }
 
-    public function testDisableAutoResolveWithoutMissingParam()
+    public function testResolveWithoutMissingParam()
     {
-        $this->container->setAutoResolve(false);
         $this->container->params['Aura\Di\FakeResolveClass']['fake'] = $this->container->lazyNew('Aura\Di\FakeParentClass');
         $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
