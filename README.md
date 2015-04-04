@@ -189,13 +189,7 @@ This keeps the service from being created until the very moment it is needed. If
 
 #### Auto-Resolution Of Parameter Values
 
-##### A Note About Auto-Resolution
-
-Auto-resolution turns out to be difficult to debug in many situations. We regret to say that we did not appreciate how difficult until after the feature was released as stable in a major version. As such, we cannot remove it until the next major version.
-
-To mitigate these difficulties, we recommend you *always* disable auto-resolution when developing shared packages. Further, we suggest you *consider* disabling auto-resolution when developing or debugging an application built on shared packages.
-
-Auto-resolution is enabled by default. You can disable auto-resolution by calling `$di->setAutoResolve(false)`.
+Auto-resolution is disabled by default. You can disable auto-resolution by calling `$di->setAutoResolve(true)`.
 
 ##### How Auto-Resolution Works
 
