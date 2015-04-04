@@ -78,7 +78,7 @@ class Factory
      * @var bool
      *
      */
-    protected $auto_resolve = true;
+    protected $auto_resolve = false;
 
     /**
      *
