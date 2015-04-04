@@ -132,13 +132,14 @@ class Container implements ContainerInterface
      * @param Factory $factory A factory to create objects.
      *
      */
-    public function __construct(Factory $factory)
+    public function __construct(Resolver $resolver, Factory $factory)
     {
+        $this->resolver = $resolver;
         $this->factory = $factory;
-        $this->params =& $this->factory->params;
-        $this->setter =& $this->factory->setter;
-        $this->values =& $this->factory->values;
-        $this->types =& $this->factory->types;
+        $this->params =& $this->resolver->params;
+        $this->setter =& $this->resolver->setter;
+        $this->values =& $this->resolver->values;
+        $this->types =& $this->resolver->types;
     }
 
     /**
@@ -209,7 +210,7 @@ class Container implements ContainerInterface
             throw new Exception\ContainerLocked;
         }
 
-        $this->factory->setAutoResolve($auto_resolve);
+        $this->resolver->setAutoResolve($auto_resolve);
     }
 
     /**
@@ -374,7 +375,7 @@ class Container implements ContainerInterface
         array $params = array(),
         array $setter = array()
     ) {
-        return $this->factory->newLazyNew($class, $params, $setter);
+        return $this->factory->newLazyNew($this->resolver, $class, $params, $setter);
     }
 
     /**
@@ -439,6 +440,7 @@ class Container implements ContainerInterface
         array $setters = array()
     ) {
         return $this->factory->newInstanceFactory(
+            $this->resolver,
             $class,
             $params,
             $setters
@@ -471,7 +473,7 @@ class Container implements ContainerInterface
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
-        return $this->factory->newInstance(
+        return $this->resolver->newInstance(
             $class,
             $merge_params,
             $merge_setter
