@@ -202,7 +202,7 @@ class Resolver
 
     /**
      *
-     * Returns the unified constructor params and setter values for a class.
+     * Returns the unified constructor params and setters for a class.
      *
      * @param string $class The class name to return values for.
      *
@@ -220,16 +220,16 @@ class Resolver
         // fetch the values for parents so we can inherit them
         $parent = get_parent_class($class);
         if ($parent) {
-            // convert from string to array of params and setter values
+            // convert from string to array of params and setters
             $parent = $this->getUnified($parent);
         } else {
-            // convert to a pair of empty arrays for params and setter values
+            // convert to a pair of empty arrays for params and setters
             $parent = array(array(), array());
         }
 
-        // stores the unified params and setter values
+        // stores the unified params and setters
         $this->unified[$class][0] = $this->getUnifiedParams($class, $parent[0]);
-        $this->unified[$class][1] = $this->getUnifiedSetter($class, $parent[1]);
+        $this->unified[$class][1] = $this->getUnifiedSetters($class, $parent[1]);
 
         // done, return the unified values
         return $this->unified[$class];
@@ -323,7 +323,7 @@ class Resolver
      * @return array The unified setters.
      *
      */
-    protected function getUnifiedSetter($class, array $parent)
+    protected function getUnifiedSetters($class, array $parent)
     {
         $unified = $parent;
 
