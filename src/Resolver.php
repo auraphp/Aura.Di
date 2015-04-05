@@ -336,11 +336,11 @@ class Resolver
         }
 
         // look for setters inside traits
-        $uses = $this->getAllTraitsForEntity($class);
-        foreach ($uses as $use) {
-            if (isset($this->setters[$use])) {
+        $traits = $this->reflector->getTraits($class);
+        foreach ($traits as $trait) {
+            if (isset($this->setters[$trait])) {
                 $unified = array_merge(
-                    $this->setters[$use],
+                    $this->setters[$trait],
                     $unified
                 );
             }
@@ -348,34 +348,5 @@ class Resolver
 
         // done
         return $unified;
-    }
-
-    /**
-     *
-     * Returns all traits used by a class and its ancestors,
-     * and the traits used by those traits' and their ancestors.
-     *
-     * @param string|object $entity The class or trait to look at for used traits.
-     *
-     * @return array All traits used by the requested class or trait.
-     *
-     */
-    protected function getAllTraitsForEntity($entity)
-    {
-        $traits = array();
-
-        // get traits from ancestor classes
-        do {
-            $traits += class_uses($entity);
-        } while ($entity = get_parent_class($entity));
-
-        // get traits from ancestor traits
-        while (list($trait) = each($traits)) {
-            foreach (class_uses($trait) as $key => $name) {
-                $traits[$key] = $name;
-            }
-        }
-
-        return $traits;
     }
 }
