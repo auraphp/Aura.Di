@@ -100,15 +100,6 @@ class Resolver
         list($params, $setter) = $this->getUnified($class);
         $this->mergeParams($params, $merge_params);
 
-        // are there missing params?
-        foreach ($params as $param) {
-            if ($param instanceof MissingParam) {
-                throw new Exception\MissingParam(
-                    $class. '::$' . $param->getName()
-                );
-            }
-        }
-
         $resolve = (object) [
             'reflection' => $this->reflector->get($class),
             'params' => $params,
@@ -170,9 +161,7 @@ class Resolver
 
             // is the param missing?
             if ($val instanceof MissingParam) {
-                throw new Exception\MissingParam(
-                    $class. '::$' . $val->getName()
-                );
+                throw new Exception\MissingParam($val->getName());
             }
 
             // load lazy objects as we go
@@ -358,15 +347,13 @@ class Resolver
         }
 
         // look for setters inside traits
-        if (function_exists('class_uses')) {
-            $uses = $this->getAllTraitsForEntity($class);
-            foreach ($uses as $use) {
-                if (isset($this->setter[$use])) {
-                    $unified = array_merge(
-                        $this->setter[$use],
-                        $unified
-                    );
-                }
+        $uses = $this->getAllTraitsForEntity($class);
+        foreach ($uses as $use) {
+            if (isset($this->setter[$use])) {
+                $unified = array_merge(
+                    $this->setter[$use],
+                    $unified
+                );
             }
         }
 
