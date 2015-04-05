@@ -134,7 +134,7 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstance(
         $class,
         array $params = array(),
-        array $setter = array()
+        array $setters = array()
     ) {
         if (! $class) {
             $this->markTestSkipped('No class name passed for testNewInstance().');
@@ -142,7 +142,7 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(
             $class,
-            $this->di->newInstance($class, $params, $setter)
+            $this->di->newInstance($class, $params, $setters)
         );
     }
 

@@ -16,9 +16,9 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
     protected function newInstanceFactory(
         $class,
         array $params = array(),
-        array $setter = array()
+        array $setters = array()
     ) {
-        return new InstanceFactory($this->resolver, $class, $params, $setter);
+        return new InstanceFactory($this->resolver, $class, $params, $setters);
     }
 
     public function test__invoke()

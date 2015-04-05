@@ -18,7 +18,7 @@ use Closure;
  *
  * @property-read array $params A reference to the Resolver $params.
  *
- * @property-read array $setters A reference to the Resolver $setter.
+ * @property-read array $setters A reference to the Resolver $setters.
  *
  * @property-read array $types A reference to the Resolver $types.
  *
@@ -92,7 +92,7 @@ class Container implements ContainerInterface
 
     /**
      *
-     * Magic get to provide access to the Config::$params and $setter
+     * Magic get to provide access to the Config::$params and $setters
      * objects.
      *
      * @param string $key The property to retrieve ('params' or 'setter(s)').
@@ -288,7 +288,7 @@ class Container implements ContainerInterface
      *
      * @param array $params Override parameters for the instance.
      *
-     * @param array $setter Override setters for the instance.
+     * @param array $setters Override setters for the instance.
      *
      * @return LazyNew
      *
@@ -296,9 +296,9 @@ class Container implements ContainerInterface
     public function lazyNew(
         $class,
         array $params = array(),
-        array $setter = array()
+        array $setters = array()
     ) {
-        return $this->factory->newLazyNew($class, $params, $setter);
+        return $this->factory->newLazyNew($class, $params, $setters);
     }
 
     /**

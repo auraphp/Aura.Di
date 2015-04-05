@@ -51,7 +51,7 @@ class InstanceFactory
      * @var array
      *
      */
-    protected $setter;
+    protected $setters;
 
     /**
      *
@@ -63,19 +63,19 @@ class InstanceFactory
      *
      * @param array $params Override params for the class.
      *
-     * @param array $setter Override setters for the class.
+     * @param array $setters Override setters for the class.
      *
      */
     public function __construct(
         Resolver $resolver,
         $class,
         array $params = array(),
-        array $setter = array()
+        array $setters = array()
     ) {
         $this->resolver = $resolver;
         $this->class = $class;
         $this->params = $params;
-        $this->setter = $setter;
+        $this->setter = $setters;
     }
 
     /**

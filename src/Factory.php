@@ -54,7 +54,7 @@ class Factory
      *
      * @param array $params Override params for the class.
      *
-     * @param array $setter Override setters for the class.
+     * @param array $setters Override setters for the class.
      *
      * @return InstanceFactory
      *
@@ -62,9 +62,9 @@ class Factory
     public function newInstanceFactory(
         $class,
         array $params = array(),
-        array $setter = array()
+        array $setters = array()
     ) {
-        return new InstanceFactory($this->resolver, $class, $params, $setter);
+        return new InstanceFactory($this->resolver, $class, $params, $setters);
     }
 
     /**
@@ -121,7 +121,7 @@ class Factory
      *
      * @param array $params Params for the instantiation.
      *
-     * @param array $setter Setters for the instantiation.
+     * @param array $setters Setters for the instantiation.
      *
      * @return Lazy
      *
@@ -129,9 +129,9 @@ class Factory
     public function newLazyNew(
         $class,
         array $params = array(),
-        array $setter = array()
+        array $setters = array()
     ) {
-        return new LazyNew($this->resolver, $class, $params, $setter);
+        return new LazyNew($this->resolver, $class, $params, $setters);
     }
 
     /**
