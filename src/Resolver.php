@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Di;
 
-use ReflectionException;
+use ReflectionParameter;
 use UnexpectedValueException;
 
 class Resolver
@@ -274,7 +274,7 @@ class Resolver
      * @return mixed The unified param value.
      *
      */
-    protected function getUnifiedParam($rparam, $class, $parent)
+    protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
     {
         $name = $rparam->name;
 

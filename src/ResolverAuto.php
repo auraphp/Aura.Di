@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Di;
 
+use ReflectionParameter;
+
 class ResolverAuto extends Resolver
 {
     /**
@@ -27,7 +29,7 @@ class ResolverAuto extends Resolver
      * @return mixed The auto-resolved param value.
      *
      */
-    protected function getUnifiedParam($rparam, $class, $parent)
+    protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
     {
         $unified = parent::getUnifiedParam($rparam, $class, $parent);
         if (! $unified instanceof MissingParam) {
