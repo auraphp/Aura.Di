@@ -65,6 +65,8 @@ class Resolver
      *
      * @return array
      *
+     * @throws \UnexpectedValueException
+     *
      */
     public function &__get($key)
     {
@@ -113,17 +115,13 @@ class Resolver
 
     protected function mergeSetters($class, &$setter, array $merge_setters = array())
     {
-        // retain setters
         $setter = array_merge($setter, $merge_setters);
         foreach ($setter as $method => $value) {
-            // does the specified setter method exist?
-            if (method_exists($class, $method)) {
-                // lazy-load setter values as needed
-                if ($value instanceof LazyInterface) {
-                    $setter[$method] = $value();
-                }
-            } else {
+            if (! method_exists($class, $method)) {
                 throw new Exception\SetterMethodNotFound("$class::$method");
+            }
+            if ($value instanceof LazyInterface) {
+                $setter[$method] = $value();
             }
         }
     }

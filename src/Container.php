@@ -16,13 +16,13 @@ use Closure;
  *
  * @package Aura.Di
  *
- * @property-read array $params A reference to the Factory $params.
+ * @property-read array $params A reference to the Resolver $params.
  *
- * @property-read array $setters A reference to the Factory $setter.
+ * @property-read array $setters A reference to the Resolver $setter.
  *
- * @property-read array $types A reference to the Factory $types.
+ * @property-read array $types A reference to the Resolver $types.
  *
- * @property-read array $values A reference to the Factory $values.
+ * @property-read array $values A reference to the Resolver $values.
  *
  */
 class Container implements ContainerInterface
@@ -100,8 +100,6 @@ class Container implements ContainerInterface
      * @return mixed
      *
      * @throws Exception\ContainerLocked
-     *
-     * @throws \UnexpectedValueException
      *
      */
     public function &__get($key)
