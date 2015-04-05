@@ -57,6 +57,9 @@ class Reflector
      *
      * @return array All traits used by the requested class or trait.
      *
+     * @todo Make this function recursive so that parent traits are retained
+     * in the parent keys.
+     *
      */
     public function getTraits($class)
     {
