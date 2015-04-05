@@ -17,7 +17,7 @@ class Resolver
 
     /**
      *
-     * Setter definitions in the form of `$setter[$class][$method] = $value`.
+     * Setter definitions in the form of `$setters[$class][$method] = $value`.
      *
      * @var array
      *
@@ -103,25 +103,25 @@ class Resolver
         array $merge_setters = array()
     ) {
         // base configs
-        list($params, $setter) = $this->getUnified($class);
+        list($params, $setters) = $this->getUnified($class);
         $this->mergeParams($params, $merge_params);
-        $this->mergeSetters($class, $setter, $merge_setters);
+        $this->mergeSetters($class, $setters, $merge_setters);
         return (object) [
             'reflection' => $this->reflector->getClass($class),
             'params' => $params,
-            'setters' => $setter,
+            'setters' => $setters,
         ];
     }
 
-    protected function mergeSetters($class, &$setter, array $merge_setters = array())
+    protected function mergeSetters($class, &$setters, array $merge_setters = array())
     {
-        $setter = array_merge($setter, $merge_setters);
-        foreach ($setter as $method => $value) {
+        $setters = array_merge($setters, $merge_setters);
+        foreach ($setters as $method => $value) {
             if (! method_exists($class, $method)) {
                 throw new Exception\SetterMethodNotFound("$class::$method");
             }
             if ($value instanceof LazyInterface) {
-                $setter[$method] = $value();
+                $setters[$method] = $value();
             }
         }
     }
