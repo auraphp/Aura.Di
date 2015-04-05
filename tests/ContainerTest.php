@@ -19,14 +19,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testMagicGet()
     {
         $this->container->params['foo'] = 'bar';
-        $this->container->setter['baz'] = 'dib';
+        $this->container->setters['baz'] = 'dib';
         $this->container->setters['zim'] = 'gir';
 
         $expect = array('foo' => 'bar');
         $this->assertSame($expect, $this->container->params);
 
         $expect = array('baz' => 'dib', 'zim' => 'gir');
-        $this->assertSame($expect, $this->container->setter);
         $this->assertSame($expect, $this->container->setters);
     }
 
@@ -234,7 +233,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstanceWithSetter()
     {
         $class = 'Aura\Di\FakeChildClass';
-        $this->container->setter['Aura\Di\FakeChildClass']['setFake'] = 'fake_value';
+        $this->container->setters['Aura\Di\FakeChildClass']['setFake'] = 'fake_value';
 
         $actual = $this->container->newInstance('Aura\Di\FakeChildClass', array(
             'foo' => 'gir',
@@ -246,8 +245,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsInterfacesAndOverrides()
     {
-        $this->container->setter['Aura\Di\FakeInterface']['setFoo'] = 'initial';
-        $this->container->setter['Aura\Di\FakeInterfaceClass2']['setFoo'] = 'override';
+        $this->container->setters['Aura\Di\FakeInterface']['setFoo'] = 'initial';
+        $this->container->setters['Aura\Di\FakeInterfaceClass2']['setFoo'] = 'override';
 
         // "inherits" initial value from interface
         $actual = $this->container->newInstance('Aura\Di\FakeInterfaceClass');
@@ -273,7 +272,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         });
 
         $class = 'Aura\Di\FakeChildClass';
-        $this->container->setter['Aura\Di\FakeChildClass']['setFake'] = $lazy;
+        $this->container->setters['Aura\Di\FakeChildClass']['setFake'] = $lazy;
 
         $actual = $this->container->newInstance('Aura\Di\FakeChildClass', array(
             'foo' => 'gir',
@@ -286,7 +285,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstanceWithNonExistentSetter()
     {
         $class = 'Aura\Di\FakeOtherClass';
-        $this->container->setter['Aura\Di\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
+        $this->container->setters['Aura\Di\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
         $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
         $actual = $this->container->newInstance('Aura\Di\FakeOtherClass');
     }

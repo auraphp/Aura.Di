@@ -9,7 +9,6 @@
 namespace Aura\Di;
 
 use Closure;
-use UnexpectedValueException;
 
 /**
  *
@@ -18,8 +17,6 @@ use UnexpectedValueException;
  * @package Aura.Di
  *
  * @property-read array $params A reference to the Factory $params.
- *
- * @property-read array $setter A reference to the Factory $setter.
  *
  * @property-read array $setters A reference to the Factory $setter.
  *
@@ -32,7 +29,7 @@ class Container implements ContainerInterface
 {
     /**
      *
-     * A factory to create objects.
+     * A Factory to create objects.
      *
      * @var Factory
      *
@@ -41,39 +38,12 @@ class Container implements ContainerInterface
 
     /**
      *
-     * A reference to the Factory $params.
+     * A Resolver obtained from the Factory.
      *
-     * @var array
-     *
-     */
-    protected $params;
-
-    /**
-     *
-     * An arbitrary set of values.
-     *
-     * @var array
+     * @var Factory
      *
      */
-    protected $values;
-
-    /**
-     *
-     * A reference to the Factory $setter.
-     *
-     * @var array
-     *
-     */
-    protected $setter;
-
-    /**
-     *
-     * A reference to the Factory $types.
-     *
-     * @var array
-     *
-     */
-    protected $types;
+    protected $resolver;
 
     /**
      *
@@ -109,24 +79,6 @@ class Container implements ContainerInterface
 
     /**
      *
-     * A map of magic __get() names and their underlying properties.
-     *
-     * @var array
-     *
-     */
-    protected $magic_props = array(
-        'param' => 'params',
-        'params' => 'params',
-        'setter' => 'setter',
-        'setters' => 'setter',
-        'value' => 'values',
-        'values' => 'values',
-        'type' => 'types',
-        'types' => 'types'
-    );
-
-    /**
-     *
      * Constructor.
      *
      * @param Factory $factory A factory to create objects.
@@ -135,12 +87,7 @@ class Container implements ContainerInterface
     public function __construct(Factory $factory)
     {
         $this->factory = $factory;
-
-        $resolver = $this->factory->getResolver();
-        $this->params =& $resolver->params;
-        $this->setter =& $resolver->setter;
-        $this->values =& $resolver->values;
-        $this->types =& $resolver->types;
+        $this->resolver = $this->factory->getResolver();
     }
 
     /**
@@ -163,12 +110,7 @@ class Container implements ContainerInterface
             throw new Exception\ContainerLocked;
         }
 
-        if (isset($this->magic_props[$key])) {
-            $prop = $this->magic_props[$key];
-            return $this->$prop;
-        }
-
-        throw new UnexpectedValueException($key);
+        return $this->resolver->__get($key);
     }
 
     /**

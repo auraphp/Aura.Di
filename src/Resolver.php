@@ -2,6 +2,7 @@
 namespace Aura\Di;
 
 use ReflectionException;
+use UnexpectedValueException;
 
 class Resolver
 {
@@ -21,7 +22,7 @@ class Resolver
      * @var array
      *
      */
-    protected $setter = array();
+    protected $setters = array();
 
     /**
      *
@@ -67,7 +68,10 @@ class Resolver
      */
     public function &__get($key)
     {
-        return $this->$key;
+        if (isset($this->$key)) {
+            return $this->$key;
+        }
+        throw new UnexpectedValueException($key);
     }
 
     /**
@@ -328,28 +332,28 @@ class Resolver
         // look for interface setters
         $interfaces = class_implements($class);
         foreach ($interfaces as $interface) {
-            if (isset($this->setter[$interface])) {
+            if (isset($this->setters[$interface])) {
                 $unified = array_merge(
-                    $this->setter[$interface],
+                    $this->setters[$interface],
                     $unified
                 );
             }
         }
 
         // look for non-trait setters
-        if (isset($this->setter[$class])) {
+        if (isset($this->setters[$class])) {
             $unified = array_merge(
                 $unified,
-                $this->setter[$class]
+                $this->setters[$class]
             );
         }
 
         // look for setters inside traits
         $uses = $this->getAllTraitsForEntity($class);
         foreach ($uses as $use) {
-            if (isset($this->setter[$use])) {
+            if (isset($this->setters[$use])) {
                 $unified = array_merge(
-                    $this->setter[$use],
+                    $this->setters[$use],
                     $unified
                 );
             }

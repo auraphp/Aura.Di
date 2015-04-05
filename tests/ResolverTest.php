@@ -63,7 +63,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsParentSetter()
     {
-        $this->resolver->setter['Aura\Di\FakeParentClass']['setFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeParentClass']['setFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeChildClass');
         $expect = array('setFake' => 'fake1');
@@ -73,8 +73,8 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsOverrideSetter()
     {
-        $this->resolver->setter['Aura\Di\FakeParentClass']['setFake'] = 'fake1';
-        $this->resolver->setter['Aura\Di\FakeChildClass']['setFake'] = 'fake2';
+        $this->resolver->setters['Aura\Di\FakeParentClass']['setFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeChildClass']['setFake'] = 'fake2';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeChildClass');
         $expect = array('setFake' => 'fake2');
@@ -83,7 +83,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsTraitSetter()
     {
-        $this->resolver->setter['Aura\Di\FakeTrait']['setFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeTrait']['setFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeClassWithTrait');
         $expect = array('setFake' => 'fake1');
@@ -92,7 +92,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsChildTraitSetter()
     {
-        $this->resolver->setter['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeClassWithTrait');
         $expect = array('setChildFake' => 'fake1');
@@ -101,7 +101,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsGrandChildTraitSetter()
     {
-        $this->resolver->setter['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified(
             'Aura\Di\FakeClassWithTrait'
@@ -112,7 +112,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsParentClassTraits()
     {
-        $this->resolver->setter['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
         list($actual_config, $actual_setter) = $this->resolver->getUnified(
             'Aura\Di\FakeClassWithParentTrait'
         );
@@ -122,10 +122,10 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsOverrideTraitSetter()
     {
-        $this->resolver->setter['Aura\Di\FakeTrait']['setFake'] = 'fake1';
-        $this->resolver->setter['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake2';
-        $this->resolver->setter['Aura\Di\FakeClassWithTrait']['setFake'] = 'fake3';
-        $this->resolver->setter['Aura\Di\FakeClassWithTrait']['setChildFake'] = 'fake4';
+        $this->resolver->setters['Aura\Di\FakeTrait']['setFake'] = 'fake1';
+        $this->resolver->setters['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake2';
+        $this->resolver->setters['Aura\Di\FakeClassWithTrait']['setFake'] = 'fake3';
+        $this->resolver->setters['Aura\Di\FakeClassWithTrait']['setChildFake'] = 'fake4';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeClassWithTrait');
         $expect = array('setChildFake' => 'fake4', 'setFake' => 'fake3');
