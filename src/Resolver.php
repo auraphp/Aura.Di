@@ -34,7 +34,7 @@ class Resolver
 
     /**
      *
-     * An array of retained Reflection instances.
+     * A reflection locator.
      *
      * @var array
      *
@@ -68,6 +68,11 @@ class Resolver
      *
      */
     protected $types = array();
+
+    public function __construct(ReflectionLocator $reflection)
+    {
+        $this->reflection = $reflection;
+    }
 
     /**
      *
@@ -145,12 +150,8 @@ class Resolver
         }
 
         // create the new instance
-        $rclass = $this->getReflection($class);
-        if ($rclass->hasMethod('__construct')) {
-            $object = $rclass->newInstanceArgs($params);
-        } else {
-            $object = $rclass->newInstance();
-        }
+        $rclass = $this->reflection->get($class);
+        $object = $rclass->newInstanceArgs($params);
 
         // call setters after creation
         $setter = array_merge($setter, $merge_setter);
@@ -234,32 +235,6 @@ class Resolver
 
     /**
      *
-     * Returns a Reflection for a named class.
-     *
-     * @param string $class The class to reflect on.
-     *
-     * @return Reflection
-     *
-     * @throws Exception\ReflectionFailure Could not reflect on the class.
-     *
-     */
-    protected function getReflection($class)
-    {
-        if (isset($this->reflection[$class])) {
-            return $this->reflection[$class];
-        }
-
-        try {
-            $this->reflection[$class] = new Reflection($class);
-        } catch (ReflectionException $e) {
-            throw new Exception\ReflectionFailure($class, 0, $e);
-        }
-
-        return $this->reflection[$class];
-    }
-
-    /**
-     *
      * Returns the unified constructor params and setter values for a class.
      *
      * @param string $class The class name to return values for.
@@ -306,7 +281,7 @@ class Resolver
      */
     protected function getUnifiedParams($class, array $parent)
     {
-        $rclass = $this->getReflection($class);
+        $rclass = $this->reflection->get($class);
         $rctor = $rclass->getConstructor();
         if (! $rctor) {
             // no constructor, so no need to pass params

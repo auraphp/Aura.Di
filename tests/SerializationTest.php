@@ -16,7 +16,7 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->resolver = new Resolver();
+        $this->resolver = new Resolver(new ReflectionLocator());
         $this->factory = new Factory();
         $this->container = new Container($this->resolver, $this->factory);
     }
