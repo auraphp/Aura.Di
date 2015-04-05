@@ -149,28 +149,25 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoResolveImplicit()
     {
-        $this->markTestSkipped('Extract auto-resolution later.');
         $this->resolver->setAutoResolve(true);
-        $object = $this->resolver->newInstance('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeParentClass', $object->fake);
+        $actual = $this->resolver->resolve('Aura\Di\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\FakeParentClass', $actual->params['fake']);
     }
 
     public function testAutoResolveExplicit()
     {
-        $this->markTestSkipped('Extract auto-resolution later.');
         $this->resolver->setAutoResolve(true);
         $this->resolver->types['Aura\Di\FakeParentClass'] = new LazyNew($this->resolver, 'Aura\Di\FakeChildClass');
-        $object = $this->resolver->newInstance('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $object->fake);
+        $actual = $this->resolver->resolve('Aura\Di\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual->params['fake']);
     }
 
     public function testAutoResolveArrayAndNull()
     {
-        $this->markTestSkipped('Extract auto-resolution later.');
         $this->resolver->setAutoResolve(true);
-        $object = $this->resolver->newInstance('Aura\Di\FakeParamsClass');
-        $this->assertSame(array(), $object->array);
-        $this->assertNull($object->empty);
+        $actual = $this->resolver->resolve('Aura\Di\FakeParamsClass');
+        $this->assertSame(array(), $actual->params['array']);
+        $this->assertNull($actual->params['empty']);
     }
 
     public function testMissingParam()

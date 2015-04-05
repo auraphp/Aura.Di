@@ -64,7 +64,7 @@ class Factory
         array $params = array(),
         array $setter = array()
     ) {
-        return new InstanceFactory($this, $class, $params, $setter);
+        return new InstanceFactory($this->resolver, $class, $params, $setter);
     }
 
     /**
@@ -131,7 +131,7 @@ class Factory
         array $params = array(),
         array $setter = array()
     ) {
-        return new LazyNew($this, $class, $params, $setter);
+        return new LazyNew($this->resolver, $class, $params, $setter);
     }
 
     /**

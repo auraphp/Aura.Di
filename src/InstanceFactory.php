@@ -19,12 +19,12 @@ class InstanceFactory
 {
     /**
      *
-     * The object factory.
+     * The Resolver.
      *
-     * @var Factory
+     * @var Resolver
      *
      */
-    protected $factory;
+    protected $resolver;
 
     /**
      *
@@ -67,12 +67,12 @@ class InstanceFactory
      *
      */
     public function __construct(
-        Factory $factory,
+        Resolver $resolver,
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        $this->factory = $factory;
+        $this->resolver = $resolver;
         $this->class = $class;
         $this->params = $params;
         $this->setter = $setter;
@@ -93,11 +93,17 @@ class InstanceFactory
      */
     public function __invoke()
     {
-        $params = array_merge($this->params, func_get_args());
-        return $this->factory->newInstance(
+        $merge_params = array_merge($this->params, func_get_args());
+        $resolve = $this->resolver->resolve(
             $this->class,
-            $params,
+            $merge_params,
             $this->setter
         );
+
+        $object = $resolve->reflection->newInstanceArgs($resolve->params);
+        foreach ($resolve->setters as $method => $value) {
+            $object->$method($value);
+        }
+        return $object;
     }
 }
