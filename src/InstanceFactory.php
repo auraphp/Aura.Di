@@ -67,12 +67,12 @@ class InstanceFactory
      *
      */
     public function __construct(
-        Resolver $resolver,
+        Factory $factory,
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        $this->resolver = $resolver;
+        $this->factory = $factory;
         $this->class = $class;
         $this->params = $params;
         $this->setter = $setter;
@@ -80,7 +80,7 @@ class InstanceFactory
 
     /**
      *
-     * Invoke this Factory object as a function to use the Container to create
+     * Invoke the InstanceFactory object as a function to use the Factory to create
      * a new instance of the specified class; pass sequential parameters as
      * as yet another set of constructor parameter overrides.
      *
@@ -94,7 +94,7 @@ class InstanceFactory
     public function __invoke()
     {
         $params = array_merge($this->params, func_get_args());
-        return $this->resolver->newInstance(
+        return $this->factory->newInstance(
             $this->class,
             $params,
             $this->setter

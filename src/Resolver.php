@@ -123,11 +123,17 @@ class Resolver
      * @throws Exception\SetterMethodNotFound
      *
      */
-    public function newInstance(
+    public function resolve(
         $class,
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
+        $resolve = (object) [
+            'reflection' => null,
+            'params' => array(),
+            'setters' => array(),
+        ];
+
         // base configs
         list($params, $setter) = $this->getUnified($class);
 
@@ -149,28 +155,26 @@ class Resolver
             }
         }
 
-        // create the new instance
-        $rclass = $this->reflector->get($class);
-        $object = $rclass->newInstanceArgs($params);
+        $resolve->reflection = $this->reflector->get($class);
+        $resolve->params = $params;
 
-        // call setters after creation
+        // retain setters
         $setter = array_merge($setter, $merge_setter);
         foreach ($setter as $method => $value) {
             // does the specified setter method exist?
-            if (method_exists($object, $method)) {
+            if (method_exists($class, $method)) {
                 // lazy-load setter values as needed
                 if ($value instanceof LazyInterface) {
                     $value = $value();
                 }
                 // call the setter
-                $object->$method($value);
+                $resolve->setters[$method] = $value;
             } else {
                 throw new Exception\SetterMethodNotFound("$class::$method");
             }
         }
 
-        // done!
-        return $object;
+        return $resolve;
     }
 
 

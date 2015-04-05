@@ -36,7 +36,12 @@ class Factory
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
-        return $this->resolver->newInstance($class, $merge_params, $merge_setter);
+        $resolve = $this->resolver->resolve($class, $merge_params, $merge_setter);
+        $object = $resolve->reflection->newInstanceArgs($resolve->params);
+        foreach ($resolve->setters as $method => $value) {
+            $object->$method($value);
+        }
+        return $object;
     }
 
     /**
@@ -59,7 +64,7 @@ class Factory
         array $params = array(),
         array $setter = array()
     ) {
-        return new InstanceFactory($this->resolver, $class, $params, $setter);
+        return new InstanceFactory($this, $class, $params, $setter);
     }
 
     /**
@@ -126,7 +131,7 @@ class Factory
         array $params = array(),
         array $setter = array()
     ) {
-        return new LazyNew($this->resolver, $class, $params, $setter);
+        return new LazyNew($this, $class, $params, $setter);
     }
 
     /**

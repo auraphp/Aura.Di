@@ -135,19 +135,21 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
     public function testReflectionFailure()
     {
         $this->setExpectedException('Aura\Di\Exception\ReflectionFailure');
-        $this->resolver->newInstance('NoSuchClass');
+        $this->resolver->resolve('NoSuchClass');
     }
 
     public function testHonorsLazyParams()
     {
-        $this->resolver->params['Aura\Di\FakeParentClass']['foo'] = new LazyNew($this->resolver, 'Aura\Di\FakeOtherClass');
-        $object = $this->resolver->newInstance('Aura\Di\FakeParentClass');
-        $actual = $object->getFoo();
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual);
+        $this->resolver->params['Aura\Di\FakeParentClass']['foo'] = new Lazy(function () {
+            return new FakeOtherClass();
+        });
+        $actual = $this->resolver->resolve('Aura\Di\FakeParentClass');
+        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->params['foo']);
     }
 
     public function testAutoResolveImplicit()
     {
+        $this->markTestSkipped('Extract auto-resolution later.');
         $this->resolver->setAutoResolve(true);
         $object = $this->resolver->newInstance('Aura\Di\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\FakeParentClass', $object->fake);
@@ -155,6 +157,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoResolveExplicit()
     {
+        $this->markTestSkipped('Extract auto-resolution later.');
         $this->resolver->setAutoResolve(true);
         $this->resolver->types['Aura\Di\FakeParentClass'] = new LazyNew($this->resolver, 'Aura\Di\FakeChildClass');
         $object = $this->resolver->newInstance('Aura\Di\FakeResolveClass');
@@ -163,19 +166,19 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoResolveArrayAndNull()
     {
+        $this->markTestSkipped('Extract auto-resolution later.');
         $this->resolver->setAutoResolve(true);
         $object = $this->resolver->newInstance('Aura\Di\FakeParamsClass');
         $this->assertSame(array(), $object->array);
         $this->assertNull($object->empty);
     }
 
-    public function testAutoResolveDisabled()
+    public function testMissingParam()
     {
-        $this->resolver->setAutoResolve(false);
         $this->setExpectedException(
             'Aura\Di\Exception\MissingParam',
             'Aura\Di\FakeResolveClass::$fake'
         );
-        $this->resolver->newInstance('Aura\Di\FakeResolveClass');
+        $this->resolver->resolve('Aura\Di\FakeResolveClass');
     }
 }

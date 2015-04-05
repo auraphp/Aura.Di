@@ -3,14 +3,14 @@ namespace Aura\Di;
 
 class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    protected $resolver;
+    protected $factory;
 
     protected $config;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->resolver = new Resolver(new Reflector());
+        $this->factory = new Factory(new Resolver(new Reflector()));
     }
 
     protected function newInstanceFactory(
@@ -18,12 +18,12 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
         array $params = array(),
         array $setter = array()
     ) {
-        return new InstanceFactory($this->resolver, $class, $params, $setter);
+        return new InstanceFactory($this->factory, $class, $params, $setter);
     }
 
     public function test__invoke()
     {
-        $other = $this->resolver->newInstance('Aura\Di\FakeOtherClass');
+        $other = $this->factory->newInstance('Aura\Di\FakeOtherClass');
 
         $factory = $this->newInstanceFactory(
             'Aura\Di\FakeChildClass',
