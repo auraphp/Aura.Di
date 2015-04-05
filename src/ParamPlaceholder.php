@@ -42,6 +42,8 @@ class ParamPlaceholder
      *
      * Returns the name of the missing param.
      *
+     * @param string $class Prefix the param name with this class name.
+     *
      * @return string
      *
      */

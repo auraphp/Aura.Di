@@ -19,7 +19,7 @@ class LazyValue implements LazyInterface
 {
     /**
      *
-     * The resolver.
+     * The Resolver that holds the values.
      *
      * @var Resolver
      *
@@ -39,7 +39,7 @@ class LazyValue implements LazyInterface
      *
      * Constructor.
      *
-     * @param array $values The arbitrary values.
+     * @param Resolver $resolver The Resolver that holds the values.
      *
      * @param string $key The value key to retrieve.
      *
