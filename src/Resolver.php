@@ -107,7 +107,7 @@ class Resolver
         $this->mergeParams($params, $merge_params);
         $this->mergeSetters($class, $setter, $merge_setters);
         return (object) [
-            'reflection' => $this->reflector->get($class),
+            'reflection' => $this->reflector->getClass($class),
             'params' => $params,
             'setters' => $setter,
         ];
@@ -248,16 +248,9 @@ class Resolver
      */
     protected function getUnifiedParams($class, array $parent)
     {
-        $rclass = $this->reflector->get($class);
-        $rctor = $rclass->getConstructor();
-        if (! $rctor) {
-            // no constructor, so no need to pass params
-            return array();
-        }
-
         // reflect on what params to pass, in which order
         $unified = array();
-        $rparams = $rctor->getParameters();
+        $rparams = $this->reflector->getParams($class);
         foreach ($rparams as $rparam) {
             $name = $rparam->name;
             $unified[$name] = $this->getUnifiedParam(
