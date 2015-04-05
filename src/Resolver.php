@@ -250,12 +250,10 @@ class Resolver
         $unified = array();
         $rparams = $this->reflector->getParams($class);
         foreach ($rparams as $rparam) {
-            $name = $rparam->name;
-            $unified[$name] = $this->getUnifiedParam(
+            $unified[$rparam->name] = $this->getUnifiedParam(
                 $rparam,
                 $class,
-                $parent,
-                $name
+                $parent
             );
         }
 
@@ -273,13 +271,13 @@ class Resolver
      *
      * @param array $parent The parent unified params.
      *
-     * @param string $name The param name.
-     *
      * @return mixed The unified param value.
      *
      */
-    protected function getUnifiedParam($rparam, $class, $parent, $name)
+    protected function getUnifiedParam($rparam, $class, $parent)
     {
+        $name = $rparam->name;
+
         $explicit = isset($this->params[$class][$name])
                  && ! $this->params[$class][$name] instanceof MissingParam;
         if ($explicit) {

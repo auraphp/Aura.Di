@@ -27,9 +27,9 @@ class ResolverAuto extends Resolver
      * @return mixed The auto-resolved param value.
      *
      */
-    protected function getUnifiedParam($rparam, $class, $parent, $name)
+    protected function getUnifiedParam($rparam, $class, $parent)
     {
-        $unified = parent::getUnifiedParam($rparam, $class, $parent, $name);
+        $unified = parent::getUnifiedParam($rparam, $class, $parent);
         if (! $unified instanceof MissingParam) {
             return $unified;
         }
