@@ -16,22 +16,27 @@ use ReflectionException;
  *
  * @package Aura.Di
  *
- * @property-read array $params Constructor params for classes.
- *
- * @property-read array $setter Setter definitions for classes/interfaces.
- *
- * @property-read array $values Arbitrary values.
- *
  */
 class Factory
 {
+    protected $resolver;
+
+    public function __construct(Resolver $resolver)
+    {
+        $this->resolver = $resolver;
+    }
+
+    public function getResolver()
+    {
+        return $this->resolver;
+    }
+
     public function newInstance(
-        Resolver $resolver,
         $class,
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
-        return $resolver->newInstance($class, $merge_params, $merge_setter);
+        return $this->resolver->newInstance($class, $merge_params, $merge_setter);
     }
 
     /**
@@ -50,12 +55,11 @@ class Factory
      *
      */
     public function newInstanceFactory(
-        Resolver $resolver,
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        return new InstanceFactory($resolver, $class, $params, $setter);
+        return new InstanceFactory($this->resolver, $class, $params, $setter);
     }
 
     /**
@@ -118,12 +122,11 @@ class Factory
      *
      */
     public function newLazyNew(
-        Resolver $resolver,
         $class,
         array $params = array(),
         array $setter = array()
     ) {
-        return new LazyNew($resolver, $class, $params, $setter);
+        return new LazyNew($this->resolver, $class, $params, $setter);
     }
 
     /**
@@ -149,9 +152,9 @@ class Factory
      * @return LazyValue
      *
      */
-    public function newLazyValue(Resolver $resolver, $key)
+    public function newLazyValue($key)
     {
-        return new LazyValue($resolver, $key);
+        return new LazyValue($this->resolver, $key);
     }
 
 }

@@ -8,17 +8,10 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
      */
     protected $container;
 
-    /**
-     * @var Factory
-     */
-    protected $factory;
-
     protected function setUp()
     {
         parent::setUp();
-        $this->resolver = new Resolver(new ReflectionLocator());
-        $this->factory = new Factory();
-        $this->container = new Container($this->resolver, $this->factory);
+        $this->container = new Container(new Factory(new Resolver(new ReflectionLocator())));
     }
 
     protected function tearDown()

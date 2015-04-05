@@ -62,7 +62,7 @@ We instantiate a _Container_ like so:
 use Aura\Di\Container;
 use Aura\Di\Factory;
 
-$di = new Container(new Resolver(new ReflectionLoctor()), new Factory());
+$di = new Container(new Factory(new Resolver(new ReflectionLoctor())));
 ?>
 ```
 
