@@ -103,7 +103,7 @@ class Resolver
         array $merge_setters = array()
     ) {
         list($params, $setters) = $this->getUnified($class);
-        $this->mergeParams($params, $merge_params);
+        $this->mergeParams($class, $params, $merge_params);
         $this->mergeSetters($class, $setters, $merge_setters);
         return (object) [
             'reflection' => $this->reflector->getClass($class),
@@ -139,10 +139,10 @@ class Resolver
      * @return array
      *
      */
-    protected function mergeParams(&$params, array $merge_params = array())
+    protected function mergeParams($class, &$params, array $merge_params = array())
     {
         if (! $merge_params) {
-            return $this->mergeParamsEmpty($params);
+            return $this->mergeParamsEmpty($class, $params);
         }
 
         $pos = 0;
@@ -159,7 +159,7 @@ class Resolver
 
             // is the param missing?
             if ($val instanceof MissingParam) {
-                throw new Exception\MissingParam($val->getName());
+                throw new Exception\MissingParam($val->getName($class));
             }
 
             // load lazy objects as we go
@@ -184,12 +184,12 @@ class Resolver
      * @return null
      *
      */
-    protected function mergeParamsEmpty(&$params)
+    protected function mergeParamsEmpty($class, &$params)
     {
         foreach ($params as $key => $val) {
             // is the param missing?
             if ($val instanceof MissingParam) {
-                throw new Exception\MissingParam($val->getName());
+                throw new Exception\MissingParam($val->getName($class));
             }
             // load lazy objects as we go
             if ($val instanceof LazyInterface) {
@@ -300,7 +300,7 @@ class Resolver
         }
 
         // param is missing
-        return new MissingParam($class, $name);
+        return new MissingParam($name);
     }
 
     /**
