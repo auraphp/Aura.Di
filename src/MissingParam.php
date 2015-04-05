@@ -19,6 +19,15 @@ class MissingParam
 {
     /**
      *
+     * The name of the class missing the param.
+     *
+     * @var string
+     *
+     */
+    protected $class;
+
+    /**
+     *
      * The name of the missing param.
      *
      * @var string
@@ -30,7 +39,9 @@ class MissingParam
      *
      * Constructor.
      *
-     * @param string $name The name of the missing param.
+     * @param string $class The name of class missing the param.
+     *
+     * @param string $param The name of the missing param.
      *
      */
     public function __construct($class, $param)
