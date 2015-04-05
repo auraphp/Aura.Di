@@ -99,13 +99,16 @@ class Resolver
         // base configs
         list($params, $setter) = $this->getUnified($class);
         $this->mergeParams($params, $merge_params);
-
-        $resolve = (object) [
+        $this->mergeSetter($class, $setter, $merge_setter);
+        return (object) [
             'reflection' => $this->reflector->get($class),
             'params' => $params,
-            'setters' => array(),
+            'setters' => $setter,
         ];
+    }
 
+    protected function mergeSetter($class, &$setter, array $merge_setter = array())
+    {
         // retain setters
         $setter = array_merge($setter, $merge_setter);
         foreach ($setter as $method => $value) {
@@ -113,18 +116,13 @@ class Resolver
             if (method_exists($class, $method)) {
                 // lazy-load setter values as needed
                 if ($value instanceof LazyInterface) {
-                    $value = $value();
+                    $setter[$method] = $value();
                 }
-                // call the setter
-                $resolve->setters[$method] = $value;
             } else {
                 throw new Exception\SetterMethodNotFound("$class::$method");
             }
         }
-
-        return $resolve;
     }
-
 
     /**
      *
