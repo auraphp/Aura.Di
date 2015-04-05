@@ -1,8 +1,24 @@
 <?php
+/**
+ *
+ * This file is part of Aura for PHP.
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Aura\Di;
 
 use ReflectionParameter;
 
+/**
+ *
+ * This extension of the Resolver additionally auto-resolves unspecified
+ * constructor params according to their typehints; use with caution as it can
+ * be very difficult to debug.
+ *
+ * @package Aura.Di
+ *
+ */
 class ResolverAuto extends Resolver
 {
     /**

@@ -1,9 +1,25 @@
 <?php
+/**
+ *
+ * This file is part of Aura for PHP.
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Aura\Di;
 
 use ReflectionParameter;
 use UnexpectedValueException;
 
+/**
+ *
+ * Resolves class creation specifics based on constructor params and setter
+ * definitions, unified across class defaults, inheritance hierarchies, and
+ * configuration.
+ *
+ * @package Aura.Di
+ *
+ */
 class Resolver
 {
     /**

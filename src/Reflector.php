@@ -1,9 +1,23 @@
 <?php
+/**
+ *
+ * This file is part of Aura for PHP.
+ *
+ * @license http://opensource.org/licenses/MIT MIT
+ *
+ */
 namespace Aura\Di;
 
 use ReflectionClass;
 use ReflectionException;
 
+/**
+ *
+ * A collection point for for Reflection objects; is serializable.
+ *
+ * @package Aura.Di
+ *
+ */
 class Reflector
 {
     protected $classes = [];
