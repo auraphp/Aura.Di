@@ -32,7 +32,7 @@ class ResolverAuto extends Resolver
     protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
     {
         $unified = parent::getUnifiedParam($rparam, $class, $parent);
-        if (! $unified instanceof MissingParam) {
+        if (! $unified instanceof ParamPlaceholder) {
             return $unified;
         }
 

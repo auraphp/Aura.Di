@@ -158,7 +158,7 @@ class Resolver
             }
 
             // is the param missing?
-            if ($val instanceof MissingParam) {
+            if ($val instanceof ParamPlaceholder) {
                 throw new Exception\MissingParam($val->getName($class));
             }
 
@@ -188,7 +188,7 @@ class Resolver
     {
         foreach ($params as $key => $val) {
             // is the param missing?
-            if ($val instanceof MissingParam) {
+            if ($val instanceof ParamPlaceholder) {
                 throw new Exception\MissingParam($val->getName($class));
             }
             // load lazy objects as we go
@@ -280,14 +280,14 @@ class Resolver
 
         // is there a value explicitly from the current class?
         $explicit = isset($this->params[$class][$name])
-                 && ! $this->params[$class][$name] instanceof MissingParam;
+                 && ! $this->params[$class][$name] instanceof ParamPlaceholder;
         if ($explicit) {
             return $this->params[$class][$name];
         }
 
         // is there a value implicitly inherited from the parent class?
         $implicit = isset($parent[$name])
-                 && ! $parent[$name] instanceof MissingParam;
+                 && ! $parent[$name] instanceof ParamPlaceholder;
         if ($implicit) {
             return $parent[$name];
         }
@@ -298,7 +298,7 @@ class Resolver
         }
 
         // param is missing
-        return new MissingParam($name);
+        return new ParamPlaceholder($name);
     }
 
     /**

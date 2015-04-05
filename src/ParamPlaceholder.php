@@ -15,7 +15,7 @@ namespace Aura\Di;
  * @package Aura.Di
  *
  */
-class MissingParam
+class ParamPlaceholder
 {
     /**
      *
