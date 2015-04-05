@@ -25,6 +25,15 @@ use ReflectionException;
  */
 class Factory
 {
+    public function newInstance(
+        Resolver $resolver,
+        $class,
+        array $merge_params = array(),
+        array $merge_setter = array()
+    ) {
+        return $resolver->newInstance($class, $merge_params, $merge_setter);
+    }
+
     /**
      *
      * Returns a new InstanceFactory.

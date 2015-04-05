@@ -475,7 +475,8 @@ class Container implements ContainerInterface
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
-        return $this->resolver->newInstance(
+        return $this->factory->newInstance(
+            $this->resolver,
             $class,
             $merge_params,
             $merge_setter
