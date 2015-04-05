@@ -13,7 +13,7 @@ use ReflectionException;
 
 /**
  *
- * A collection point for for Reflection objects; is serializable.
+ * A serializable collection point for for Reflection data.
  *
  * @package Aura.Di
  *

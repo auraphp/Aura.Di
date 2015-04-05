@@ -68,6 +68,13 @@ class Resolver
      */
     protected $unified = array();
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param Reflector $reflector A collection point for Reflection data.
+     *
+     */
     public function __construct(Reflector $reflector)
     {
         $this->reflector = $reflector;
@@ -128,6 +135,19 @@ class Resolver
         ];
     }
 
+    /**
+     *
+     * Merges the setters with overrides; also invokes Lazy values.
+     *
+     * @param string $class The setters are on this class.
+     *
+     * @param array $setters The class setters.
+     *
+     * @param array $merge_setters Override with these setters.
+     *
+     * @return null
+     *
+     */
     protected function mergeSetters($class, &$setters, array $merge_setters = array())
     {
         $setters = array_merge($setters, $merge_setters);
@@ -143,8 +163,9 @@ class Resolver
 
     /**
      *
-     * Returns the params after merging with overides; also invokes Lazy param
-     * values.
+     * Merges the params with overides; also invokes Lazy values.
+     *
+     * @param string $class The params are on this class.
      *
      * @param array $params The constructor parameters.
      *
@@ -193,9 +214,11 @@ class Resolver
 
     /**
      *
-     * Loads the lazy object in an array of params.
+     * Load the Lazy values in params when the merge_params are empty.
      *
-     * @param array $params An array of params.
+     * @param string $class The params are on this class.
+     *
+     * @param array $params The constructor parameters.
      *
      * @return null
      *
