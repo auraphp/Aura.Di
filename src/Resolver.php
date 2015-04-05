@@ -255,18 +255,15 @@ class Resolver
         }
 
         // fetch the values for parents so we can inherit them
+        $spec = array(array(), array());
         $parent = get_parent_class($class);
         if ($parent) {
-            // convert from string to array of params and setters
-            $parent = $this->getUnified($parent);
-        } else {
-            // convert to a pair of empty arrays for params and setters
-            $parent = array(array(), array());
+            $spec = $this->getUnified($parent);
         }
 
         // stores the unified params and setters
-        $this->unified[$class][0] = $this->getUnifiedParams($class, $parent[0]);
-        $this->unified[$class][1] = $this->getUnifiedSetters($class, $parent[1]);
+        $this->unified[$class][0] = $this->getUnifiedParams($class, $spec[0]);
+        $this->unified[$class][1] = $this->getUnifiedSetters($class, $spec[1]);
 
         // done, return the unified values
         return $this->unified[$class];
