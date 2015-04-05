@@ -34,9 +34,9 @@ Alternatively, [download a release](https://github.com/auraphp/Aura.Di/releases)
 
 ### Quality
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?b=develop-2)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
-[![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?b=develop-2)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
-[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=develop-2)](https://travis-ci.org/auraphp/Aura.Di)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?b=3.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+[![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?b=3.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
+[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=3.x)](https://travis-ci.org/auraphp/Aura.Di)
 
 To run the unit tests at the command line, issue `composer install` and then `phpunit` at the package root. This requires [Composer](http://getcomposer.org/) to be available as `composer`, and [PHPUnit](http://phpunit.de/manual/) to be available as `phpunit`.
 
