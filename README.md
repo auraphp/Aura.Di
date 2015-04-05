@@ -211,7 +211,7 @@ For example, look at the following class; it has a parameter with a default valu
 <?php
 class ExampleForAutoResolution
 {
-    public function __construct($foo = 'bar', array $baz, Example $dib)
+    public function __construct(array $baz, Example $dib, $foo = 'bar')
     {
         // ...
     }
@@ -223,9 +223,9 @@ For each relevant `$di->params['ExampleForAutoResolution']` element that is miss
 
 ```php
 <?php
-$di->params['ExampleForAutoResolution']['foo'] = 'bar';
 $di->params['ExampleForAutoResolution']['baz'] = array();
 $di->params['ExampleForAutoResolution']['dib'] = $di->lazyNew('Example');
+$di->params['ExampleForAutoResolution']['foo'] = 'bar';
 ?>
 ```
 
