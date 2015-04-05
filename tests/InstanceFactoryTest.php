@@ -10,7 +10,7 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->resolver = new Resolver(new ReflectionLocator());
+        $this->resolver = new Resolver(new Reflector());
     }
 
     protected function newInstanceFactory(

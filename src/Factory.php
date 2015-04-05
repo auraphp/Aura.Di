@@ -156,5 +156,4 @@ class Factory
     {
         return new LazyValue($this->resolver, $key);
     }
-
 }

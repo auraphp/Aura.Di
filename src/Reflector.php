@@ -4,7 +4,7 @@ namespace Aura\Di;
 use ReflectionClass;
 use ReflectionException;
 
-class ReflectionLocator
+class Reflector
 {
     protected $reflection = [];
 

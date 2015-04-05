@@ -34,12 +34,12 @@ class Resolver
 
     /**
      *
-     * A reflection locator.
+     * A Reflector.
      *
-     * @var array
+     * @var Reflector
      *
      */
-    protected $reflection = array();
+    protected $reflector = array();
 
     /**
      *
@@ -69,9 +69,9 @@ class Resolver
      */
     protected $types = array();
 
-    public function __construct(ReflectionLocator $reflection)
+    public function __construct(Reflector $reflector)
     {
-        $this->reflection = $reflection;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -150,7 +150,7 @@ class Resolver
         }
 
         // create the new instance
-        $rclass = $this->reflection->get($class);
+        $rclass = $this->reflector->get($class);
         $object = $rclass->newInstanceArgs($params);
 
         // call setters after creation
@@ -281,7 +281,7 @@ class Resolver
      */
     protected function getUnifiedParams($class, array $parent)
     {
-        $rclass = $this->reflection->get($class);
+        $rclass = $this->reflector->get($class);
         $rctor = $rclass->getConstructor();
         if (! $rctor) {
             // no constructor, so no need to pass params

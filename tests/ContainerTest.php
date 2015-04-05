@@ -8,7 +8,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->container = new Container(new Factory(new Resolver(new ReflectionLocator())));
+        $this->container = new Container(new Factory(new Resolver(new Reflector())));
     }
 
     protected function tearDown()
