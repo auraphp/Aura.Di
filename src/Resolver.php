@@ -102,7 +102,6 @@ class Resolver
         array $merge_params = array(),
         array $merge_setters = array()
     ) {
-        // base configs
         list($params, $setters) = $this->getUnified($class);
         $this->mergeParams($params, $merge_params);
         $this->mergeSetters($class, $setters, $merge_setters);
@@ -143,8 +142,7 @@ class Resolver
     protected function mergeParams(&$params, array $merge_params = array())
     {
         if (! $merge_params) {
-            $this->loadLazyParams($params);
-            return;
+            return $this->mergeParamsEmpty($params);
         }
 
         $pos = 0;
@@ -186,7 +184,7 @@ class Resolver
      * @return null
      *
      */
-    protected function loadLazyParams(&$params)
+    protected function mergeParamsEmpty(&$params)
     {
         foreach ($params as $key => $val) {
             // is the param missing?
