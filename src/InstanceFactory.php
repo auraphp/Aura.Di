@@ -57,7 +57,7 @@ class InstanceFactory
      *
      * Constructor.
      *
-     * @param Factory $factory The object factory.
+     * @param Resolver $resolver A Resolver to provide class-creation specifics.
      *
      * @param string $class The class to create.
      *
@@ -75,7 +75,7 @@ class InstanceFactory
         $this->resolver = $resolver;
         $this->class = $class;
         $this->params = $params;
-        $this->setter = $setters;
+        $this->setters = $setters;
     }
 
     /**
@@ -97,7 +97,7 @@ class InstanceFactory
         $resolve = $this->resolver->resolve(
             $this->class,
             $merge_params,
-            $this->setter
+            $this->setters
         );
 
         $object = $resolve->reflection->newInstanceArgs($resolve->params);
