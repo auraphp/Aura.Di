@@ -19,18 +19,52 @@ use ReflectionException;
  */
 class Factory
 {
+    /**
+     *
+     * A Resolver to provide class-creation specifics.
+     *
+     * @var Resolver
+     *
+     */
     protected $resolver;
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param Resolver $resolver A Resolver to provide class-creation specifics.
+     *
+     */
     public function __construct(Resolver $resolver)
     {
         $this->resolver = $resolver;
     }
 
+    /**
+     *
+     * Returns the Resolver.
+     *
+     * @return Resolver
+     *
+     */
     public function getResolver()
     {
         return $this->resolver;
     }
 
+    /**
+     *
+     * Returns a new class instance.
+     *
+     * @param string $class The class to instantiate.
+     *
+     * @param array $params Params for the instantiation.
+     *
+     * @param array $setters Setters for the instantiation.
+     *
+     * @return mixed
+     *
+     */
     public function newInstance(
         $class,
         array $merge_params = array(),
@@ -47,8 +81,6 @@ class Factory
     /**
      *
      * Returns a new InstanceFactory.
-     *
-     * @param Container $container The service container.
      *
      * @param string $class The class to create.
      *
