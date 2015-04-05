@@ -132,7 +132,7 @@ class ExampleWithParams
 
 If we were to try to set a service using `$di->lazyNew('ExampleWithParams')`, the instantiation would fail. The `$foo` param is required, and the _Container_ does not know what to use for that value.
 
-To remedy this, we tell the _Container_ what values to use for each _ExampleWithParams_ constructor parameter by name using the `$di->params` array:
+To remedy this, we tell the _Container_ what values to use for each _ExampleWithParams_ constructor parameter by name using the `$di->params` array:def
 
 ```php
 <?php
@@ -211,7 +211,7 @@ For example, look at the following class; it has a parameter with a default valu
 <?php
 class ExampleForAutoResolution
 {
-    public function __construct($foo = 'bar', array $baz, Example $dib)
+    public function __construct(array $baz, Example $dib, $foo = 'bar')
     {
         // ...
     }
@@ -223,9 +223,9 @@ For each relevant `$di->params['ExampleForAutoResolution']` element that is miss
 
 ```php
 <?php
-$di->params['ExampleForAutoResolution']['foo'] = 'bar';
 $di->params['ExampleForAutoResolution']['baz'] = array();
 $di->params['ExampleForAutoResolution']['dib'] = $di->lazyNew('Example');
+$di->params['ExampleForAutoResolution']['foo'] = 'bar';
 ?>
 ```
 
