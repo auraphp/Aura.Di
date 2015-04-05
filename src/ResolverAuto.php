@@ -24,8 +24,6 @@ class ResolverAuto extends Resolver
      *
      * @param array $parent The parent unified params.
      *
-     * @param string $name The param name.
-     *
      * @return mixed The auto-resolved param value.
      *
      */
