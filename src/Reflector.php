@@ -20,17 +20,56 @@ use ReflectionException;
  */
 class Reflector
 {
+    /**
+     *
+     * Collected ReflectionClass instances.
+     *
+     * @var array
+     *
+     */
     protected $classes = [];
 
+    /**
+     *
+     * Collected arrays of ReflectionParameter instances for class constructors.
+     *
+     * @var array
+     *
+     */
     protected $params = [];
 
+    /**
+     *
+     * Collected traits in classes.
+     *
+     * @var array
+     *
+     */
     protected $traits = [];
 
+    /**
+     *
+     * When serializing, ignore the Reflection-based properties.
+     *
+     * @return array
+     *
+     */
     public function __sleep()
     {
         return array('traits');
     }
 
+    /**
+     *
+     * Returns a ReflectionClass for the given class.
+     *
+     * @param string $class Return a ReflectionClass for this class.
+     *
+     * @return ReflectionClass
+     *
+     * @throws Exception\ReflectionFailure when the class does not exist.
+     *
+     */
     public function getClass($class)
     {
         if (isset($this->classes[$class])) {
@@ -46,6 +85,17 @@ class Reflector
         return $this->classes[$class];
     }
 
+    /**
+     *
+     * Returns an array of ReflectionParameter instances for the constructor of
+     * a given class.
+     *
+     * @param string $class Return the array of ReflectionParameter instances
+     * for the constructor of this class.
+     *
+     * @return array
+     *
+     */
     public function getParams($class)
     {
         if (isset($this->params[$class])) {
