@@ -278,22 +278,22 @@ class Resolver
     {
         $name = $rparam->name;
 
+        // is there a value explicitly from the current class?
         $explicit = isset($this->params[$class][$name])
                  && ! $this->params[$class][$name] instanceof MissingParam;
         if ($explicit) {
-            // use the explicit value for this class
             return $this->params[$class][$name];
         }
 
+        // is there a value implicitly inherited from the parent class?
         $implicit = isset($parent[$name])
                  && ! $parent[$name] instanceof MissingParam;
         if ($implicit) {
-            // use the implicit value from the parent class
             return $parent[$name];
         }
 
+        // is a default value available for the current class?
         if ($rparam->isDefaultValueAvailable()) {
-            // use the default value
             return $rparam->getDefaultValue();
         }
 
@@ -304,6 +304,9 @@ class Resolver
     /**
      *
      * Returns the unified setters for a class.
+     *
+     * Class-specific setters take precendence over trait-based setters, which
+     * take precedence over interface-based setters.
      *
      * @param string $class The class name to return values for.
      *
@@ -327,15 +330,7 @@ class Resolver
             }
         }
 
-        // look for non-trait setters
-        if (isset($this->setters[$class])) {
-            $unified = array_merge(
-                $unified,
-                $this->setters[$class]
-            );
-        }
-
-        // look for setters inside traits
+        // look for trait setters
         $traits = $this->reflector->getTraits($class);
         foreach ($traits as $trait) {
             if (isset($this->setters[$trait])) {
@@ -344,6 +339,14 @@ class Resolver
                     $unified
                 );
             }
+        }
+
+        // look for class setters
+        if (isset($this->setters[$class])) {
+            $unified = array_merge(
+                $unified,
+                $this->setters[$class]
+            );
         }
 
         // done
