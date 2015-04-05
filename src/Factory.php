@@ -34,9 +34,9 @@ class Factory
     public function newInstance(
         $class,
         array $merge_params = array(),
-        array $merge_setter = array()
+        array $merge_setters = array()
     ) {
-        $resolve = $this->resolver->resolve($class, $merge_params, $merge_setter);
+        $resolve = $this->resolver->resolve($class, $merge_params, $merge_setters);
         $object = $resolve->reflection->newInstanceArgs($resolve->params);
         foreach ($resolve->setters as $method => $value) {
             $object->$method($value);

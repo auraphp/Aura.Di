@@ -383,7 +383,7 @@ class Container implements ContainerInterface
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
-     * @param array $merge_setter An array of override setters; the key is the
+     * @param array $merge_setters An array of override setters; the key is the
      * name of the setter method to call and the value is the value to be
      * passed to the setter method.
      *
@@ -395,12 +395,12 @@ class Container implements ContainerInterface
     public function newInstance(
         $class,
         array $merge_params = array(),
-        array $merge_setter = array()
+        array $merge_setters = array()
     ) {
         return $this->factory->newInstance(
             $class,
             $merge_params,
-            $merge_setter
+            $merge_setters
         );
     }
 }

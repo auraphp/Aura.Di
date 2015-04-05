@@ -86,7 +86,7 @@ class Resolver
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
-     * @param array $merge_setter An array of override setters; the key is the
+     * @param array $merge_setters An array of override setters; the key is the
      * name of the setter method to call and the value is the value to be
      * passed to the setter method.
      *
@@ -98,12 +98,12 @@ class Resolver
     public function resolve(
         $class,
         array $merge_params = array(),
-        array $merge_setter = array()
+        array $merge_setters = array()
     ) {
         // base configs
         list($params, $setter) = $this->getUnified($class);
         $this->mergeParams($params, $merge_params);
-        $this->mergeSetter($class, $setter, $merge_setter);
+        $this->mergeSetters($class, $setter, $merge_setters);
         return (object) [
             'reflection' => $this->reflector->get($class),
             'params' => $params,
@@ -111,10 +111,10 @@ class Resolver
         ];
     }
 
-    protected function mergeSetter($class, &$setter, array $merge_setter = array())
+    protected function mergeSetters($class, &$setter, array $merge_setters = array())
     {
         // retain setters
-        $setter = array_merge($setter, $merge_setter);
+        $setter = array_merge($setter, $merge_setters);
         foreach ($setter as $method => $value) {
             // does the specified setter method exist?
             if (method_exists($class, $method)) {
