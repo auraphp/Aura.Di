@@ -58,9 +58,13 @@ class ContainerBuilder
         array $config_classes = array(),
         $auto_resolve = self::DISABLE_AUTO_RESOLVE
     ) {
-        $di = new Container(new Factory(new Resolver(new Reflector())));
-        $di->setAutoResolve($auto_resolve);
+        if ($auto_resolve) {
+            $resolver = new ResolverAuto(new Reflector());
+        } else {
+            $resolver = new Resolver(new Reflector());
+        }
 
+        $di = new Container(new Factory($resolver));
         foreach ($services as $key => $val) {
             $di->set($key, $val);
         }

@@ -21,8 +21,6 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializeAndUnserializeOfReflection()
     {
-        $this->container->setAutoResolve(false);
-
         $this->container->params['Aura\Di\FakeParamsClass'] = array(
             'array' => array(),
             'empty' => 'abc'

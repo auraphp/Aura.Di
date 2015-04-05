@@ -51,24 +51,6 @@ class Resolver
      */
     protected $unified = array();
 
-    /**
-     *
-     * Is auto-resolution enabled or disabled?
-     *
-     * @var bool
-     *
-     */
-    protected $auto_resolve = false;
-
-    /**
-     *
-     * Auto-resolve these typehints to these values.
-     *
-     * @var array
-     *
-     */
-    protected $types = array();
-
     public function __construct(Reflector $reflector)
     {
         $this->reflector = $reflector;
@@ -86,20 +68,6 @@ class Resolver
     public function &__get($key)
     {
         return $this->$key;
-    }
-
-    /**
-     *
-     * Enables and disables auto-resolution.
-     *
-     * @param bool $auto_resolve True to enable, false to disable.
-     *
-     * @return null
-     *
-     */
-    public function setAutoResolve($auto_resolve)
-    {
-        $this->auto_resolve = (bool) $auto_resolve;
     }
 
     /**
@@ -128,35 +96,24 @@ class Resolver
         array $merge_params = array(),
         array $merge_setter = array()
     ) {
-        $resolve = (object) [
-            'reflection' => null,
-            'params' => array(),
-            'setters' => array(),
-        ];
-
         // base configs
         list($params, $setter) = $this->getUnified($class);
+        $this->mergeParams($params, $merge_params);
 
-        // merge param configs and load lazy objects
-        if ($merge_params) {
-            $this->mergeParams($params, $merge_params);
-        } else {
-            $this->loadLazyParams($params);
-        }
-
-        // are there missing params? don't worry about it with auto-resolve.
-        if (! $this->auto_resolve) {
-            foreach ($params as $param) {
-                if ($param instanceof MissingParam) {
-                    throw new Exception\MissingParam(
-                        $class. '::$' . $param->getName()
-                    );
-                }
+        // are there missing params?
+        foreach ($params as $param) {
+            if ($param instanceof MissingParam) {
+                throw new Exception\MissingParam(
+                    $class. '::$' . $param->getName()
+                );
             }
         }
 
-        $resolve->reflection = $this->reflector->get($class);
-        $resolve->params = $params;
+        $resolve = (object) [
+            'reflection' => $this->reflector->get($class),
+            'params' => $params,
+            'setters' => array(),
+        ];
 
         // retain setters
         $setter = array_merge($setter, $merge_setter);
@@ -194,6 +151,11 @@ class Resolver
      */
     protected function mergeParams(&$params, array $merge_params = array())
     {
+        if (! $merge_params) {
+            $this->loadLazyParams($params);
+            return;
+        }
+
         $pos = 0;
         foreach ($params as $key => $val) {
 
@@ -204,6 +166,13 @@ class Resolver
             } elseif (array_key_exists($key, $merge_params)) {
                 // named override
                 $val = $merge_params[$key];
+            }
+
+            // is the param missing?
+            if ($val instanceof MissingParam) {
+                throw new Exception\MissingParam(
+                    $class. '::$' . $val->getName()
+                );
             }
 
             // load lazy objects as we go
@@ -231,6 +200,11 @@ class Resolver
     protected function loadLazyParams(&$params)
     {
         foreach ($params as $key => $val) {
+            // is the param missing?
+            if ($val instanceof MissingParam) {
+                throw new Exception\MissingParam($val->getName());
+            }
+            // load lazy objects as we go
             if ($val instanceof LazyInterface) {
                 $params[$key] = $val();
             }
@@ -345,48 +319,8 @@ class Resolver
             return $rparam->getDefaultValue();
         }
 
-        return $this->autoResolveParam($rparam, $class, $parent, $name);
-    }
-
-    /**
-     *
-     * Auto-resolves a unified param.
-     *
-     * @param ReflectionParameter $rparam A parameter reflection.
-     *
-     * @param string $class The class name to return values for.
-     *
-     * @param array $parent The parent unified params.
-     *
-     * @param string $name The param name.
-     *
-     * @return mixed The auto-resolved param value.
-     *
-     */
-    protected function autoResolveParam($rparam, $class, $parent, $name)
-    {
-        if (! $this->auto_resolve) {
-            return new MissingParam($name);
-        }
-
-        if ($rparam->isArray()) {
-            // use an empty array
-            return array();
-        }
-
-        $rtype = $rparam->getClass();
-        if ($rtype && isset($this->types[$rtype->name])) {
-            // use an explicit auto-resolution
-            return $this->types[$rtype->name];
-        }
-
-        if ($rtype && $rtype->isInstantiable()) {
-            // use a lazy-new-instance of the typehinted class
-            return new LazyNew($this, $rtype->name);
-        }
-
-        // use a null as a placeholder
-        return null;
+        // param is missing
+        return new MissingParam($class, $name);
     }
 
     /**

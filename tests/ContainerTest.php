@@ -324,28 +324,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar', $actual->getFoo());
     }
 
-    public function testAutoResolve()
-    {
-        $this->container->setAutoResolve(true);
-        $this->container->types['Aura\Di\FakeParentClass'] = $this->container->lazyNew('Aura\Di\FakeChildClass');
-        $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual->fake);
-    }
-
-    public function testSetAutoResolve()
-    {
-        $this->markTestSkipped('Extract auto-resolution later.');
-
-        $this->assertFalse($this->resolver->auto_resolve);
-        $this->container->setAutoResolve(true);
-        $this->assertTrue($this->resolver->auto_resolve);
-
-        $this->container->lock();
-        $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
-        $this->container->setAutoResolve(true);
-    }
-
     public function testResolveWithMissingParam()
     {
         $this->setExpectedException(

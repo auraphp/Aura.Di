@@ -147,29 +147,6 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->params['foo']);
     }
 
-    public function testAutoResolveImplicit()
-    {
-        $this->resolver->setAutoResolve(true);
-        $actual = $this->resolver->resolve('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeParentClass', $actual->params['fake']);
-    }
-
-    public function testAutoResolveExplicit()
-    {
-        $this->resolver->setAutoResolve(true);
-        $this->resolver->types['Aura\Di\FakeParentClass'] = new LazyNew($this->resolver, 'Aura\Di\FakeChildClass');
-        $actual = $this->resolver->resolve('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual->params['fake']);
-    }
-
-    public function testAutoResolveArrayAndNull()
-    {
-        $this->resolver->setAutoResolve(true);
-        $actual = $this->resolver->resolve('Aura\Di\FakeParamsClass');
-        $this->assertSame(array(), $actual->params['array']);
-        $this->assertNull($actual->params['empty']);
-    }
-
     public function testMissingParam()
     {
         $this->setExpectedException(

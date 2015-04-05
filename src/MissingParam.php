@@ -24,7 +24,7 @@ class MissingParam
      * @var string
      *
      */
-    protected $name;
+    protected $param;
 
     /**
      *
@@ -33,9 +33,10 @@ class MissingParam
      * @param string $name The name of the missing param.
      *
      */
-    public function __construct($name)
+    public function __construct($class, $param)
     {
-        $this->name = $name;
+        $this->class = $class;
+        $this->param = $param;
     }
 
     /**
@@ -47,6 +48,6 @@ class MissingParam
      */
     public function getName()
     {
-        return $this->name;
+        return "{$this->class}::\${$this->param}";
     }
 }
