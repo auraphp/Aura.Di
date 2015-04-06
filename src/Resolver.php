@@ -173,13 +173,11 @@ class Resolver
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
-     * @return array
-     *
      */
     protected function mergeParams($class, &$params, array $merge_params = array())
     {
         if (! $merge_params) {
-            return $this->mergeParamsEmpty($class, $params);
+            $this->mergeParamsEmpty($class, $params);
         }
 
         $pos = 0;
@@ -219,8 +217,6 @@ class Resolver
      * @param string $class The params are on this class.
      *
      * @param array $params The constructor parameters.
-     *
-     * @return null
      *
      */
     protected function mergeParamsEmpty($class, &$params)
