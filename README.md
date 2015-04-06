@@ -189,7 +189,7 @@ This keeps the service from being created until the very moment it is needed. If
 
 #### Auto-Resolution Of Parameter Values
 
-Auto-resolution is disabled by default. You can disable auto-resolution by calling `$di->setAutoResolve(true)`.
+Auto-resolution is disabled by default. You can enable auto-resolution by calling `$di->setAutoResolve(true)`.
 
 ##### How Auto-Resolution Works
 
