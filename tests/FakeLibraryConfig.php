@@ -6,7 +6,7 @@ class FakeLibraryConfig extends Config
     public function define(Container $di)
     {
         parent::define($di);
-        $di->set('library_service', (object) array('foo' => 'bar'));
+        $di->set('library_service', (object) ['foo' => 'bar']);
     }
 
     public function modify(Container $di)

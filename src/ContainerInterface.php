@@ -115,7 +115,7 @@ interface ContainerInterface
      * @return object An instance of the requested class.
      *
      */
-    public function newInstance($class, array $params = array(), array $setters = array());
+    public function newInstance($class, array $params = [], array $setters = []);
 
     /**
      *
@@ -130,5 +130,5 @@ interface ContainerInterface
      * @return Lazy A lazy-load object that creates the new instance.
      *
      */
-    public function lazyNew($class, array $params = array(), array $setters = array());
+    public function lazyNew($class, array $params = [], array $setters = []);
 }

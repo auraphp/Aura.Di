@@ -5,10 +5,10 @@ class ContainerConfigTest extends AbstractContainerTest
 {
     protected function getConfigClasses()
     {
-        return array(
+        return [
             'Aura\Di\FakeLibraryConfig',
             'Aura\Di\FakeProjectConfig',
-        );
+        ];
     }
 
     protected function getAutoResolve()
@@ -18,16 +18,16 @@ class ContainerConfigTest extends AbstractContainerTest
 
     public function provideGet()
     {
-        return array(
-            array('library_service', 'StdClass'),
-            array('project_service', 'StdClass'),
-        );
+        return [
+            ['library_service', 'StdClass'],
+            ['project_service', 'StdClass'],
+        ];
     }
 
     public function provideNewInstance()
     {
-        return array(
-            array('StdClass'),
-        );
+        return [
+            ['StdClass'],
+        ];
     }
 }

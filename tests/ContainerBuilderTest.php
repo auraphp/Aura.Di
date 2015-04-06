@@ -7,15 +7,15 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ContainerBuilder();
 
-        $preset_service = (object) array('irk' => 'doom');
-        $services = array(
+        $preset_service = (object) ['irk' => 'doom'];
+        $services = [
             'preset_service' => $preset_service
-        );
+        ];
 
-        $config_classes = array(
+        $config_classes = [
             'Aura\Di\FakeLibraryConfig',
             'Aura\Di\FakeProjectConfig',
-        );
+        ];
 
         $di = $builder->newConfiguredInstance($services, $config_classes);
 

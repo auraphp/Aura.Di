@@ -52,7 +52,7 @@ class Container implements ContainerInterface
      * @var array
      *
      */
-    protected $services = array();
+    protected $services = [];
 
     /**
      *
@@ -61,7 +61,7 @@ class Container implements ContainerInterface
      * @var array
      *
      */
-    protected $instances = array();
+    protected $instances = [];
 
     /**
      *
@@ -295,8 +295,8 @@ class Container implements ContainerInterface
      */
     public function lazyNew(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         return $this->factory->newLazyNew($class, $params, $setters);
     }
@@ -359,8 +359,8 @@ class Container implements ContainerInterface
      */
     public function newFactory(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         return $this->factory->newInstanceFactory(
             $class,
@@ -392,8 +392,8 @@ class Container implements ContainerInterface
      */
     public function newInstance(
         $class,
-        array $merge_params = array(),
-        array $merge_setters = array()
+        array $merge_params = [],
+        array $merge_setters = []
     ) {
         return $this->factory->newInstance(
             $class,

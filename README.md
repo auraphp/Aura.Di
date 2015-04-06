@@ -153,9 +153,9 @@ If we want to override the default `$di->params` values for a specific new insta
 <?php
 $di->set('service_name', $di->lazyNew(
     'ExampleWithParams',
-    array(
+    [
         'bar' => 'alternative_bar_value',
-    )
+    ]
 ));
 ?>
 ```
@@ -197,7 +197,7 @@ Auto-resolution is disabled by default. You can enable auto-resolution by callin
 
 If there is no `$di->params` value for a parameter, the _Container_ will fill in the constructor default value.
 
-If the parameter is typehinted as an `array` but there is no `$di->params` value and also no default value, the _Container_ will fill in an empty `array()`.
+If the parameter is typehinted as an `array` but there is no `$di->params` value and also no default value, the _Container_ will fill in an empty `[]`.
 
 If the parameter is typehinted to a class but there is no `$di->params` value for that parameter and also no default value, the _Container_ will fill in a `lazyNew()` call to the typehinted class.
 
@@ -220,14 +220,14 @@ For each relevant `$di->params['ExampleForAutoResolution']` element that is miss
 ```php
 <?php
 $di->params['ExampleForAutoResolution']['foo'] = 'bar';
-$di->params['ExampleForAutoResolution']['baz'] = array();
+$di->params['ExampleForAutoResolution']['baz'] = [];
 $di->params['ExampleForAutoResolution']['dib'] = $di->lazyNew('Example');
 ?>
 ```
 
 We can set any combination of these explicitly, and those that are not explicitly set will be filled in automatically for us.
 
-(Note that we cannot auto-resolve an `array` typehint; such typehints are always resolved to an empty `array()` when no default value is present.)
+(Note that we cannot auto-resolve an `array` typehint; such typehints are always resolved to an empty `[]` when no default value is present.)
 
 ##### Explicitly Directing Auto-Resolution Typehints
 
@@ -348,10 +348,10 @@ As with constructor injection, we can note instance-specific setter values to us
 <?php
 $di->set('service_name', $di->lazyNew(
     'ExampleWithSetters',
-    array(), // no $params overrides
-    array(
+    [], // no $params overrides
+    [
         'setFoo' => 'alternative_foo_value',
-    )
+    ]
 ));
 ?>
 ```
@@ -385,11 +385,11 @@ Occasionally we will need to `include` a file that returns a value, such as data
 ```php
 <?php
 // /path/to/data.php
-return array(
+return [
     'foo' => 'bar',
     'baz' => 'dib',
     'zim' => 'gir'
-);
+];
 ?>
 ```
 
@@ -535,14 +535,14 @@ To build a _Container_ using the _ContainerBuilder_, we do something like the fo
 use Aura\Di\ContainerBuilder;
 
 // pre-existing service objects as ['service_name' => $object_instance]
-$services = array();
+$services = [];
 
 // config classes to call define() and modify() on
-$config_classes = array(
+$config_classes = [
     'Aura\Cli\_Config\Common',
     'Aura\Router\_Config\Common',
     'Aura\Web\_Config\Common',
-);
+];
 
 // should auto-resolve be enabled or disabled?
 // ENABLE_AUTO_RESOLVE is the default;
@@ -551,7 +551,7 @@ $auto_resolve = ContainerBuilder::ENABLE_AUTO_RESOLVE;
 
 // use the builder to create a container
 $container_builder = new ContainerBuilder;
-$di = $container_builder->newInstance(
+$di = $container_builder->newConfiguredInstance(
     $services,
     $config_classes,
     $auto_resolve

@@ -15,8 +15,8 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function newInstanceFactory(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         return new InstanceFactory($this->resolver, $class, $params, $setters);
     }
@@ -28,13 +28,13 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
 
         $factory = $this->newInstanceFactory(
             'Aura\Di\FakeChildClass',
-            array(
+            [
                 'foo' => 'foofoo',
                 'zim' => $other,
-            ),
-            array(
+            ],
+            [
                 'setFake' => 'fakefake',
-            )
+            ]
         );
 
         $actual = $factory();

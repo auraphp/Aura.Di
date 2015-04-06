@@ -56,7 +56,7 @@ class Reflector
      */
     public function __sleep()
     {
-        return array('traits');
+        return ['traits'];
     }
 
     /**
@@ -131,7 +131,7 @@ class Reflector
             return $this->traits[$class];
         }
 
-        $traits = array();
+        $traits = [];
 
         // get traits from ancestor classes
         do {

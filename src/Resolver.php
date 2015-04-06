@@ -29,7 +29,7 @@ class Resolver
      * @var array
      *
      */
-    protected $params = array();
+    protected $params = [];
 
     /**
      *
@@ -38,7 +38,7 @@ class Resolver
      * @var array
      *
      */
-    protected $setters = array();
+    protected $setters = [];
 
     /**
      *
@@ -47,7 +47,7 @@ class Resolver
      * @var array
      *
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      *
@@ -56,7 +56,7 @@ class Resolver
      * @var Reflector
      *
      */
-    protected $reflector = array();
+    protected $reflector = [];
 
     /**
      *
@@ -66,7 +66,7 @@ class Resolver
      * @var array
      *
      */
-    protected $unified = array();
+    protected $unified = [];
 
     /**
      *
@@ -122,8 +122,8 @@ class Resolver
      */
     public function resolve(
         $class,
-        array $merge_params = array(),
-        array $merge_setters = array()
+        array $merge_params = [],
+        array $merge_setters = []
     ) {
         list($params, $setters) = $this->getUnified($class);
         $this->mergeParams($class, $params, $merge_params);
@@ -148,7 +148,7 @@ class Resolver
      * @return null
      *
      */
-    protected function mergeSetters($class, &$setters, array $merge_setters = array())
+    protected function mergeSetters($class, &$setters, array $merge_setters = [])
     {
         $setters = array_merge($setters, $merge_setters);
         foreach ($setters as $method => $value) {
@@ -176,7 +176,7 @@ class Resolver
      * @return array
      *
      */
-    protected function mergeParams($class, &$params, array $merge_params = array())
+    protected function mergeParams($class, &$params, array $merge_params = [])
     {
         if (! $merge_params) {
             // no params to merge, micro-optimize the loop
@@ -256,8 +256,11 @@ class Resolver
             return $this->unified[$class];
         }
 
+        // default to an an array of two empty arrays
+        // (one for params, one for setters)
+        $spec = [[], []];
+
         // fetch the values for parents so we can inherit them
-        $spec = array(array(), array());
         $parent = get_parent_class($class);
         if ($parent) {
             $spec = $this->getUnified($parent);
@@ -285,7 +288,7 @@ class Resolver
     protected function getUnifiedParams($class, array $parent)
     {
         // reflect on what params to pass, in which order
-        $unified = array();
+        $unified = [];
         $rparams = $this->reflector->getParams($class);
         foreach ($rparams as $rparam) {
             $unified[$rparam->name] = $this->getUnifiedParam(

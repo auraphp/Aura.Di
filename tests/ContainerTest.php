@@ -1,6 +1,8 @@
 <?php
 namespace Aura\Di;
 
+use StdClass;
+
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
@@ -22,16 +24,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->setters['baz'] = 'dib';
         $this->container->setters['zim'] = 'gir';
 
-        $expect = array('foo' => 'bar');
+        $expect = ['foo' => 'bar'];
         $this->assertSame($expect, $this->container->params);
 
-        $expect = array('baz' => 'dib', 'zim' => 'gir');
+        $expect = ['baz' => 'dib', 'zim' => 'gir'];
         $this->assertSame($expect, $this->container->setters);
     }
 
     public function testHasGet()
     {
-        $expect = new \StdClass;
+        $expect = new StdClass;
         $this->container->set('foo', $expect);
 
         $this->assertTrue($this->container->has('foo'));
@@ -70,16 +72,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetServicesAndInstances()
     {
-        $this->container->set('foo', new \StdClass);
-        $this->container->set('bar', new \StdClass);
-        $this->container->set('baz', new \StdClass);
+        $this->container->set('foo', new StdClass);
+        $this->container->set('bar', new StdClass);
+        $this->container->set('baz', new StdClass);
 
-        $expect = array('foo', 'bar', 'baz');
+        $expect = ['foo', 'bar', 'baz'];
         $actual = $this->container->getServices();
         $this->assertSame($expect, $actual);
 
         $service = $this->container->get('bar');
-        $expect = array('bar');
+        $expect = ['bar'];
         $actual = $this->container->getInstances();
         $this->assertSame($expect, $actual);
     }
@@ -117,7 +119,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $instance = $this->container->newInstance(
             'Aura\Di\FakeParentClass',
-            array('foo' => 'dib')
+            ['foo' => 'dib']
         );
 
         $expect = 'dib';
@@ -153,7 +155,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $lazy = $this->container->lazyInclude($file);
         $this->assertInstanceOf('Aura\Di\LazyInclude', $lazy);
         $actual = $lazy();
-        $expect = array('foo' => 'bar');
+        $expect = ['foo' => 'bar'];
         $this->assertSame($expect, $actual);
     }
 
@@ -163,14 +165,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $lazy = $this->container->lazyRequire($file);
         $this->assertInstanceOf('Aura\Di\LazyRequire', $lazy);
         $actual = $lazy();
-        $expect = array('foo' => 'bar');
+        $expect = ['foo' => 'bar'];
         $this->assertSame($expect, $actual);
     }
 
     public function testLazy()
     {
         $lazy = $this->container->lazy(
-            array($this->container->lazyNew('Aura\Di\FakeParentClass'), 'mirror'),
+            [$this->container->lazyNew('Aura\Di\FakeParentClass'), 'mirror'],
             $this->container->lazy(function () { return 'mirror'; })
         );
 
@@ -186,13 +188,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $factory = $this->container->newFactory(
             'Aura\Di\FakeChildClass',
-            array(
+            [
                 'foo' => 'foofoo',
                 'zim' => $other,
-            ),
-            array(
+            ],
+            [
                 'setFake' => 'fakefake',
-            )
+            ]
         );
 
         $actual = $factory();
@@ -222,9 +224,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $class = 'Aura\Di\FakeParentClass';
 
-        $actual = $this->container->newInstance($class, array(
+        $actual = $this->container->newInstance($class, [
             'foo' => $lazy,
-        ));
+        ]);
 
         $this->assertInstanceOf($class, $actual);
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getFoo());
@@ -235,10 +237,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $class = 'Aura\Di\FakeChildClass';
         $this->container->setters['Aura\Di\FakeChildClass']['setFake'] = 'fake_value';
 
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', array(
+        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
             'foo' => 'gir',
             'zim' => new FakeOtherClass,
-        ));
+        ]);
 
         $this->assertSame('fake_value', $actual->getFake());
     }
@@ -274,10 +276,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $class = 'Aura\Di\FakeChildClass';
         $this->container->setters['Aura\Di\FakeChildClass']['setFake'] = $lazy;
 
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', array(
+        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
             'foo' => 'gir',
             'zim' => new FakeOtherClass,
-        ));
+        ]);
 
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getFake());
     }
@@ -294,21 +296,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $other = $this->container->newInstance('Aura\Di\FakeOtherClass');
 
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', array(
+        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
             'foofoo',
             $other,
-        ));
+        ]);
 
         $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual);
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getZim());
         $this->assertSame('foofoo', $actual->getFoo());
 
         // positional overrides names
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', array(
+        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
             0 => 'keepme',
             'foo' => 'bad',
             $other,
-        ));
+        ]);
 
         $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual);
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getZim());

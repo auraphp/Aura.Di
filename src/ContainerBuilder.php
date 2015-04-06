@@ -55,8 +55,8 @@ class ContainerBuilder
      *
      */
     public function newConfiguredInstance(
-        array $services = array(),
-        array $config_classes = array(),
+        array $services = [],
+        array $config_classes = [],
         $autoResolve = false
     ) {
         $di = $this->newInstance($autoResolve);
@@ -65,7 +65,7 @@ class ContainerBuilder
             $di->set($key, $val);
         }
 
-        $configs = array();
+        $configs = [];
         foreach ($config_classes as $class) {
             $config = $di->newInstance($class);
             $config->define($di);

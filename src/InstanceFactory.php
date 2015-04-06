@@ -69,8 +69,8 @@ class InstanceFactory
     public function __construct(
         Resolver $resolver,
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         $this->resolver = $resolver;
         $this->class = $class;

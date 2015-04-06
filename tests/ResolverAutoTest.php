@@ -27,7 +27,7 @@ class ResolverAutoTest extends ResolverTest
     public function testAutoResolveArrayAndNull()
     {
         $actual = $this->resolver->resolve('Aura\Di\FakeParamsClass');
-        $this->assertSame(array(), $actual->params['array']);
+        $this->assertSame([], $actual->params['array']);
         $this->assertNull($actual->params['empty']);
     }
 }

@@ -28,7 +28,7 @@ class ResolverAuto extends Resolver
      * @var array
      *
      */
-    protected $types = array();
+    protected $types = [];
 
     /**
      *
@@ -52,7 +52,7 @@ class ResolverAuto extends Resolver
 
         if ($rparam->isArray()) {
             // use an empty array
-            return array();
+            return [];
         }
 
         $rtype = $rparam->getClass();

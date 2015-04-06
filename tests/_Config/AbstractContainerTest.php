@@ -55,7 +55,7 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getServices()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getConfigClasses()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -112,12 +112,14 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      * Provides data for testGet().
      *
      * @return array An array of sequential elements, where each element is
-     * itself an array('service_name', 'ExpectedClassName').
+     * itself an array like ['service_name', 'ExpectedClassName'].
      *
      */
     public function provideGet()
     {
-        return array(array(null, null));
+        return [
+            [null, null],
+        ];
     }
 
     /**
@@ -133,8 +135,8 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testNewInstance(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         if (! $class) {
             $this->markTestSkipped('No class name passed for testNewInstance().');
@@ -151,12 +153,14 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      * Provides data for testNewInstance().
      *
      * @return array An array of sequential elements, where each element is
-     * itself an array('ClassName', array(param, param, param),
-     * array(setter, setter, setter)).
+     * itself an arra like `['ClassName', [param, param, param],
+     * [setter, setter, setter]]`.
      *
      */
     public function provideNewInstance()
     {
-        return array(array(null));
+        return [
+            [null],
+        ];
     }
 }

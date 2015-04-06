@@ -11,7 +11,8 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->container = new Container(new Factory(new Resolver(new Reflector())));
+        $builder = new ContainerBuilder();
+        $this->container = $builder->newInstance();
     }
 
     protected function tearDown()
@@ -21,10 +22,10 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializeAndUnserializeOfReflection()
     {
-        $this->container->params['Aura\Di\FakeParamsClass'] = array(
-            'array' => array(),
+        $this->container->params['Aura\Di\FakeParamsClass'] = [
+            'array' => [],
             'empty' => 'abc'
-        );
+        ];
 
         $instance = $this->container->newInstance('Aura\Di\FakeParamsClass');
 
@@ -33,7 +34,9 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
         $this->container = serialize($this->container);
         $this->container = unserialize($this->container);
 
-        $instance = $this->container->newInstance('Aura\Di\FakeParamsClass', array('array' => array('a' => 1)));
+        $instance = $this->container->newInstance('Aura\Di\FakeParamsClass', [
+            'array' => ['a' => 1]
+        ]);
 
         $this->assertInstanceOf('Aura\Di\FakeParamsClass', $instance);
     }

@@ -67,8 +67,8 @@ class Factory
      */
     public function newInstance(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         $resolve = $this->resolver->resolve($class, $params, $setters);
         $object = $resolve->reflection->newInstanceArgs($resolve->params);
@@ -93,8 +93,8 @@ class Factory
      */
     public function newInstanceFactory(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         return new InstanceFactory($this->resolver, $class, $params, $setters);
     }
@@ -110,7 +110,7 @@ class Factory
      * @return Lazy
      *
      */
-    public function newLazy($callable, array $params = array())
+    public function newLazy($callable, array $params = [])
     {
         return new Lazy($callable, $params);
     }
@@ -160,8 +160,8 @@ class Factory
      */
     public function newLazyNew(
         $class,
-        array $params = array(),
-        array $setters = array()
+        array $params = [],
+        array $setters = []
     ) {
         return new LazyNew($this->resolver, $class, $params, $setters);
     }

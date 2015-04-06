@@ -6,7 +6,7 @@ class FakeProjectConfig extends Config
     public function define(Container $di)
     {
         parent::define($di);
-        $di->set('project_service', (object) array('baz' => 'dib'));
+        $di->set('project_service', (object) ['baz' => 'dib']);
     }
 
     public function modify(Container $di)

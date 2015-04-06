@@ -13,7 +13,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsConstructorDefaults()
     {
-        $expect = array('foo' => 'bar');
+        $expect = ['foo' => 'bar'];
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeParentClass');
         $this->assertSame($expect, $actual_params);
     }
@@ -27,10 +27,10 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsParentParams()
     {
-        $expect = array(
+        $expect = [
             'foo' => 'bar',
             'zim' => null,
-        );
+        ];
 
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeChildClass');
         $this->assertSame($expect, $actual_params);
@@ -38,21 +38,21 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsExplicitParams()
     {
-        $this->resolver->params['Aura\Di\FakeParentClass'] = array('foo' => 'zim');
+        $this->resolver->params['Aura\Di\FakeParentClass'] = ['foo' => 'zim'];
 
-        $expect = array('foo' => 'zim');
+        $expect = ['foo' => 'zim'];
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeParentClass');
         $this->assertSame($expect, $actual_params);
     }
 
     public function testHonorsExplicitParentParams()
     {
-        $this->resolver->params['Aura\Di\FakeParentClass'] = array('foo' => 'dib');
+        $this->resolver->params['Aura\Di\FakeParentClass'] = ['foo' => 'dib'];
 
-        $expect = array(
+        $expect = [
             'foo' => 'dib',
             'zim' => null,
-        );
+        ];
 
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeChildClass');
         $this->assertSame($expect, $actual_params);
@@ -66,7 +66,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->resolver->setters['Aura\Di\FakeParentClass']['setFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeChildClass');
-        $expect = array('setFake' => 'fake1');
+        $expect = ['setFake' => 'fake1'];
         $this->assertSame($expect, $actual_setter);
 
     }
@@ -77,7 +77,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->resolver->setters['Aura\Di\FakeChildClass']['setFake'] = 'fake2';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeChildClass');
-        $expect = array('setFake' => 'fake2');
+        $expect = ['setFake' => 'fake2'];
         $this->assertSame($expect, $actual_setter);
     }
 
@@ -86,7 +86,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->resolver->setters['Aura\Di\FakeTrait']['setFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeClassWithTrait');
-        $expect = array('setFake' => 'fake1');
+        $expect = ['setFake' => 'fake1'];
         $this->assertSame($expect, $actual_setter);
     }
 
@@ -95,7 +95,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->resolver->setters['Aura\Di\FakeChildTrait']['setChildFake'] = 'fake1';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeClassWithTrait');
-        $expect = array('setChildFake' => 'fake1');
+        $expect = ['setChildFake' => 'fake1'];
         $this->assertSame($expect, $actual_setter);
     }
 
@@ -106,7 +106,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         list($actual_config, $actual_setter) = $this->resolver->getUnified(
             'Aura\Di\FakeClassWithTrait'
         );
-        $expect = array('setGrandchildFake' => 'fake1');
+        $expect = ['setGrandchildFake' => 'fake1'];
         $this->assertSame($expect, $actual_setter);
     }
 
@@ -116,7 +116,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         list($actual_config, $actual_setter) = $this->resolver->getUnified(
             'Aura\Di\FakeClassWithParentTrait'
         );
-        $expect = array('setGrandchildFake' => 'fake1');
+        $expect = ['setGrandchildFake' => 'fake1'];
         $this->assertSame($expect, $actual_setter);
     }
 
@@ -128,7 +128,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->resolver->setters['Aura\Di\FakeClassWithTrait']['setChildFake'] = 'fake4';
 
         list($actual_config, $actual_setter) = $this->resolver->getUnified('Aura\Di\FakeClassWithTrait');
-        $expect = array('setChildFake' => 'fake4', 'setFake' => 'fake3');
+        $expect = ['setChildFake' => 'fake4', 'setFake' => 'fake3'];
         $this->assertSame($expect, $actual_setter);
     }
 
