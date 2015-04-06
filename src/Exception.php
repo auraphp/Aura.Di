@@ -8,6 +8,8 @@
  */
 namespace Aura\Di;
 
+use Interop\Container\Exception\ContainerException;
+
 /**
  *
  * Generic package exception.
@@ -15,6 +17,6 @@ namespace Aura\Di;
  * @package Aura.Di
  *
  */
-class Exception extends \Exception
+class Exception extends \Exception implements ContainerException
 {
 }

@@ -9,6 +9,7 @@
 namespace Aura\Di;
 
 use Closure;
+use Interop\Container\ContainerInterface;
 
 /**
  *
@@ -40,7 +41,7 @@ class Container implements ContainerInterface
      *
      * A Resolver obtained from the Factory.
      *
-     * @var Factory
+     * @var Resolver\Resolver
      *
      */
     protected $resolver;
