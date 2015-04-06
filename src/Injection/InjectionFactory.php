@@ -6,19 +6,20 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Aura\Di;
+namespace Aura\Di\Injection;
 
+use Aura\Di\Container;
 use Aura\Di\Resolver\Resolver;
 use ReflectionException;
 
 /**
  *
- * A factory to create support objects for the Container.
+ * A factory to create objects and values to inject into the Container.
  *
  * @package Aura.Di
  *
  */
-class Factory
+class InjectionFactory
 {
     /**
      *

@@ -8,7 +8,7 @@
  */
 namespace Aura\Di\Resolver;
 
-use Aura\Di\LazyNew;
+use Aura\Di\Injection\LazyNew;
 use ReflectionParameter;
 
 /**
@@ -47,7 +47,7 @@ class AutoResolver extends Resolver
     protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
     {
         $unified = parent::getUnifiedParam($rparam, $class, $parent);
-        if (! $unified instanceof ParamPlaceholder) {
+        if (! $unified instanceof UnresolvedParam) {
             return $unified;
         }
 

@@ -8,6 +8,8 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Injection\InjectionFactory;
+use Aura\Di\Injection\LazyInterface;
 use Closure;
 use Interop\Container\ContainerInterface;
 
@@ -30,16 +32,16 @@ class Container implements ContainerInterface
 {
     /**
      *
-     * A Factory to create objects.
+     * A factory to create objects and values for injection.
      *
-     * @var Factory
+     * @var InjectionFactory
      *
      */
-    protected $factory;
+    protected $injectionFactory;
 
     /**
      *
-     * A Resolver obtained from the Factory.
+     * A Resolver obtained from the InjectionFactory.
      *
      * @var Resolver\Resolver
      *
@@ -82,13 +84,14 @@ class Container implements ContainerInterface
      *
      * Constructor.
      *
-     * @param Factory $factory A factory to create objects.
+     * @param InjectionFactory $injectionFactory A factory to create objects and
+     * values for injection.
      *
      */
-    public function __construct(Factory $factory)
+    public function __construct(InjectionFactory $injectionFactory)
     {
-        $this->factory = $factory;
-        $this->resolver = $this->factory->getResolver();
+        $this->injectionFactory = $injectionFactory;
+        $this->resolver = $this->injectionFactory->getResolver();
     }
 
     /**
@@ -180,7 +183,7 @@ class Container implements ContainerInterface
         }
 
         if ($val instanceof Closure) {
-            $val = $this->factory->newLazy($val);
+            $val = $this->injectionFactory->newLazy($val);
         }
 
         $this->services[$service] = $val;
@@ -262,7 +265,7 @@ class Container implements ContainerInterface
     {
         $params = func_get_args();
         array_shift($params);
-        return $this->factory->newLazy($callable, $params);
+        return $this->injectionFactory->newLazy($callable, $params);
     }
 
     /**
@@ -276,7 +279,7 @@ class Container implements ContainerInterface
      */
     public function lazyGet($service)
     {
-        return $this->factory->newLazyGet($this, $service);
+        return $this->injectionFactory->newLazyGet($this, $service);
     }
 
     /**
@@ -297,7 +300,7 @@ class Container implements ContainerInterface
         array $params = [],
         array $setters = []
     ) {
-        return $this->factory->newLazyNew($class, $params, $setters);
+        return $this->injectionFactory->newLazyNew($class, $params, $setters);
     }
 
     /**
@@ -311,7 +314,7 @@ class Container implements ContainerInterface
      */
     public function lazyRequire($file)
     {
-        return $this->factory->newLazyRequire($file);
+        return $this->injectionFactory->newLazyRequire($file);
     }
 
     /**
@@ -325,7 +328,7 @@ class Container implements ContainerInterface
      */
     public function lazyInclude($file)
     {
-        return $this->factory->newLazyInclude($file);
+        return $this->injectionFactory->newLazyInclude($file);
     }
 
     /**
@@ -339,7 +342,7 @@ class Container implements ContainerInterface
      */
     public function lazyValue($key)
     {
-        return $this->factory->newLazyValue($key);
+        return $this->injectionFactory->newLazyValue($key);
     }
 
     /**
@@ -361,7 +364,7 @@ class Container implements ContainerInterface
         array $params = [],
         array $setters = []
     ) {
-        return $this->factory->newInstanceFactory(
+        return $this->injectionFactory->newInstanceFactory(
             $class,
             $params,
             $setters
@@ -394,7 +397,7 @@ class Container implements ContainerInterface
         array $merge_params = [],
         array $merge_setters = []
     ) {
-        return $this->factory->newInstance(
+        return $this->injectionFactory->newInstance(
             $class,
             $merge_params,
             $merge_setters

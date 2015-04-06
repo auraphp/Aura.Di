@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Aura\Di;
+namespace Aura\Di\Injection;
 
 /**
  *

@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Di\Resolver;
 
-use Aura\Di\LazyNew;
+use Aura\Di\Injection\LazyNew;
 
 class AutoResolverTest extends ResolverTest
 {

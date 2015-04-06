@@ -9,7 +9,7 @@
 namespace Aura\Di\Resolver;
 
 use Aura\Di\Exception;
-use Aura\Di\LazyInterface;
+use Aura\Di\Injection\LazyInterface;
 use ReflectionParameter;
 use UnexpectedValueException;
 
@@ -199,7 +199,7 @@ class Resolver
             }
 
             // is the param missing?
-            if ($val instanceof ParamPlaceholder) {
+            if ($val instanceof UnresolvedParam) {
                 throw new Exception\MissingParam($val->getName($class));
             }
 
@@ -231,7 +231,7 @@ class Resolver
     {
         foreach ($params as $key => $val) {
             // is the param missing?
-            if ($val instanceof ParamPlaceholder) {
+            if ($val instanceof UnresolvedParam) {
                 throw new Exception\MissingParam($val->getName($class));
             }
             // load lazy objects as we go
@@ -323,14 +323,14 @@ class Resolver
 
         // is there a value explicitly from the current class?
         $explicit = isset($this->params[$class][$name])
-                 && ! $this->params[$class][$name] instanceof ParamPlaceholder;
+                 && ! $this->params[$class][$name] instanceof UnresolvedParam;
         if ($explicit) {
             return $this->params[$class][$name];
         }
 
         // is there a value implicitly inherited from the parent class?
         $implicit = isset($parent[$name])
-                 && ! $parent[$name] instanceof ParamPlaceholder;
+                 && ! $parent[$name] instanceof UnresolvedParam;
         if ($implicit) {
             return $parent[$name];
         }
@@ -341,7 +341,7 @@ class Resolver
         }
 
         // param is missing
-        return new ParamPlaceholder($name);
+        return new UnresolvedParam($name);
     }
 
     /**

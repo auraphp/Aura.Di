@@ -15,7 +15,7 @@ namespace Aura\Di\Resolver;
  * @package Aura.Di
  *
  */
-class ParamPlaceholder
+class UnresolvedParam
 {
     /**
      *

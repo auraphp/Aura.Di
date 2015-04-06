@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Injection;
 
 use Aura\Di\Resolver\Resolver;
 use Aura\Di\Resolver\Reflector;
@@ -26,7 +26,7 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function test__invoke()
     {
-        $factory = new Factory(new Resolver(new Reflector()));
+        $factory = new InjectionFactory(new Resolver(new Reflector()));
         $other = $factory->newInstance('Aura\Di\Fake\FakeOtherClass');
 
         $factory = $this->newInstanceFactory(

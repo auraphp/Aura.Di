@@ -8,6 +8,7 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\AutoResolver;
 use Aura\Di\Resolver\Resolver;
 use Aura\Di\Resolver\Reflector;
@@ -38,7 +39,7 @@ class ContainerBuilder
             $resolver = new Resolver(new Reflector());
         }
 
-        return new Container(new Factory($resolver));
+        return new Container(new InjectionFactory($resolver));
     }
 
     /**
