@@ -13,20 +13,20 @@ class ResolverAutoTest extends ResolverTest
 
     public function testMissingParam()
     {
-        $actual = $this->resolver->resolve('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeParentClass', $actual->params['fake']);
+        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $actual->params['fake']);
     }
 
     public function testAutoResolveExplicit()
     {
-        $this->resolver->types['Aura\Di\FakeParentClass'] = new LazyNew($this->resolver, 'Aura\Di\FakeChildClass');
-        $actual = $this->resolver->resolve('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual->params['fake']);
+        $this->resolver->types['Aura\Di\Fake\FakeParentClass'] = new LazyNew($this->resolver, 'Aura\Di\Fake\FakeChildClass');
+        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual->params['fake']);
     }
 
     public function testAutoResolveArrayAndNull()
     {
-        $actual = $this->resolver->resolve('Aura\Di\FakeParamsClass');
+        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass');
         $this->assertSame([], $actual->params['array']);
         $this->assertNull($actual->params['empty']);
     }

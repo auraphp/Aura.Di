@@ -22,22 +22,22 @@ class SerializationTest extends \PHPUnit_Framework_TestCase
 
     public function testSerializeAndUnserializeOfReflection()
     {
-        $this->container->params['Aura\Di\FakeParamsClass'] = [
+        $this->container->params['Aura\Di\Fake\FakeParamsClass'] = [
             'array' => [],
             'empty' => 'abc'
         ];
 
-        $instance = $this->container->newInstance('Aura\Di\FakeParamsClass');
+        $instance = $this->container->newInstance('Aura\Di\Fake\FakeParamsClass');
 
-        $this->assertInstanceOf('Aura\Di\FakeParamsClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParamsClass', $instance);
 
         $this->container = serialize($this->container);
         $this->container = unserialize($this->container);
 
-        $instance = $this->container->newInstance('Aura\Di\FakeParamsClass', [
+        $instance = $this->container->newInstance('Aura\Di\Fake\FakeParamsClass', [
             'array' => ['a' => 1]
         ]);
 
-        $this->assertInstanceOf('Aura\Di\FakeParamsClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParamsClass', $instance);
     }
 }

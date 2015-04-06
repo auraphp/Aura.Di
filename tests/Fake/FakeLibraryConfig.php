@@ -1,5 +1,8 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Fake;
+
+use Aura\Di\Config;
+use Aura\Di\Container;
 
 class FakeLibraryConfig extends Config
 {

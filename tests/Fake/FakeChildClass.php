@@ -1,5 +1,6 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Fake;
+
 class FakeChildClass extends FakeParentClass
 {
     protected $zim;

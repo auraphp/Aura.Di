@@ -1,5 +1,5 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Fake;
 
 class FakeClassWithParentTrait extends FakeClassWithTrait
 {

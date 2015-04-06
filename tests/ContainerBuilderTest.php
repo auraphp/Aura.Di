@@ -13,8 +13,8 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $config_classes = [
-            'Aura\Di\FakeLibraryConfig',
-            'Aura\Di\FakeProjectConfig',
+            'Aura\Di\Fake\FakeLibraryConfig',
+            'Aura\Di\Fake\FakeProjectConfig',
         ];
 
         $di = $builder->newConfiguredInstance($services, $config_classes);

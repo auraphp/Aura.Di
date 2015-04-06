@@ -6,8 +6,8 @@ class ContainerConfigTest extends AbstractContainerTest
     protected function getConfigClasses()
     {
         return [
-            'Aura\Di\FakeLibraryConfig',
-            'Aura\Di\FakeProjectConfig',
+            'Aura\Di\Fake\FakeLibraryConfig',
+            'Aura\Di\Fake\FakeProjectConfig',
         ];
     }
 

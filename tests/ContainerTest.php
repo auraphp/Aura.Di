@@ -62,11 +62,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $di = $this->container;
         $di->set('foo', function() use ($di) {
-            return new \Aura\Di\FakeParentClass();
+            return new \Aura\Di\Fake\FakeParentClass();
         });
 
         $actual = $this->container->get('foo');
-        $this->assertInstanceOf('Aura\Di\FakeParentClass', $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $actual);
     }
 
     public function testGetServicesAndInstances()
@@ -88,7 +88,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazyGet()
     {
         $this->container->set('foo', function() {
-            return new FakeOtherClass();
+            return new \Aura\Di\Fake\FakeOtherClass();
         });
 
         $lazy = $this->container->lazyGet('foo');
@@ -97,7 +97,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $foo = $lazy();
 
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $foo);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
     }
 
     public function testMagicGetNoSuchProperty()
@@ -108,7 +108,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstanceWithDefaults()
     {
-        $instance = $this->container->newInstance('Aura\Di\FakeParentClass');
+        $instance = $this->container->newInstance('Aura\Di\Fake\FakeParentClass');
         $expect = 'bar';
         $actual = $instance->getFoo();
         $this->assertSame($expect, $actual);
@@ -117,7 +117,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstanceWithOverride()
     {
         $instance = $this->container->newInstance(
-            'Aura\Di\FakeParentClass',
+            'Aura\Di\Fake\FakeParentClass',
             ['foo' => 'dib']
         );
 
@@ -128,10 +128,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testLazyNew()
     {
-        $lazy = $this->container->lazyNew('Aura\Di\FakeOtherClass');
+        $lazy = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
         $this->assertInstanceOf('Aura\Di\LazyNew', $lazy);
         $foo = $lazy();
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $foo);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
     }
 
     public function testLockedConfig()
@@ -171,7 +171,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazy()
     {
         $lazy = $this->container->lazy(
-            [$this->container->lazyNew('Aura\Di\FakeParentClass'), 'mirror'],
+            [$this->container->lazyNew('Aura\Di\Fake\FakeParentClass'), 'mirror'],
             $this->container->lazy(function () { return 'mirror'; })
         );
 
@@ -183,10 +183,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewFactory()
     {
-        $other = $this->container->newInstance('Aura\Di\FakeOtherClass');
+        $other = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
 
         $factory = $this->container->newFactory(
-            'Aura\Di\FakeChildClass',
+            'Aura\Di\Fake\FakeChildClass',
             [
                 'foo' => 'foofoo',
                 'zim' => $other,
@@ -198,8 +198,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $actual = $factory();
 
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual);
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getZim());
+        $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getZim());
         $this->assertSame('foofoo', $actual->getFoo());
         $this->assertSame('fakefake', $actual->getFake());
 
@@ -211,34 +211,34 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstance()
     {
-        $actual = $this->container->newInstance('Aura\Di\FakeOtherClass');
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual);
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual);
     }
 
     public function testNewInstanceWithLazyParam()
     {
         $lazy = $this->container->lazy(function() {
-            return new FakeOtherClass();
+            return new \Aura\Di\Fake\FakeOtherClass();
         });
 
-        $class = 'Aura\Di\FakeParentClass';
+        $class = 'Aura\Di\Fake\FakeParentClass';
 
         $actual = $this->container->newInstance($class, [
             'foo' => $lazy,
         ]);
 
         $this->assertInstanceOf($class, $actual);
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getFoo());
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getFoo());
     }
 
     public function testNewInstanceWithSetter()
     {
-        $class = 'Aura\Di\FakeChildClass';
-        $this->container->setters['Aura\Di\FakeChildClass']['setFake'] = 'fake_value';
+        $class = 'Aura\Di\Fake\FakeChildClass';
+        $this->container->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = 'fake_value';
 
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
             'foo' => 'gir',
-            'zim' => new FakeOtherClass(),
+            'zim' => new \Aura\Di\Fake\FakeOtherClass(),
         ]);
 
         $this->assertSame('fake_value', $actual->getFake());
@@ -246,81 +246,81 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testHonorsInterfacesAndOverrides()
     {
-        $this->container->setters['Aura\Di\FakeInterface']['setFoo'] = 'initial';
-        $this->container->setters['Aura\Di\FakeInterfaceClass2']['setFoo'] = 'override';
+        $this->container->setters['Aura\Di\Fake\FakeInterface']['setFoo'] = 'initial';
+        $this->container->setters['Aura\Di\Fake\FakeInterfaceClass2']['setFoo'] = 'override';
 
         // "inherits" initial value from interface
-        $actual = $this->container->newInstance('Aura\Di\FakeInterfaceClass');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
         $this->assertSame('initial', $actual->getFoo());
 
         // uses initial value "inherited" from parent
-        $actual = $this->container->newInstance('Aura\Di\FakeInterfaceClass1');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass1');
         $this->assertSame('initial', $actual->getFoo());
 
         // overrides the initial "inherited" value
-        $actual = $this->container->newInstance('Aura\Di\FakeInterfaceClass2');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass2');
         $this->assertSame('override', $actual->getFoo());
 
         // uses the "inherited" overridde value
-        $actual = $this->container->newInstance('Aura\Di\FakeInterfaceClass3');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass3');
         $this->assertSame('override', $actual->getFoo());
     }
 
     public function testnewInstanceWithLazySetter()
     {
         $lazy = $this->container->lazy(function() {
-            return new FakeOtherClass();
+            return new \Aura\Di\Fake\FakeOtherClass();
         });
 
-        $class = 'Aura\Di\FakeChildClass';
-        $this->container->setters['Aura\Di\FakeChildClass']['setFake'] = $lazy;
+        $class = 'Aura\Di\Fake\FakeChildClass';
+        $this->container->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = $lazy;
 
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
             'foo' => 'gir',
-            'zim' => new FakeOtherClass(),
+            'zim' => new \Aura\Di\Fake\FakeOtherClass(),
         ]);
 
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getFake());
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getFake());
     }
 
     public function testNewInstanceWithNonExistentSetter()
     {
-        $class = 'Aura\Di\FakeOtherClass';
-        $this->container->setters['Aura\Di\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
+        $class = 'Aura\Di\Fake\FakeOtherClass';
+        $this->container->setters['Aura\Di\Fake\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
         $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
-        $actual = $this->container->newInstance('Aura\Di\FakeOtherClass');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
     }
 
     public function testNewInstanceWithPositionalParams()
     {
-        $other = $this->container->newInstance('Aura\Di\FakeOtherClass');
+        $other = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
 
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
             'foofoo',
             $other,
         ]);
 
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual);
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getZim());
+        $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getZim());
         $this->assertSame('foofoo', $actual->getFoo());
 
         // positional overrides names
-        $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
             0 => 'keepme',
             'foo' => 'bad',
             $other,
         ]);
 
-        $this->assertInstanceOf('Aura\Di\FakeChildClass', $actual);
-        $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getZim());
+        $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getZim());
         $this->assertSame('keepme', $actual->getFoo());
     }
 
     public function testLazyValue()
     {
-        $this->container->params['Aura\Di\FakeParentClass']['foo'] = $this->container->lazyValue('foo');
+        $this->container->params['Aura\Di\Fake\FakeParentClass']['foo'] = $this->container->lazyValue('foo');
         $this->container->values['foo'] = 'bar';
-        $actual = $this->container->newInstance('Aura\Di\FakeParentClass');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeParentClass');
         $this->assertSame('bar', $actual->getFoo());
     }
 
@@ -328,15 +328,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(
             'Aura\Di\Exception\MissingParam',
-            'Aura\Di\FakeResolveClass::$fake'
+            'Aura\Di\Fake\FakeResolveClass::$fake'
         );
-        $this->container->newInstance('Aura\Di\FakeResolveClass');
+        $this->container->newInstance('Aura\Di\Fake\FakeResolveClass');
     }
 
     public function testResolveWithoutMissingParam()
     {
-        $this->container->params['Aura\Di\FakeResolveClass']['fake'] = $this->container->lazyNew('Aura\Di\FakeParentClass');
-        $actual = $this->container->newInstance('Aura\Di\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\FakeResolveClass', $actual);
+        $this->container->params['Aura\Di\Fake\FakeResolveClass']['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeParentClass');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeResolveClass');
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $actual);
     }
 }
