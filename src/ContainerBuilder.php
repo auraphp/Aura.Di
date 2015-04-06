@@ -44,14 +44,14 @@ class ContainerBuilder
     /**
      *
      * Creates a new DI container, adds pre-existing service objects, applies
-     * Config classes to define() services, locks the container, and applies
-     * the Config instances to modify() services.
+     * ContainerConfig classes to define() services, locks the container, and applies
+     * the ContainerConfig instances to modify() services.
      *
      * @param array $services Pre-existing service objects to set into the
      * container.
      *
-     * @param array $config_classes A list of Config classes to instantiate and
-     * invoke for configuring the container.
+     * @param array $config_classes A list of ContainerConfig classes to instantiate and
+     * invoke for configuring the Container.
      *
      * @param bool $autoResolve Use the auto-resolver?
      *

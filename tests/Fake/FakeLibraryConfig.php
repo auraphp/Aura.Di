@@ -1,10 +1,10 @@
 <?php
 namespace Aura\Di\Fake;
 
-use Aura\Di\Config;
 use Aura\Di\Container;
+use Aura\Di\ContainerConfig;
 
-class FakeLibraryConfig extends Config
+class FakeLibraryConfig extends ContainerConfig
 {
     public function define(Container $di)
     {

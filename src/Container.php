@@ -93,10 +93,9 @@ class Container implements ContainerInterface
 
     /**
      *
-     * Magic get to provide access to the Config::$params and $setters
-     * objects.
+     * Magic get to provide access to the Resolver properties.
      *
-     * @param string $key The property to retrieve ('params' or 'setter(s)').
+     * @param string $key The Resolver property to retrieve.
      *
      * @return mixed
      *
@@ -114,8 +113,7 @@ class Container implements ContainerInterface
 
     /**
      *
-     * Lock the Container so that configuration cannot be accessed externally,
-     * and no new service definitions can be added.
+     * Locks the Container so that is it read-only.
      *
      * @return null
      *

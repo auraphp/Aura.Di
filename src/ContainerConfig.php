@@ -15,11 +15,11 @@ namespace Aura\Di;
  * @package Aura.Di
  *
  */
-class Config
+class ContainerConfig
 {
     /**
      *
-     * Define params, setters, and services before the container is locked.
+     * Define params, setters, and services before the Container is locked.
      *
      * @param Container $di The DI container.
      *
@@ -32,7 +32,7 @@ class Config
 
     /**
      *
-     * Modify service objects after the container is locked.
+     * Modify service objects after the Container is locked.
      *
      * @param Container $di The DI container.
      *

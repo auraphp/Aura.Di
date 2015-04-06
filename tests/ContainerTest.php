@@ -134,7 +134,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
     }
 
-    public function testLockedConfig()
+    public function testLockedMagicGet()
     {
         $this->container->lock();
         $this->setExpectedException('Aura\Di\Exception\ContainerLocked');

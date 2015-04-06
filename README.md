@@ -524,11 +524,11 @@ Note that classes extended from the child class will then inherit those new valu
 
 ### Container Builder and Config Classes
 
-The _ContainerBuilder_ helps to build _Container_ objects from _Config_ classes and pre-existing service objects. It works using a [two-stage configuration system](http://auraphp.com/blog/2014/04/07/two-stage-config/).
+The _ContainerBuilder_ helps to build _Container_ objects from _ContainerConfig_ classes and pre-existing service objects. It works using a [two-stage configuration system](http://auraphp.com/blog/2014/04/07/two-stage-config/).
 
-The two stages are "define" and "modify". In the "define" stage, the _Config_ object defines constructor parameter values, setter method values, services, and so on. The _ContainerBuilder_ then locks the _Container_ so that these definitions cannot be changed, and begins the "modify" stage. In the "modify" stage, we may `get()` services from the _Container_ and modify them programmatically if needed.
+The two stages are "define" and "modify". In the "define" stage, the _ContainerConfig_ object defines constructor parameter values, setter method values, services, and so on. The _ContainerBuilder_ then locks the _Container_ so that these definitions cannot be changed, and begins the "modify" stage. In the "modify" stage, we may `get()` services from the _Container_ and modify them programmatically if needed.
 
-To build a _Container_ using the _ContainerBuilder_, we do something like the following:
+To build a fully-configured _Container_ using the _ContainerBuilder_, we do something like the following:
 
 ```php
 <?php
@@ -544,17 +544,11 @@ $config_classes = [
     'Aura\Web\_Config\Common',
 ];
 
-// should auto-resolve be enabled or disabled?
-// ENABLE_AUTO_RESOLVE is the default;
-// use DISABLE_AUTO_RESOLVE to disable it.
-$auto_resolve = ContainerBuilder::ENABLE_AUTO_RESOLVE;
-
 // use the builder to create a container
 $container_builder = new ContainerBuilder();
 $di = $container_builder->newConfiguredInstance(
     $services,
-    $config_classes,
-    $auto_resolve
+    $config_classes
 );
 ?>
 ```
@@ -565,10 +559,10 @@ A configuration class looks like the following:
 <?php
 namespace Vendor\Package\_Config;
 
-use Aura\Di\Config;
 use Aura\Di\Container;
+use Aura\Di\ContainerConfig;
 
-class Common extends Config
+class Common extends ContainerConfig
 {
     public function define(Container $di)
     {
@@ -585,7 +579,7 @@ class Common extends Config
 ?>
 ```
 
-Here are some example _Config_ classes from other Aura packages:
+Here are some example _ContainerConfig_ classes from earlier Aura packages:
 
 - [Aura.Cli](https://github.com/auraphp/Aura.Cli/blob/2.0.0/config/Common.php)
 - [Aura.Html](https://github.com/auraphp/Aura.Html/blob/2.0.0/config/Common.php)
