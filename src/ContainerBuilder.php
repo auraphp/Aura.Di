@@ -19,21 +19,23 @@ class ContainerBuilder
 {
     /**
      *
-     * Enable auto-resolution after the define() step.
+     * Use the auto-resolver.
      *
      * @const true
      *
      */
-    const ENABLE_AUTO_RESOLVE = true;
+    const AUTO_RESOLVE = true;
 
-    /**
-     *
-     * Disable auto-resolution after the define() step.
-     *
-     * @const true
-     *
-     */
-    const DISABLE_AUTO_RESOLVE = false;
+    public function newInstance($autoResolve = false)
+    {
+        if ($autoResolve) {
+            $resolver = new ResolverAuto(new Reflector());
+        } else {
+            $resolver = new Resolver(new Reflector());
+        }
+
+        return new Container(new Factory($resolver));
+    }
 
     /**
      *
@@ -47,24 +49,18 @@ class ContainerBuilder
      * @param array $config_classes A list of Config classes to instantiate and
      * invoke for configuring the container.
      *
-     * @param bool $auto_resolve Enable or disable auto-resolve after the
-     * define() step?
+     * @param bool $autoResolve Use the auto-resolver?
      *
      * @return Container
      *
      */
-    public function newInstance(
+    public function newConfiguredInstance(
         array $services = array(),
         array $config_classes = array(),
-        $auto_resolve = self::DISABLE_AUTO_RESOLVE
+        $autoResolve = false
     ) {
-        if ($auto_resolve) {
-            $resolver = new ResolverAuto(new Reflector());
-        } else {
-            $resolver = new Resolver(new Reflector());
-        }
+        $di = $this->newInstance($autoResolve);
 
-        $di = new Container(new Factory($resolver));
         foreach ($services as $key => $val) {
             $di->set($key, $val);
         }

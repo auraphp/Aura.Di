@@ -5,7 +5,7 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testNewInstance()
     {
-        $builder = new ContainerBuilder;
+        $builder = new ContainerBuilder();
 
         $preset_service = (object) array('irk' => 'doom');
         $services = array(
@@ -17,7 +17,7 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
             'Aura\Di\FakeProjectConfig',
         );
 
-        $di = $builder->newInstance($services, $config_classes);
+        $di = $builder->newConfiguredInstance($services, $config_classes);
 
         $this->assertInstanceOf('Aura\Di\Container', $di);
         $this->assertSame($preset_service, $di->get('preset_service'));

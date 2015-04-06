@@ -29,7 +29,7 @@ Finally, please note that this package is intended for use as a **dependency inj
 
 ### Installation
 
-This library requires PHP 5.3 or later; we recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
+This library requires PHP 5.6 or later; we recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
 
 It is installable and autoloadable via Composer as [aura/di](https://packagist.org/packages/aura/di).
 
@@ -62,10 +62,9 @@ We instantiate a _Container_ like so:
 
 ```php
 <?php
-use Aura\Di\Container;
-use Aura\Di\Factory;
-
-$di = new Container(new Factory(new Resolver(new Reflector())));
+use Aura\Di\ContainerBuilder;
+$builder = new ContainerBuilder();
+$di = $builder->newInstance();
 ?>
 ```
 

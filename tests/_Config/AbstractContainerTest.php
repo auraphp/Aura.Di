@@ -38,8 +38,8 @@ abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $builder = new ContainerBuilder;
-        $this->di = $builder->newInstance(
+        $builder = new ContainerBuilder();
+        $this->di = $builder->newConfiguredInstance(
             $this->getServices(),
             $this->getConfigClasses(),
             $this->getAutoResolve()
