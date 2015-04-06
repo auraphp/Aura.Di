@@ -105,7 +105,7 @@ class Container implements ContainerInterface
     public function &__get($key)
     {
         if ($this->isLocked()) {
-            throw new Exception\ContainerLocked;
+            throw new Exception\ContainerLocked();
         }
 
         return $this->resolver->__get($key);
@@ -173,7 +173,7 @@ class Container implements ContainerInterface
     public function set($service, $val)
     {
         if ($this->isLocked()) {
-            throw new Exception\ContainerLocked;
+            throw new Exception\ContainerLocked();
         }
 
         if (! is_object($val)) {

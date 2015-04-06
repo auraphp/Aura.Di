@@ -550,7 +550,7 @@ $config_classes = [
 $auto_resolve = ContainerBuilder::ENABLE_AUTO_RESOLVE;
 
 // use the builder to create a container
-$container_builder = new ContainerBuilder;
+$container_builder = new ContainerBuilder();
 $di = $container_builder->newConfiguredInstance(
     $services,
     $config_classes,

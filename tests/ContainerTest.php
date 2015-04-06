@@ -1,8 +1,6 @@
 <?php
 namespace Aura\Di;
 
-use StdClass;
-
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
@@ -10,7 +8,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->container = new Container(new Factory(new Resolver(new Reflector())));
+        $builder = new ContainerBuilder;
+        $this->container = $builder->newInstance();
     }
 
     protected function tearDown()
@@ -33,7 +32,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testHasGet()
     {
-        $expect = new StdClass;
+        $expect = (object) [];
         $this->container->set('foo', $expect);
 
         $this->assertTrue($this->container->has('foo'));
@@ -63,7 +62,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $di = $this->container;
         $di->set('foo', function() use ($di) {
-            return new \Aura\Di\FakeParentClass;
+            return new \Aura\Di\FakeParentClass();
         });
 
         $actual = $this->container->get('foo');
@@ -72,9 +71,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetServicesAndInstances()
     {
-        $this->container->set('foo', new StdClass);
-        $this->container->set('bar', new StdClass);
-        $this->container->set('baz', new StdClass);
+        $this->container->set('foo', (object) []);
+        $this->container->set('bar', (object) []);
+        $this->container->set('baz', (object) []);
 
         $expect = ['foo', 'bar', 'baz'];
         $actual = $this->container->getServices();
@@ -89,7 +88,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazyGet()
     {
         $this->container->set('foo', function() {
-            return new FakeOtherClass;
+            return new FakeOtherClass();
         });
 
         $lazy = $this->container->lazyGet('foo');
@@ -146,7 +145,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $this->container->lock();
         $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
-        $this->container->set('foo', function() { return new StdClass; });
+        $this->container->set('foo', function() { return (object) []; });
     }
 
     public function testLazyInclude()
@@ -219,7 +218,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNewInstanceWithLazyParam()
     {
         $lazy = $this->container->lazy(function() {
-            return new FakeOtherClass;
+            return new FakeOtherClass();
         });
 
         $class = 'Aura\Di\FakeParentClass';
@@ -239,7 +238,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
             'foo' => 'gir',
-            'zim' => new FakeOtherClass,
+            'zim' => new FakeOtherClass(),
         ]);
 
         $this->assertSame('fake_value', $actual->getFake());
@@ -270,7 +269,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testnewInstanceWithLazySetter()
     {
         $lazy = $this->container->lazy(function() {
-            return new FakeOtherClass;
+            return new FakeOtherClass();
         });
 
         $class = 'Aura\Di\FakeChildClass';
@@ -278,7 +277,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->container->newInstance('Aura\Di\FakeChildClass', [
             'foo' => 'gir',
-            'zim' => new FakeOtherClass,
+            'zim' => new FakeOtherClass(),
         ]);
 
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $actual->getFake());
