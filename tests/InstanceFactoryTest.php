@@ -1,6 +1,9 @@
 <?php
 namespace Aura\Di;
 
+use Aura\Di\Resolver\Resolver;
+use Aura\Di\Resolver\Reflector;
+
 class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
 {
     protected $resolver;

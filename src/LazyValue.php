@@ -8,6 +8,8 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Resolver\Resolver;
+
 /**
  *
  * Lazy-loads an arbitrary value.

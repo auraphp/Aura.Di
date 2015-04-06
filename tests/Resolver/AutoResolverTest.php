@@ -1,14 +1,16 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Resolver;
 
-class ResolverAutoTest extends ResolverTest
+use Aura\Di\LazyNew;
+
+class AutoResolverTest extends ResolverTest
 {
     protected $resolver;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->resolver = new ResolverAuto(new Reflector());
+        $this->resolver = new AutoResolver(new Reflector());
     }
 
     public function testMissingParam()

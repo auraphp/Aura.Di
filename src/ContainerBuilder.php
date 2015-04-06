@@ -8,6 +8,10 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Resolver\AutoResolver;
+use Aura\Di\Resolver\Resolver;
+use Aura\Di\Resolver\Reflector;
+
 /**
  *
  * Creates and configures a new DI container.
@@ -29,7 +33,7 @@ class ContainerBuilder
     public function newInstance($autoResolve = false)
     {
         if ($autoResolve) {
-            $resolver = new ResolverAuto(new Reflector());
+            $resolver = new AutoResolver(new Reflector());
         } else {
             $resolver = new Resolver(new Reflector());
         }

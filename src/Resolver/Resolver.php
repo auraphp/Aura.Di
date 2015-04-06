@@ -6,8 +6,10 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Aura\Di;
+namespace Aura\Di\Resolver;
 
+use Aura\Di\Exception;
+use Aura\Di\LazyInterface;
 use ReflectionParameter;
 use UnexpectedValueException;
 

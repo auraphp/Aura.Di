@@ -8,6 +8,8 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Resolver\Resolver;
+
 /**
  *
  * A generic factory to create multiple instances of a single class.

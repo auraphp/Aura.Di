@@ -6,8 +6,9 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Aura\Di;
+namespace Aura\Di\Resolver;
 
+use Aura\Di\Exception;
 use ReflectionClass;
 use ReflectionException;
 

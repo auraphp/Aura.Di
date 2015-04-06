@@ -8,6 +8,7 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Resolver\Resolver;
 use ReflectionException;
 
 /**

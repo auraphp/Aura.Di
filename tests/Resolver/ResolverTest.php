@@ -1,5 +1,7 @@
 <?php
-namespace Aura\Di;
+namespace Aura\Di\Resolver;
+
+use Aura\Di\Lazy;
 
 class ResolverTest extends \PHPUnit_Framework_TestCase
 {

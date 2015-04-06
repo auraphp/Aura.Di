@@ -6,8 +6,9 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Aura\Di;
+namespace Aura\Di\Resolver;
 
+use Aura\Di\LazyNew;
 use ReflectionParameter;
 
 /**
@@ -19,7 +20,7 @@ use ReflectionParameter;
  * @package Aura.Di
  *
  */
-class ResolverAuto extends Resolver
+class AutoResolver extends Resolver
 {
     /**
      *
