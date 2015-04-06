@@ -24,6 +24,9 @@ Finally, please note that this package is intended for use as a **dependency inj
 
 ## Foreword
 
+**WARNING:** This 3.x package is still under heavy development. Use at your own risk. You may wish to review the 2.x package for a stable version.
+
+
 ### Installation
 
 This library requires PHP 5.3 or later; we recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
