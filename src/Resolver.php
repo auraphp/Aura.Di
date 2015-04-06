@@ -179,7 +179,9 @@ class Resolver
     protected function mergeParams($class, &$params, array $merge_params = array())
     {
         if (! $merge_params) {
-            return $this->mergeParamsEmpty($class, $params);
+            // no params to merge, micro-optimize the loop
+            $this->mergeParamsEmpty($class, $params);
+            return;
         }
 
         $pos = 0;
