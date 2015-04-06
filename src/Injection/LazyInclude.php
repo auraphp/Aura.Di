@@ -10,7 +10,7 @@ namespace Aura\Di\Injection;
 
 /**
  *
- * Wraps a callable specifically for the purpose of lazy-loading an object.
+ * Returns the value of `include` when invoked (thereby including the file).
  *
  * @package Aura.Di
  *

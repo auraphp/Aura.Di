@@ -4,7 +4,7 @@ namespace Aura\Di\Injection;
 use Aura\Di\Resolver\Resolver;
 use Aura\Di\Resolver\Reflector;
 
-class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     protected $resolver;
 
@@ -16,12 +16,12 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->resolver = new Resolver(new Reflector());
     }
 
-    protected function newInstanceFactory(
+    protected function newFactory(
         $class,
         array $params = [],
         array $setters = []
     ) {
-        return new InstanceFactory($this->resolver, $class, $params, $setters);
+        return new Factory($this->resolver, $class, $params, $setters);
     }
 
     public function test__invoke()
@@ -29,7 +29,7 @@ class InstanceFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new InjectionFactory(new Resolver(new Reflector()));
         $other = $factory->newInstance('Aura\Di\Fake\FakeOtherClass');
 
-        $factory = $this->newInstanceFactory(
+        $factory = $this->newFactory(
             'Aura\Di\Fake\FakeChildClass',
             [
                 'foo' => 'foofoo',

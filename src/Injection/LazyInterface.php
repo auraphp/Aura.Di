@@ -10,7 +10,7 @@ namespace Aura\Di\Injection;
 
 /**
  *
- * This is a Lazy callable.
+ * Indicates a Lazy to be invoked when resolving params and setters.
  *
  * @package Aura.Di
  *

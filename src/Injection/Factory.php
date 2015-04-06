@@ -12,12 +12,14 @@ use Aura\Di\Resolver\Resolver;
 
 /**
  *
- * A generic factory to create multiple instances of a single class.
+ * A generic factory to create repeated instances of a single class. Note that
+ * it does not implement the LazyInterface, so it is not automatically invoked
+ * when resolving params and setters.
  *
  * @package Aura.Di
  *
  */
-class InstanceFactory
+class Factory
 {
     /**
      *
@@ -82,7 +84,7 @@ class InstanceFactory
 
     /**
      *
-     * Invoke the InstanceFactory object as a function to use the Factory to create
+     * Invoke the Factory object as a function to use the Factory to create
      * a new instance of the specified class; pass sequential parameters as
      * as yet another set of constructor parameter overrides.
      *

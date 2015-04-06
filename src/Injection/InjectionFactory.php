@@ -14,7 +14,7 @@ use ReflectionException;
 
 /**
  *
- * A factory to create objects and values to inject into the Container.
+ * A factory to create objects and values for injection into the Container.
  *
  * @package Aura.Di
  *
@@ -82,7 +82,7 @@ class InjectionFactory
 
     /**
      *
-     * Returns a new InstanceFactory.
+     * Returns a new Factory.
      *
      * @param string $class The class to create.
      *
@@ -90,15 +90,15 @@ class InjectionFactory
      *
      * @param array $setters Override setters for the class.
      *
-     * @return InstanceFactory
+     * @return Factory
      *
      */
-    public function newInstanceFactory(
+    public function newFactory(
         $class,
         array $params = [],
         array $setters = []
     ) {
-        return new InstanceFactory($this->resolver, $class, $params, $setters);
+        return new Factory($this->resolver, $class, $params, $setters);
     }
 
     /**

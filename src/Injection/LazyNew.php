@@ -10,11 +10,11 @@ namespace Aura\Di\Injection;
 
 /**
  *
- * Wraps a callable specifically for the purpose of lazy-loading an object.
+ * Returns a new instance of an object when invoked.
  *
  * @package Aura.Di
  *
  */
-class LazyNew extends InstanceFactory implements LazyInterface
+class LazyNew extends Factory implements LazyInterface
 {
 }

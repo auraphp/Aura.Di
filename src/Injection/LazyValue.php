@@ -12,7 +12,7 @@ use Aura\Di\Resolver\Resolver;
 
 /**
  *
- * Lazy-loads an arbitrary value.
+ * Returns an arbitrary value when invoked.
  *
  * @package Aura.Di
  *

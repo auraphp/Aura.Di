@@ -356,7 +356,7 @@ class Container implements ContainerInterface
      *
      * @param array $setters Override setters for the instance.
      *
-     * @return InstanceFactory
+     * @return Factory
      *
      */
     public function newFactory(
@@ -364,7 +364,7 @@ class Container implements ContainerInterface
         array $params = [],
         array $setters = []
     ) {
-        return $this->injectionFactory->newInstanceFactory(
+        return $this->injectionFactory->newFactory(
             $class,
             $params,
             $setters

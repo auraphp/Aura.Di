@@ -451,7 +451,7 @@ class ExampleStruct
 ?>
 ```
 
-We can inject an _InstanceFactory_ that creates only _ExampleStruct_ objects using `$di->newFactory()`.
+We can inject an _Factory_ that creates only _ExampleStruct_ objects using `$di->newFactory()`.
 
 ```php
 <?php
@@ -461,7 +461,7 @@ $di->params['ExampleNeedsFactory']['struct_factory'] = $di->newFactory('ExampleS
 
 Note that the arguments passed to the factory `__invoke()` method will be passed to the underlying instance constructor sequentially, not by name. This means the `__invoke()` method works more like the native `new` keyword, and not like `$di->lazyNew()`.  These arguments override any `$di->params` values that have been set for the class being factoried; without the overrides, all existing `$di->params` values for that class will be honored. (Values from `$di->setter` for the class will also be honored, but cannot be overriddden.)
 
-Do not feel limited by the _InstanceFactory_ implementation. We can create and inject factory objects of our own if we like. The _InstanceFactory_ returned by the `$di->newFactory()` method is an occasional convenience, nothing more.
+Do not feel limited by the _Factory_ implementation. We can create and inject factory objects of our own if we like. The _Factory_ returned by the `$di->newFactory()` method is an occasional convenience, nothing more.
 
 ### Inheritance Of Parent Values
 
