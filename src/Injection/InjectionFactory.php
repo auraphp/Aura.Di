@@ -10,6 +10,7 @@ namespace Aura\Di\Injection;
 
 use Aura\Di\Container;
 use Aura\Di\Resolver\Resolver;
+use Interop\Container\ContainerInterface;
 use ReflectionException;
 
 /**
@@ -121,14 +122,14 @@ class InjectionFactory
      *
      * Returns a new LazyGet.
      *
-     * @param Container $container The service container.
+     * @param ContainerInterface $container The service container.
      *
      * @param string $service The service to retrieve.
      *
      * @return LazyGet
      *
      */
-    public function newLazyGet(Container $container, $service)
+    public function newLazyGet(ContainerInterface $container, $service)
     {
         return new LazyGet($container, $service);
     }

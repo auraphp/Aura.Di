@@ -1,6 +1,13 @@
 <?php
 namespace Aura\Di;
 
+use Acclimate\Container\CompositeContainer;
+use Aura\Di\Fake\FakeParamsClass;
+use Aura\Di\Injection\InjectionFactory;
+use Aura\Di\Resolver\Reflector;
+use Aura\Di\Resolver\Resolver;
+use Mouf\Picotainer\Picotainer;
+
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     protected $container;
@@ -338,5 +345,60 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->params['Aura\Di\Fake\FakeResolveClass']['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeParentClass');
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $actual);
+    }
+
+    public function testDependencyLookupSimple() {
+
+        $picotainer = new Picotainer([
+            "foo" => function($container) {
+                $obj = new \stdClass();
+                $obj->foo = "bar";
+                return $obj;
+            }
+        ]);
+
+        $auraContainer = new Container(new InjectionFactory(new Resolver(new Reflector())), $picotainer);
+
+        $lazy = $auraContainer->lazyGet('foo');
+
+        $this->assertInstanceOf('Aura\Di\Injection\LazyGet', $lazy);
+
+        $foo = $lazy();
+
+        $this->assertInstanceOf('stdClass', $foo);
+        $this->assertEquals('bar', $foo->foo);
+    }
+
+    public function testDependencyLookup()
+    {
+        // A composite container with 2 containers: Aura and Picotainer.
+        // 'service1' (in Aura) references
+        // 'service2' (in Picotainer) that references
+        // 'service3' (in Aura again)
+        $compositeContainer = new CompositeContainer();
+        $auraContainer = new Container(new InjectionFactory(new Resolver(new Reflector())), $compositeContainer);
+        $auraContainer->params['Aura\Di\Fake\FakeParentClass']['foo'] = $auraContainer->lazyGet('service2');
+
+        // Let's declare service 1
+        $auraContainer->set('service1', $auraContainer->lazyNew('Aura\Di\Fake\FakeParentClass'));
+
+        // Let's declare service 3
+        $obj = new \stdClass();
+        $obj->foo = "bar";
+        $auraContainer->set('service3', $obj);
+
+        $picotainer = new Picotainer([
+            // Let's declare service 2
+            "service2" => function($container) {
+                return new FakeParamsClass([$container->get('service3')], null);
+            },
+        ], $compositeContainer);
+
+        $compositeContainer->addContainer($picotainer);
+        $compositeContainer->addContainer($auraContainer);
+
+        $service1 = $compositeContainer->get('service1');
+
+        $this->assertEquals('bar', $service1->getFoo()->array[0]->foo);
     }
 }

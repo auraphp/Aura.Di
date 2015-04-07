@@ -9,6 +9,7 @@
 namespace Aura\Di\Injection;
 
 use Aura\Di\Container;
+use Interop\Container\ContainerInterface;
 
 /**
  *
@@ -23,7 +24,7 @@ class LazyGet implements LazyInterface
      *
      * The service container.
      *
-     * @var Container
+     * @var ContainerInterface
      *
      */
     protected $container;
@@ -41,12 +42,12 @@ class LazyGet implements LazyInterface
      *
      * Constructor.
      *
-     * @param Container $container The service container.
+     * @param ContainerInterface $container The service container.
      *
      * @param string $service The service to retrieve.
      *
      */
-    public function __construct(Container $container, $service)
+    public function __construct(ContainerInterface $container, $service)
     {
         $this->container = $container;
         $this->service = $service;

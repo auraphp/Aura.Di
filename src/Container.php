@@ -41,6 +41,16 @@ class Container implements ContainerInterface
 
     /**
      *
+     * A container that will be used instead of the main container
+     * to fetch dependencies.
+     *
+     * @var ContainerInterface
+     *
+     */
+    protected $delegateLookupContainer;
+
+    /**
+     *
      * A Resolver obtained from the InjectionFactory.
      *
      * @var Resolver\Resolver
@@ -86,12 +96,17 @@ class Container implements ContainerInterface
      *
      * @param InjectionFactory $injectionFactory A factory to create objects and
      * values for injection.
+     * @param ContainerInterface $delegateLookupContainer An optional container
+     * that will be used to fetch dependencies (i.e. lazy gets)
      *
      */
-    public function __construct(InjectionFactory $injectionFactory)
-    {
+    public function __construct(
+        InjectionFactory $injectionFactory,
+        ContainerInterface $delegateLookupContainer = null
+    ) {
         $this->injectionFactory = $injectionFactory;
         $this->resolver = $this->injectionFactory->getResolver();
+        $this->delegateLookupContainer = $delegateLookupContainer ?: $this;
     }
 
     /**
@@ -279,7 +294,7 @@ class Container implements ContainerInterface
      */
     public function lazyGet($service)
     {
-        return $this->injectionFactory->newLazyGet($this, $service);
+        return $this->injectionFactory->newLazyGet($this->delegateLookupContainer, $service);
     }
 
     /**
