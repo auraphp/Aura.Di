@@ -1,5 +1,29 @@
 # Aura.Di
 
+The Aura.Di package provides a dependency injection container system with the
+following features:
+
+- constructor and setter injection
+
+- explicit and implicit auto-resolution of typehinted constructor parameter values
+
+- configuration of setters across interfaces and traits
+
+- inheritance of constructor parameter and setter method values
+
+- lazy-loaded services, values, and instances
+
+- instance factories
+
+Fully describing the nature and benefits of dependency injection, while
+desirable, is beyond the scope of this document. For more information about
+"inversion of control" and "dependency injection" please consult
+<http://martinfowler.com/articles/injection.html> by Martin Fowler.
+
+Finally, please note that this package is intended for use as a **dependency injection** system, not as a **service locator** system. If you use it as a service locator, that's bad, and you should feel bad.
+
+**WARNING:** This 3.x package is still under heavy development. Use at your own risk. You may wish to review the 2.x package for a stable version.
+
 ## Instantiation
 
 We instantiate a _Container_ like so:
