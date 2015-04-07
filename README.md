@@ -59,4 +59,4 @@ To ask questions, provide feedback, or otherwise communicate with other Aura use
 
 ## Documentation
 
-This package is fully documented [here](./tree/3.x/docs/index.md).
+This package is fully documented [here](./docs/index.md).
