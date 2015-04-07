@@ -26,14 +26,19 @@ Finally, please note that this package is intended for use as a **dependency inj
 
 **WARNING:** This 3.x package is still under heavy development. Use at your own risk. You may wish to review the 2.x package for a stable version.
 
-
 ### Installation
 
-This library requires PHP 5.6 or later; we recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
-
-It is installable and autoloadable via Composer as [aura/di](https://packagist.org/packages/aura/di).
+This library is installable and autoloadable via Composer as [aura/di](https://packagist.org/packages/aura/di).
 
 Alternatively, [download a release](https://github.com/auraphp/Aura.Di/releases) or clone this repository, then require or include its _autoload.php_ file.
+
+### Dependencies
+
+This library requires PHP 5.6 or later. We recommend using the latest available version of PHP as a matter of principle.
+
+The source code depends on the `"container-interop/container-interop": "~1.0"` interface package.
+
+The test code depends on `"mouf/picotainer": "~1.0"` and `"acclimate/container": "~1.0"` for integration testing only.
 
 ### Quality
 
