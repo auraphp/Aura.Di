@@ -398,7 +398,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $compositeContainer->addContainer($auraContainer);
 
         $service1 = $compositeContainer->get('service1');
-        //$service = $auraContainer->get('Aura\Di\Fake\FakeParentClass');
 
         $this->assertEquals('bar', $service1->getFoo()->array[0]->foo);
     }

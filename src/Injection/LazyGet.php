@@ -24,7 +24,7 @@ class LazyGet implements LazyInterface
      *
      * The service container.
      *
-     * @var Container
+     * @var ContainerInterface
      *
      */
     protected $container;
