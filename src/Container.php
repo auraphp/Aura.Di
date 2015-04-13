@@ -47,7 +47,7 @@ class Container implements ContainerInterface
      * @var ContainerInterface
      *
      */
-    protected $delegateLookupContainer;
+    protected $delegateContainer;
 
     /**
      *
@@ -96,17 +96,18 @@ class Container implements ContainerInterface
      *
      * @param InjectionFactory $injectionFactory A factory to create objects and
      * values for injection.
-     * @param ContainerInterface $delegateLookupContainer An optional container
+     *
+     * @param ContainerInterface $delegateContainer An optional container
      * that will be used to fetch dependencies (i.e. lazy gets)
      *
      */
     public function __construct(
         InjectionFactory $injectionFactory,
-        ContainerInterface $delegateLookupContainer = null
+        ContainerInterface $delegateContainer = null
     ) {
         $this->injectionFactory = $injectionFactory;
         $this->resolver = $this->injectionFactory->getResolver();
-        $this->delegateLookupContainer = $delegateLookupContainer ?: $this;
+        $this->delegateContainer = $delegateContainer;
     }
 
     /**
@@ -164,7 +165,12 @@ class Container implements ContainerInterface
      */
     public function has($service)
     {
-        return isset($this->services[$service]);
+        if (isset($this->services[$service])) {
+            return true;
+        }
+
+        return isset($this->delegateContainer)
+            && $this->delegateContainer->has($service);
     }
 
     /**
@@ -208,7 +214,7 @@ class Container implements ContainerInterface
 
     /**
      *
-     * Gets a service object by key, lazy-loading it as needed.
+     * Gets a service object by key.
      *
      * @param string $service The service to get.
      *
@@ -220,14 +226,37 @@ class Container implements ContainerInterface
      */
     public function get($service)
     {
+        if (isset($this->instances[$service])) {
+            return $this->instances[$service];
+        }
+
+        $this->instances[$service] = $this->getServiceInstance($service);
+        return $this->instances[$service];
+    }
+
+    /**
+     *
+     * Instantiates a service object by key, lazy-loading it as needed.
+     *
+     * @param string $service The service to get.
+     *
+     * @return object
+     *
+     * @throws Exception\ServiceNotFound when the requested service
+     * does not exist.
+     *
+     */
+    protected function getServiceInstance($service)
+    {
         // does the definition exist?
         if (! $this->has($service)) {
             throw new Exception\ServiceNotFound($service);
         }
 
-        // has it been instantiated?
-        if (isset($this->instances[$service])) {
-            return $this->instances[$service];
+        // is it defined in this container?
+        if (! isset($this->services[$service])) {
+            // no, get the instance from the delegate container
+            return $this->delegateContainer->get($service);
         }
 
         // instantiate it from its definition
@@ -238,9 +267,8 @@ class Container implements ContainerInterface
             $instance = $instance();
         }
 
-        // retain and return
-        $this->instances[$service] = $instance;
-        return $this->instances[$service];
+        // done
+        return $instance;
     }
 
     /**
@@ -294,7 +322,7 @@ class Container implements ContainerInterface
      */
     public function lazyGet($service)
     {
-        return $this->injectionFactory->newLazyGet($this->delegateLookupContainer, $service);
+        return $this->injectionFactory->newLazyGet($this, $service);
     }
 
     /**
