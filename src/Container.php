@@ -130,6 +130,16 @@ class Container implements ContainerInterface
         return $this->resolver->__get($key);
     }
 
+    public function getInjectionFactory()
+    {
+        return $this->injectionFactory;
+    }
+
+    public function getDelegateContainer()
+    {
+        return $this->delegateContainer;
+    }
+
     /**
      *
      * Locks the Container so that is it read-only.
