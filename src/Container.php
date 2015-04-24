@@ -214,6 +214,25 @@ class Container implements ContainerInterface
 
     /**
      *
+     * Enables and disables throws error on auto-resolution failed.
+     *
+     * @param bool $throws_on_auto_resolve_failed True to enable, false to disable.
+     *
+     * @return null
+     *
+     * @throws Exception\ContainerLocked
+     */
+    public function setThrowsOnAutoResolveFailed($throws_on_auto_resolve_failed)
+    {
+        if ($this->isLocked()){
+            throw new Exception\ContainerLocked;
+        }
+
+        $this->factory->setThrowsOnAutoResolveFailed($throws_on_auto_resolve_failed);
+    }
+
+    /**
+     *
      * Does a particular service definition exist?
      *
      * @param string $service The service key to look up.

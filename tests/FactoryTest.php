@@ -192,4 +192,14 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         );
         $this->factory->newInstance('Aura\Di\FakeResolveClass');
     }
+
+    public function testAutoResolveFailed()
+    {
+        $this->factory->setThrowsOnAutoResolveFailed(true);
+        $this->setExpectedException(
+            'Aura\Di\Exception\MissingParam',
+            'Aura\Di\FakeParamsClass::$empty'
+        );
+        $this->factory->newInstance('Aura\Di\FakeParamsClass');
+    }
 }
