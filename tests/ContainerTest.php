@@ -24,6 +24,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         parent::tearDown();
     }
 
+    public function testGetInjectionFactory()
+    {
+        $actual = $this->container->getInjectionFactory();
+        $expect = 'Aura\Di\Injection\InjectionFactory';
+        $this->assertInstanceOf($expect, $actual);
+    }
+
     public function testMagicGet()
     {
         $this->container->params['foo'] = 'bar';
@@ -179,12 +186,27 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $lazy = $this->container->lazy(
             [$this->container->lazyNew('Aura\Di\Fake\FakeParentClass'), 'mirror'],
-            $this->container->lazy(function () { return 'mirror'; })
+            $this->container->lazy(function () { return 'foo'; })
         );
 
         $this->assertInstanceOf('Aura\Di\Injection\Lazy', $lazy);
         $actual = $lazy();
-        $expect = 'mirror';
+        $expect = 'foo';
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testLazyGetCall()
+    {
+        $this->container->set(
+            'fake',
+            $this->container->lazyNew('Aura\Di\Fake\FakeParentClass')
+        );
+
+        $lazy = $this->container->lazyGetCall('fake', 'mirror', 'foo');
+
+        $this->assertInstanceOf('Aura\Di\Injection\Lazy', $lazy);
+        $actual = $lazy();
+        $expect = 'foo';
         $this->assertSame($expect, $actual);
     }
 
@@ -367,6 +389,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('stdClass', $foo);
         $this->assertEquals('bar', $foo->foo);
+
+        $actual = $auraContainer->getDelegateContainer();
+        $this->assertSame($picotainer, $actual);
     }
 
     public function testDependencyLookup()

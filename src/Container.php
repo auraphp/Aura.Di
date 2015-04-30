@@ -321,6 +321,16 @@ class Container implements ContainerInterface
         return $this->injectionFactory->newLazy($callable, $params);
     }
 
+    public function lazyGetCall($service, $method)
+    {
+        $callable = [$this->lazyGet($service), $method];
+        $params = func_get_args();
+        array_shift($params);
+        array_shift($params);
+
+        return $this->injectionFactory->newLazy($callable, $params);
+    }
+
     /**
      *
      * Returns a lazy object that gets a service.
