@@ -1,7 +1,7 @@
 <?php
-namespace Aura\Di\_Config;
+namespace Aura\Di;
 
-class ContainerConfigTest extends AbstractContainerTest
+class ContainerConfigTest extends AbstractContainerConfigTest
 {
     protected function getConfigClasses()
     {

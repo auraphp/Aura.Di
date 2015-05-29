@@ -6,7 +6,7 @@
  * @license http://opensource.org/licenses/MIT MIT
  *
  */
-namespace Aura\Di\_Config;
+namespace Aura\Di;
 
 use Aura\Di\ContainerBuilder;
 
@@ -18,7 +18,7 @@ use Aura\Di\ContainerBuilder;
  * @package Aura.Di
  *
  */
-abstract class AbstractContainerTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractContainerConfigTest extends \PHPUnit_Framework_TestCase
 {
     /**
      *
