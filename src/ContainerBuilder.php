@@ -31,12 +31,30 @@ class ContainerBuilder
      */
     const AUTO_RESOLVE = true;
 
+    /**
+     *
+     * Returns a new Container instance.
+     *
+     * @param bool $autoResolve Use the auto-resolver?
+     *
+     * @return Container
+     *
+     */
     public function newInstance($autoResolve = false)
     {
         $resolver = $this->newResolver($autoResolve);
         return new Container(new InjectionFactory($resolver));
     }
 
+    /**
+     *
+     * Returns a new Resolver instance.
+     *
+     * @param bool $autoResolve Use the auto-resolver?
+     *
+     * @return Resolver
+     *
+     */
     protected function newResolver($autoResolve = false)
     {
         if ($autoResolve) {
@@ -48,7 +66,7 @@ class ContainerBuilder
 
     /**
      *
-     * Creates a new DI container, applies ContainerConfig classes to define()
+     * Creates a new Container, applies ContainerConfig classes to define()
      * services, locks the container, and applies the ContainerConfig instances
      * to modify() services.
      *

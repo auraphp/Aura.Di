@@ -130,11 +130,25 @@ class Container implements ContainerInterface
         return $this->resolver->__get($key);
     }
 
+    /**
+     *
+     * Returns the InjectionFactory.
+     *
+     * @return InjectionFactory
+     *
+     */
     public function getInjectionFactory()
     {
         return $this->injectionFactory;
     }
 
+    /**
+     *
+     * Returns the secondary delegate container.
+     *
+     * @return mixed
+     *
+     */
     public function getDelegateContainer()
     {
         return $this->delegateContainer;
@@ -321,16 +335,6 @@ class Container implements ContainerInterface
         return $this->injectionFactory->newLazy($callable, $params);
     }
 
-    public function lazyGetCall($service, $method)
-    {
-        $callable = [$this->lazyGet($service), $method];
-        $params = func_get_args();
-        array_shift($params);
-        array_shift($params);
-
-        return $this->injectionFactory->newLazy($callable, $params);
-    }
-
     /**
      *
      * Returns a lazy object that gets a service.
@@ -343,6 +347,31 @@ class Container implements ContainerInterface
     public function lazyGet($service)
     {
         return $this->injectionFactory->newLazyGet($this, $service);
+    }
+
+    /**
+     *
+     * Returns a lazy object that gets a service and calls a method on it,
+     * optionally with paramters.
+     *
+     * @param string $service The service name.
+     *
+     * @param string $method The method to call on the service object.
+     *
+     * @param ...$params Parameters to use in the method call.
+     *
+     * @return Lazy
+     *
+     */
+    public function lazyGetCall($service, $method)
+    {
+        $callable = [$this->lazyGet($service), $method];
+
+        $params = func_get_args();
+        array_shift($params); // $service
+        array_shift($params); // $method
+
+        return $this->injectionFactory->newLazy($callable, $params);
     }
 
     /**
