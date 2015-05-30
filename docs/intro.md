@@ -5,11 +5,11 @@ following features:
 
 - constructor and setter injection
 
-- configuration of setters across interfaces and traits
+- inheritance of constructor parameter and setter method values from parent classes
 
-- inheritance of constructor parameter and setter method values
+- inheritance of setter method values from interfaces and traits
 
-- lazy-loaded services, values, and instances
+- lazy-loaded instances, services, includes/requires, and values
 
 - instance factories
 
@@ -32,16 +32,14 @@ $builder = new ContainerBuilder();
 $di = $builder->newInstance();
 ```
 
-## Object Instantiation
+We can then use the _Container_ to create objects for us.
 
-We can then use the _Container_ to create objects for us. The most straightward
-way is to use the `newInstance()` method:
+## Creating Object Instances
 
+The most straightward way is to create an object through the _Container_ is via the `newInstance()` method:
 
 ```
-$object = $di->newInstance('ClassName');
+$object = $di->newInstance('Vendor\Package\ClassName');
 ```
 
-However, this is a fallback manual way to create objects. It is better to specify
-constructor parameters, setter methods, and so on, and let the _Container_ create
-the object automatically only when that object is actually needed.
+However, this is a relatively naive way to create objects with the _Container_. It is better to specify the various constructor parameters, setter methods, and so on, and let the _Container_ inject those values for us only when the object is used as a dependency for something else.
