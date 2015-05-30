@@ -97,10 +97,10 @@ class Factory
      */
     public function __invoke()
     {
-        $merge_params = array_merge($this->params, func_get_args());
+        $params = array_merge($this->params, func_get_args());
         $resolve = $this->resolver->resolve(
             $this->class,
-            $merge_params,
+            $params,
             $this->setters
         );
 

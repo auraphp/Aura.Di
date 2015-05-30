@@ -442,11 +442,11 @@ class Container implements ContainerInterface
      *
      * @param string $class The class to instantiate.
      *
-     * @param array $merge_params An array of override parameters; the key may
+     * @param array $mergeParams An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
-     * @param array $merge_setters An array of override setters; the key is the
+     * @param array $mergeSetters An array of override setters; the key is the
      * name of the setter method to call and the value is the value to be
      * passed to the setter method.
      *
@@ -457,13 +457,13 @@ class Container implements ContainerInterface
      */
     public function newInstance(
         $class,
-        array $merge_params = [],
-        array $merge_setters = []
+        array $mergeParams = [],
+        array $mergeSetters = []
     ) {
         return $this->injectionFactory->newInstance(
             $class,
-            $merge_params,
-            $merge_setters
+            $mergeParams,
+            $mergeSetters
         );
     }
 }

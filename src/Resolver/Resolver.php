@@ -109,11 +109,11 @@ class Resolver
      *
      * @param string $class The class to instantiate.
      *
-     * @param array $merge_params An array of override parameters; the key may
+     * @param array $mergeParams An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
-     * @param array $merge_setters An array of override setters; the key is the
+     * @param array $mergeSetters An array of override setters; the key is the
      * name of the setter method to call and the value is the value to be
      * passed to the setter method.
      *
@@ -124,12 +124,12 @@ class Resolver
      */
     public function resolve(
         $class,
-        array $merge_params = [],
-        array $merge_setters = []
+        array $mergeParams = [],
+        array $mergeSetters = []
     ) {
         list($params, $setters) = $this->getUnified($class);
-        $this->mergeParams($class, $params, $merge_params);
-        $this->mergeSetters($class, $setters, $merge_setters);
+        $this->mergeParams($class, $params, $mergeParams);
+        $this->mergeSetters($class, $setters, $mergeSetters);
         return (object) [
             'reflection' => $this->reflector->getClass($class),
             'params' => $params,
@@ -145,14 +145,14 @@ class Resolver
      *
      * @param array $setters The class setters.
      *
-     * @param array $merge_setters Override with these setters.
+     * @param array $mergeSetters Override with these setters.
      *
      * @return null
      *
      */
-    protected function mergeSetters($class, &$setters, array $merge_setters = [])
+    protected function mergeSetters($class, &$setters, array $mergeSetters = [])
     {
-        $setters = array_merge($setters, $merge_setters);
+        $setters = array_merge($setters, $mergeSetters);
         foreach ($setters as $method => $value) {
             if (! method_exists($class, $method)) {
                 throw new Exception\SetterMethodNotFound("$class::$method");
@@ -171,16 +171,16 @@ class Resolver
      *
      * @param array $params The constructor parameters.
      *
-     * @param array $merge_params An array of override parameters; the key may
+     * @param array $mergeParams An array of override parameters; the key may
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
      * @return array
      *
      */
-    protected function mergeParams($class, &$params, array $merge_params = [])
+    protected function mergeParams($class, &$params, array $mergeParams = [])
     {
-        if (! $merge_params) {
+        if (! $mergeParams) {
             // no params to merge, micro-optimize the loop
             $this->mergeParamsEmpty($class, $params);
             return;
@@ -190,12 +190,12 @@ class Resolver
         foreach ($params as $key => $val) {
 
             // positional overrides take precedence over named overrides
-            if (array_key_exists($pos, $merge_params)) {
+            if (array_key_exists($pos, $mergeParams)) {
                 // positional override
-                $val = $merge_params[$pos];
-            } elseif (array_key_exists($key, $merge_params)) {
+                $val = $mergeParams[$pos];
+            } elseif (array_key_exists($key, $mergeParams)) {
                 // named override
-                $val = $merge_params[$key];
+                $val = $mergeParams[$key];
             }
 
             // is the param missing?
@@ -218,7 +218,7 @@ class Resolver
 
     /**
      *
-     * Load the Lazy values in params when the merge_params are empty.
+     * Load the Lazy values in params when the mergeParams are empty.
      *
      * @param string $class The params are on this class.
      *
