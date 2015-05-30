@@ -51,7 +51,7 @@ class ContainerBuilder
      * @param array $services Pre-existing service objects to set into the
      * container.
      *
-     * @param array $config_classes A list of ContainerConfig classes to instantiate and
+     * @param array $configClasses A list of ContainerConfig classes to instantiate and
      * invoke for configuring the Container.
      *
      * @param bool $autoResolve Use the auto-resolver?
@@ -61,7 +61,7 @@ class ContainerBuilder
      */
     public function newConfiguredInstance(
         array $services = [],
-        array $config_classes = [],
+        array $configClasses = [],
         $autoResolve = false
     ) {
         $di = $this->newInstance($autoResolve);
@@ -71,7 +71,7 @@ class ContainerBuilder
         }
 
         $configs = [];
-        foreach ($config_classes as $class) {
+        foreach ($configClasses as $class) {
             $config = $di->newInstance($class);
             $config->define($di);
             $configs[] = $config;
