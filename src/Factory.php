@@ -390,7 +390,7 @@ class Factory
         try {
             $this->reflection[$class] = new Reflection($class);
         } catch (ReflectionException $e) {
-            throw new Exception\ReflectionFailure($class, 0, $e);
+            throw new Exception\ReflectionFailure($e->getMessage(), 0, $e);
         }
 
         return $this->reflection[$class];
