@@ -1,6 +1,6 @@
 # Aura.Di
 
-1. [Introduction](intro.md)
+1. [Getting Started](getting-started.md)
 2. [Constructor Injection](constructor.md)
 3. [Setter Injection](setter.md)
 4. [Class, Interface, and Trait Inheritance](inheritance.md)

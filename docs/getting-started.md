@@ -1,4 +1,6 @@
-# Introduction
+# Getting Started
+
+## Overview
 
 The Aura.Di package provides a dependency injection container system with the
 following features:
