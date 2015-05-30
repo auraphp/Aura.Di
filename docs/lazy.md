@@ -38,7 +38,7 @@ $di->set('service_name', $di->lazyNew(
         'setFoo' => 'alternative_foo_value',
     ]
 ));
-?>
+```
 
 ## Lazy Services
 
