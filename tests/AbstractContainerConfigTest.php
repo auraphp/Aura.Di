@@ -40,22 +40,9 @@ abstract class AbstractContainerConfigTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ContainerBuilder();
         $this->di = $builder->newConfiguredInstance(
-            $this->getServices(),
             $this->getConfigClasses(),
             $this->getAutoResolve()
         );
-    }
-
-    /**
-     *
-     * Returns predefined service objects to pass to the ContainerBuilder.
-     *
-     * @return array
-     *
-     */
-    protected function getServices()
-    {
-        return [];
     }
 
     /**

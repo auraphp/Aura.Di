@@ -33,26 +33,27 @@ class ContainerBuilder
 
     public function newInstance($autoResolve = false)
     {
+        $resolver = $this->newResolver($autoResolve);
+        return new Container(new InjectionFactory($resolver));
+    }
+
+    protected function newResolver($autoResolve = false)
+    {
         if ($autoResolve) {
-            $resolver = new AutoResolver(new Reflector());
-        } else {
-            $resolver = new Resolver(new Reflector());
+            return new AutoResolver(new Reflector());
         }
 
-        return new Container(new InjectionFactory($resolver));
+        return new Resolver(new Reflector());
     }
 
     /**
      *
-     * Creates a new DI container, adds pre-existing service objects, applies
-     * ContainerConfig classes to define() services, locks the container, and applies
-     * the ContainerConfig instances to modify() services.
+     * Creates a new DI container, applies ContainerConfig classes to define()
+     * services, locks the container, and applies the ContainerConfig instances
+     * to modify() services.
      *
-     * @param array $services Pre-existing service objects to set into the
-     * container.
-     *
-     * @param array $configClasses A list of ContainerConfig classes to instantiate and
-     * invoke for configuring the Container.
+     * @param array $configClasses A list of ContainerConfig classes to
+     * instantiate and invoke for configuring the Container.
      *
      * @param bool $autoResolve Use the auto-resolver?
      *
@@ -60,19 +61,14 @@ class ContainerBuilder
      *
      */
     public function newConfiguredInstance(
-        array $services = [],
         array $configClasses = [],
         $autoResolve = false
     ) {
         $di = $this->newInstance($autoResolve);
 
-        foreach ($services as $key => $val) {
-            $di->set($key, $val);
-        }
-
         $configs = [];
-        foreach ($configClasses as $class) {
-            $config = $di->newInstance($class);
+        foreach ($configClasses as $configClass) {
+            $config = $di->newInstance($configClass);
             $config->define($di);
             $configs[] = $config;
         }
