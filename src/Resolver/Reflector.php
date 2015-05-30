@@ -68,7 +68,7 @@ class Reflector
      *
      * @return ReflectionClass
      *
-     * @throws Exception\ReflectionFailure when the class does not exist.
+     * @throws ReflectionException when the class does not exist.
      *
      */
     public function getClass($class)
@@ -76,13 +76,7 @@ class Reflector
         if (isset($this->classes[$class])) {
             return $this->classes[$class];
         }
-
-        try {
-            $this->classes[$class] = new ReflectionClass($class);
-        } catch (ReflectionException $e) {
-            throw new Exception\ReflectionFailure($class, 0, $e);
-        }
-
+        $this->classes[$class] = new ReflectionClass($class);
         return $this->classes[$class];
     }
 

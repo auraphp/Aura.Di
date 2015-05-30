@@ -134,9 +134,9 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual_setter);
     }
 
-    public function testReflectionFailure()
+    public function testReflectionOnMissingClass()
     {
-        $this->setExpectedException('Aura\Di\Exception\ReflectionFailure');
+        $this->setExpectedException('ReflectionException');
         $this->resolver->resolve('NoSuchClass');
     }
 
