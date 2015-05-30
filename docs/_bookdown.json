@@ -8,6 +8,7 @@
         "services.md",
         "lazy.md",
         "factories.md",
-        "config.md"
+        "config.md",
+        "serializing.md"
     ]
 }

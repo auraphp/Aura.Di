@@ -2,8 +2,8 @@
 
 ## Overview
 
-The Aura.Di package provides a dependency injection container system with the
-following features:
+The Aura.Di package provides a serializable dependency injection container
+with the following features:
 
 - constructor and setter injection
 
