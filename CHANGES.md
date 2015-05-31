@@ -1,1 +1,1 @@
-This is releases moves the AbstractContainerTest to is proper location. Sorry for making two releases in a row so quickly.
+This release provides a better message for _Exception\ReflectionFailure_, via issue #73.
