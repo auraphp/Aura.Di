@@ -26,10 +26,9 @@ class AutoResolverTest extends ResolverTest
         $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual->params['fake']);
     }
 
-    public function testAutoResolveArrayAndNull()
+    public function testAutoResolveMissingParam()
     {
+        $this->setExpectedException('Aura\Di\Exception\MissingParam');
         $actual = $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass');
-        $this->assertSame([], $actual->params['array']);
-        $this->assertNull($actual->params['empty']);
     }
 }
