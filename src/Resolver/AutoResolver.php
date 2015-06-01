@@ -33,7 +33,7 @@ class AutoResolver extends Resolver
 
     /**
      *
-     * Auto-resolves a unified param.
+     * Auto-resolves params typehinted to classes.
      *
      * @param ReflectionParameter $rparam A parameter reflection.
      *
@@ -41,33 +41,30 @@ class AutoResolver extends Resolver
      *
      * @param array $parent The parent unified params.
      *
-     * @return mixed The auto-resolved param value.
+     * @return mixed The auto-resolved param value, or UnresolvedParam.
      *
      */
     protected function getUnifiedParam(ReflectionParameter $rparam, $pos, $class, $parent)
     {
         $unified = parent::getUnifiedParam($rparam, $pos, $class, $parent);
+
+        // already resolved?
         if (! $unified instanceof UnresolvedParam) {
             return $unified;
         }
 
-        if ($rparam->isArray()) {
-            // use an empty array
-            return [];
-        }
-
+        // use an explicit auto-resolution?
         $rtype = $rparam->getClass();
         if ($rtype && isset($this->types[$rtype->name])) {
-            // use an explicit auto-resolution
             return $this->types[$rtype->name];
         }
 
+        // use a lazy-new-instance of the typehinted class?
         if ($rtype && $rtype->isInstantiable()) {
-            // use a lazy-new-instance of the typehinted class
             return new LazyNew($this, $rtype->name);
         }
 
-        // use a null as a placeholder
-        return null;
+        // $unified is still an UnresolvedParam
+        return $unified;
     }
 }
