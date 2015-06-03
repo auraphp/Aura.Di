@@ -54,7 +54,7 @@ Note that classes extended from the child class will then inherit those new valu
 
 
 
-### Setter Method Inheritance
+## Setter Method Inheritance
 
 If a class uses a setter method, whether by extending a parent class, using a trait, or implementing an interface, we can specify the default value for that setter method in relation to the parent class, trait, or interface. That value will then be applied by default in every class that extends that parent class, uses that trait, or implements that interface.
 
