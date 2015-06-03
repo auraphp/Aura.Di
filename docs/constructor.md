@@ -30,4 +30,11 @@ $di->params['Vendor\Package\Example']['foo'] = 'foo_value';
 $di->params['Vendor\Package\Example']['bar'] = 'bar_value';
 ```
 
+We can also specify by position:
+
+```php
+$di->params['Vendor\Package\Example'][0] = 'foo_value';
+$di->params['Vendor\Package\Example'][1] = 'bar_value';
+```
+
 Now when we create an object with `$di->newInstance('Vendor\Package\Example')`, the instantiation will work correctly. Each time we create an instance through the _Container_, it will apply the `$di->params` values for the matching class.
