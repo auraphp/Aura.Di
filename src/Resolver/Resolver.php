@@ -322,14 +322,27 @@ class Resolver
     {
         $name = $rparam->name;
 
-        list($exists, $value) = $this->getUnifiedParamExplicit($name, $pos, $class);
-        if ($exists) {
-            return $value;
+        // is there a positional value explicitly from the current class?
+        $explicitPos = isset($this->params[$class][$pos])
+                 && ! $this->params[$class][$pos] instanceof UnresolvedParam;
+        if ($explicitPos) {
+            return $this->params[$class][$pos];
         }
 
-        list($exists, $value) = $this->getUnifiedParamImplicit($name, $pos, $parent);
-        if ($exists) {
-            return $value;
+        // is there a named value explicitly from the current class?
+        $explicitNamed = isset($this->params[$class][$name])
+                 && ! $this->params[$class][$name] instanceof UnresolvedParam;
+        if ($explicitNamed) {
+            return $this->params[$class][$name];
+        }
+
+        // is there a named value implicitly inherited from the parent class?
+        // (there cannot be a positional parent. this is because the unified
+        // values are stored by name, not position.)
+        $implicitNamed = isset($parent[$name])
+                 && ! $parent[$name] instanceof UnresolvedParam;
+        if ($implicitNamed) {
+            return $parent[$name];
         }
 
         // is a default value available for the current class?
@@ -339,44 +352,6 @@ class Resolver
 
         // param is missing
         return new UnresolvedParam($name);
-    }
-
-    protected function getUnifiedParamExplicit($name, $pos, $class)
-    {
-        // is there a positional value explicitly from the current class?
-        $explicitPos = isset($this->params[$class][$pos])
-                 && ! $this->params[$class][$pos] instanceof UnresolvedParam;
-        if ($explicitPos) {
-            return [true, $this->params[$class][$pos]];
-        }
-
-        // is there a named value explicitly from the current class?
-        $explicitNamed = isset($this->params[$class][$name])
-                 && ! $this->params[$class][$name] instanceof UnresolvedParam;
-        if ($explicitNamed) {
-            return [true, $this->params[$class][$name]];
-        }
-
-        return [false, null];
-    }
-
-    protected function getUnifiedParamImplicit($name, $pos, $parent)
-    {
-        // is there a positional value implicitly inherited from the parent class?
-        $implicitPos = isset($parent[$pos])
-                 && ! $parent[$pos] instanceof UnresolvedParam;
-        if ($implicitPos) {
-            return [true, $parent[$pos]];
-        }
-
-        // is there a named value implicitly inherited from the parent class?
-        $implicitNamed = isset($parent[$name])
-                 && ! $parent[$name] instanceof UnresolvedParam;
-        if ($implicitNamed) {
-            return [true, $parent[$name]];
-        }
-
-        return [false, null];
     }
 
     /**

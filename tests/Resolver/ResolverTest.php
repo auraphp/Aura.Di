@@ -157,4 +157,25 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
         );
         $this->resolver->resolve('Aura\Di\Fake\FakeResolveClass');
     }
+
+    public function testUnresolvedParamAfterMergeParams()
+    {
+        $this->setExpectedException('Aura\Di\Exception\MissingParam');
+        $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass', [
+            'noSuchParam' => 'foo'
+        ]);
+    }
+
+    public function testPositionalParams()
+    {
+        $this->resolver->params['Aura\Di\Fake\FakeParentClass'][0] = 'val0';
+        $this->resolver->params['Aura\Di\Fake\FakeChildClass'][1] = 'val1';
+
+        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeChildClass');
+        $expect = [
+            'foo' => 'val0',
+            'zim' => 'val1',
+        ];
+        $this->assertSame($expect, $actual->params);
+    }
 }
