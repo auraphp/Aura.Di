@@ -21,14 +21,14 @@
         "php": ">=5.5.0",
         "container-interop/container-interop": "~1.0"
     },
-    "require-dev": {
-        "mouf/picotainer": "~1.0",
-        "acclimate/container": "~1.0"
-    },
     "autoload": {
         "psr-4": {
             "Aura\\Di\\": "src/"
         }
+    },
+    "require-dev": {
+        "mouf/picotainer": "~1.0",
+        "acclimate/container": "~1.0"
     },
     "autoload-dev": {
         "psr-4": {
