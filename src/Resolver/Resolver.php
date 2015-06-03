@@ -292,10 +292,9 @@ class Resolver
         // reflect on what params to pass, in which order
         $unified = [];
         $rparams = $this->reflector->getParams($class);
-        foreach ($rparams as $pos => $rparam) {
+        foreach ($rparams as $rparam) {
             $unified[$rparam->name] = $this->getUnifiedParam(
                 $rparam,
-                $pos,
                 $class,
                 $parent
             );
@@ -318,9 +317,10 @@ class Resolver
      * @return mixed The unified param value.
      *
      */
-    protected function getUnifiedParam(ReflectionParameter $rparam, $pos, $class, $parent)
+    protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
     {
-        $name = $rparam->name;
+        $name = $rparam->getName();
+        $pos = $rparam->getPosition();
 
         // is there a positional value explicitly from the current class?
         $explicitPos = isset($this->params[$class][$pos])
