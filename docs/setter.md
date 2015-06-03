@@ -21,7 +21,7 @@ class Example
 We can specify that, by default, the `setFoo()` method should be called with a specific value after construction like so:
 
 ```php
-$di->setter['Vendor\Package\Example']['setFoo'] = 'foo_value';
+$di->setters['Vendor\Package\Example']['setFoo'] = 'foo_value';
 ```
 
 Note also that this works only with explicitly-defined setter methods. Setter methods that exist only via magic `__call()` will not be honored.
