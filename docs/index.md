@@ -8,3 +8,4 @@
 5. [Lazy Loading](lazy.md)
 7. [Factories](factories.md)
 8. [Container Configuration](config.md)
+9. [Auto-Resolution](auto.md)
