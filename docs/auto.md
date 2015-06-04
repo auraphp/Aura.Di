@@ -4,7 +4,7 @@ Some developers prefer to let the _Container_ resolve dependencies on its own, w
 
 To use auto-resolution in a _Container_, build the _Container_ with `$container = $builder->newInstance($builder::AUTO_RESOLVE)`.
 
-Note that auto-resolution only works for class/interface typehints. It does not work for `array` typehints. If the param is not typehinted, the _Container_ will not attempt to fill in a value automatically.
+Note that auto-resolution only works for class/interface typehints. It does not work for `array` typehints.
 
 Note also that auto-resolution does not apply to setter methods. This is because the _Container_ does not know which methods are setters and which are "normal use" methods. Since you have to specify `$di->setters` anyway, the _Container_ has no chance to attempt auto-resolution.
 
@@ -54,7 +54,7 @@ $di->types['FooInterface'] = $di->lazyNew('Foo');
 
 The _Container_ will now resolve all _FooInterface_ typehints to a lazy-new instance of _Foo_.
 
-> N.b.: Tou can use `$di->newInstance('Foo')` here if you like, but that will instantiate _Foo_ right then and there, and that same _Foo_ insteance will be used for every _FooInterface_ typehinted constructor param. That may or may not be what you want.
+> N.b.: You can use `$di->newInstance('Foo')` here if you like, but that will instantiate _Foo_ right then and there, and that same _Foo_ insteance will be used for every _FooInterface_ typehinted constructor param. That may or may not be what you want.
 
 ## Auto-Resolving to Services
 
