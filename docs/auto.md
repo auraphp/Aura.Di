@@ -54,7 +54,7 @@ $di->types['FooInterface'] = $di->lazyNew('Foo');
 
 The _Container_ will now resolve all _FooInterface_ typehints to a lazy-new instance of _Foo_.
 
-> N.b.: You can use `$di->newInstance('Foo')` here if you like, but that will instantiate _Foo_ right then and there, and that same _Foo_ insteance will be used for every _FooInterface_ typehinted constructor param. That may or may not be what you want.
+> N.b.: You can use `$di->newInstance('Foo')` here if you like, but that will instantiate _Foo_ right then and there, and that same _Foo_ instance will be used for every _FooInterface_ typehinted constructor param. That may or may not be what you want.
 
 ## Auto-Resolving to Services
 
