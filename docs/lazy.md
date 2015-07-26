@@ -125,4 +125,35 @@ $di->params['Example']['foo'] = $di->lazy(function () {
 });
 ```
 
-Beware of relying on this too much; if we do, it probably means we need to separate our configuration concerns better than we are currently doing.
+Note that this will work with any PHP callable, such as a static method or instance method.
+
+```php
+// ServiceClass::staticMethod()
+$di->set('service', $di->lazy(['ServiceClass', 'staticMethod']));
+
+// or an instance of $serviceClass->methodName()
+$instance = $di->newInstance('ServiceClass');
+$di->set('service', $di->lazy([$instance, 'methodName']));
+```
+
+You can pass arguments to the callable like so:
+
+```php
+// ServiceClass::staticMethod($arg1, $arg2, $arg3)
+$di->set('service', $di->lazy(['ServiceClass', 'staticMethod'],
+    $arg1,
+    $arg2,
+    $arg3
+));
+```
+
+Lazies in the callable array, and in the arguments, will be resolved automatically.
+
+```php
+// $serviceClass->methodName($configArray)
+$di->set('service', $di->lazy([$di->lazyNew('ServiceClass'), 'methodName'],
+    $di->lazyInclude('/path/to/config.array.php')
+));
+```
+
+Beware of relying on generic Lazy calls too much; if we do, it probably means we need to separate our configuration concerns better than we are currently doing.
