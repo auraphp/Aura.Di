@@ -60,6 +60,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual, $again);
     }
 
+    public function testTrackConfigured()
+    {
+        $this->assertFalse($this->container->hasConfigured('foo'));
+        $this->container->addConfigured('foo');
+        $this->assertTrue($this->container->hasConfigured('foo'));
+        $this->assertFalse($this->container->hasConfigured('bar'));
+    }
+
     public function testInitInvalidService()
     {
         $this->setExpectedException('Aura\Di\Exception\ServiceNotObject');

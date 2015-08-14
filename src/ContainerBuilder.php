@@ -88,6 +88,7 @@ class ContainerBuilder
         foreach ($configClasses as $configClass) {
             $config = $di->newInstance($configClass);
             $config->define($di);
+            $di->addConfigured($configClass);
             $configs[] = $config;
         }
 
