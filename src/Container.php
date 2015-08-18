@@ -372,7 +372,7 @@ class Container implements ContainerInterface
      */
     public function lazyGetCall($service, $method)
     {
-        $callable = [$this->lazyGet($service), $method];
+        $callable = array($this->lazyGet($service), $method);
 
         $params = func_get_args();
         array_shift($params); // $service
