@@ -358,6 +358,31 @@ class Container implements ContainerInterface
 
     /**
      *
+     * Returns a lazy object that gets a service and calls a method on it,
+     * optionally with paramters.
+     *
+     * @param string $service The service name.
+     *
+     * @param string $method The method to call on the service object.
+     *
+     * @param ...$params Parameters to use in the method call.
+     *
+     * @return Lazy
+     *
+     */
+    public function lazyGetCall($service, $method)
+    {
+        $callable = [$this->lazyGet($service), $method];
+
+        $params = func_get_args();
+        array_shift($params); // $service
+        array_shift($params); // $method
+
+        return $this->factory->newLazy($callable, $params);
+    }
+
+    /**
+     *
      * Returns a lazy object that creates a new instance.
      *
      * @param string $class The type of class of instantiate.
