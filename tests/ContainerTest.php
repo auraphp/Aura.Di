@@ -102,6 +102,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\FakeOtherClass', $foo);
     }
 
+    public function testLazyGetCall()
+    {
+        $this->container->set(
+            'fake',
+            $this->container->lazyNew('Aura\Di\FakeParentClass')
+        );
+
+        $lazy = $this->container->lazyGetCall('fake', 'mirror', 'foo');
+
+        $this->assertInstanceOf('Aura\Di\Lazy', $lazy);
+        $actual = $lazy();
+        $expect = 'foo';
+        $this->assertSame($expect, $actual);
+    }
+
     public function testMagicGetNoSuchProperty()
     {
         $this->setExpectedException('UnexpectedValueException');
