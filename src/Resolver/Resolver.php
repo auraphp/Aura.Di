@@ -176,6 +176,8 @@ class Resolver
      * the value is the parameter value to use.
      *
      * @return array
+     * 
+     * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
     protected function mergeParams($class, &$params, array $mergeParams = [])
@@ -225,6 +227,8 @@ class Resolver
      * @param array $params The constructor parameters.
      *
      * @return null
+     * 
+     * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
     protected function mergeParamsEmpty($class, &$params)
