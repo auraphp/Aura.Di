@@ -3,6 +3,7 @@ namespace Aura\Di;
 
 use Acclimate\Container\CompositeContainer;
 use Aura\Di\Fake\FakeParamsClass;
+use Aura\Di\Injection\Factory;
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\Reflector;
 use Aura\Di\Resolver\Resolver;
@@ -425,5 +426,54 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $service1 = $compositeContainer->get('service1');
 
         $this->assertEquals('bar', $service1->getFoo()->array[0]->foo);
+    }
+
+    public function testContainerNamedParameterCanBeNull()
+    {
+        $container = new Container(new InjectionFactory(new Resolver(new Reflector())));
+
+        $container->params['Aura\Di\Fake\FakeNullConstruct']['foo'] = null;
+        $container->set('Foo', $container->lazyNew('Aura\Di\Fake\FakeNullConstruct'));
+
+        try {
+            $service = $container->get('Foo');
+        } catch (\InvalidArgumentException $e) {
+            $this->fail('Was not able to set a null named parameter');
+        }
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeNullConstruct', $service);
+    }
+
+    public function testContainerNumberedParameterCanBeNull()
+    {
+        $container = new Container(new InjectionFactory(new Resolver(new Reflector())));
+
+        $container->params['Aura\Di\Fake\FakeNullConstruct'][] = null;
+        $container->set('Foo', $container->lazyNew('Aura\Di\Fake\FakeNullConstruct'));
+
+        try {
+            $service = $container->get('Foo');
+        } catch (\InvalidArgumentException $e) {
+            $this->fail('Was not able to set a null numbered parameter');
+        }
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeNullConstruct', $service);
+    }
+
+    public function testContainerImplicitParentParametersCanBeNull()
+    {
+        $container = new Container(new InjectionFactory(new Resolver(new Reflector())));
+
+        $container->params['Aura\Di\Fake\FakeNullConstruct'][] = null;
+        $container->set('Foo', $container->lazyNew('Aura\Di\Fake\FakeNullConstruct'));
+        $container->set('Bar', $container->lazyNew('Aura\Di\Fake\FakeChildNullConstruct'));
+
+        try {
+            $service = $container->get('Bar');
+        } catch (\InvalidArgumentException $e) {
+            $this->fail('Was not able to set a null implicit named parameter');
+        }
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeNullConstruct', $service);
     }
 }

@@ -327,14 +327,16 @@ class Resolver
         $pos = $rparam->getPosition();
 
         // is there a positional value explicitly from the current class?
-        $explicitPos = isset($this->params[$class][$pos])
+        $explicitPos = isset($this->params[$class])
+                 && array_key_exists($pos, $this->params[$class])
                  && ! $this->params[$class][$pos] instanceof UnresolvedParam;
         if ($explicitPos) {
             return $this->params[$class][$pos];
         }
 
         // is there a named value explicitly from the current class?
-        $explicitNamed = isset($this->params[$class][$name])
+        $explicitNamed = isset($this->params[$class])
+                 && array_key_exists($name, $this->params[$class])
                  && ! $this->params[$class][$name] instanceof UnresolvedParam;
         if ($explicitNamed) {
             return $this->params[$class][$name];
@@ -343,7 +345,7 @@ class Resolver
         // is there a named value implicitly inherited from the parent class?
         // (there cannot be a positional parent. this is because the unified
         // values are stored by name, not position.)
-        $implicitNamed = isset($parent[$name])
+        $implicitNamed = array_key_exists($name, $parent)
                  && ! $parent[$name] instanceof UnresolvedParam;
         if ($implicitNamed) {
             return $parent[$name];
