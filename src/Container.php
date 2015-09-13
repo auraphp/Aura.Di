@@ -19,13 +19,13 @@ use Interop\Container\ContainerInterface;
  *
  * @package Aura.Di
  *
- * @property-read array $params A reference to the Resolver $params.
+ * @property array $params A reference to the Resolver $params.
  *
- * @property-read array $setters A reference to the Resolver $setters.
+ * @property array $setters A reference to the Resolver $setters.
  *
- * @property-read array $types A reference to the Resolver $types.
+ * @property array $types A reference to the Resolver $types.
  *
- * @property-read array $values A reference to the Resolver $values.
+ * @property array $values A reference to the Resolver $values.
  *
  */
 class Container implements ContainerInterface
