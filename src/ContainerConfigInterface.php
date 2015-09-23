@@ -10,12 +10,12 @@ namespace Aura\Di;
 
 /**
  *
- * A set of Container configuration instructions.
+ * An interface for a set of Container configuration instructions.
  *
  * @package Aura.Di
  *
  */
-class ContainerConfig implements ContainerConfigInterface
+interface ContainerConfigInterface
 {
     /**
      *
@@ -26,9 +26,7 @@ class ContainerConfig implements ContainerConfigInterface
      * @return null
      *
      */
-    public function define(Container $di)
-    {
-    }
+    public function define(Container $di);
 
     /**
      *
@@ -39,7 +37,5 @@ class ContainerConfig implements ContainerConfigInterface
      * @return null
      *
      */
-    public function modify(Container $di)
-    {
-    }
+    public function modify(Container $di);
 }
