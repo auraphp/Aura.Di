@@ -1,5 +1,7 @@
 # Class, Interface, and Trait Inheritance
 
+> N.b.: When specifying fully-qualified class names, **do not** include the leading namespace separator. Doing so may lead to unexpected behavior. In other words, always use `ClassName` and never use `\ClassName`.
+
 ## Class Inheritance
 
 Each class instantiated through the _Container_ "inherits" the constrctor parameter and setter method values of its parents by default. This means we can specify a constructor parameter or setter method value on a parent class, and the child class will use it (that is, unless we set an overriding value on the child class).
