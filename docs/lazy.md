@@ -76,6 +76,15 @@ $di->params['ExampleNeedsService']['db'] = $di->lazyGet('db_service');
 
 This keeps the service from being created until the very moment it is needed. If we never instantiate anything that needs the service, the service itself will never be instantiated.
 
+### Getting-and-Calling
+
+Sometimes it will be useful to retrieve the result of a method call to a shared service. To do so, use the `lazyGetCall()` method, passing the name of the service first, followed by the method name, and optionally followed by any arguments to the method.
+
+```php
+$di->params['ExampleNeedsFactoriedObject']['object'] = $di->lazyGetCall('factory_service', 'newInstance');
+```
+
+
 ## Lazy Values
 
 Sometimes we know that a parameter needs to be specified, but we don't know what it will be until later.  Perhaps it is the result of looking up an API key from an environment variable. In these and other cases, we can tell a constructor parameter or setter method to use a "lazy value" and then specify that value elsewhere.
