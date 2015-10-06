@@ -98,7 +98,7 @@ class Resolver
         if (isset($this->$key)) {
             return $this->$key;
         }
-        throw new UnexpectedValueException($key);
+        throw new UnexpectedValueException('unexpected value for ' . $key);
     }
 
     /**
@@ -155,7 +155,7 @@ class Resolver
         $setters = array_merge($setters, $mergeSetters);
         foreach ($setters as $method => $value) {
             if (! method_exists($class, $method)) {
-                throw new Exception\SetterMethodNotFound("$class::$method");
+                throw new Exception\SetterMethodNotFound("setter method not found $class::$method");
             }
             if ($value instanceof LazyInterface) {
                 $setters[$method] = $value();
@@ -202,7 +202,7 @@ class Resolver
 
             // is the param missing?
             if ($val instanceof UnresolvedParam) {
-                throw new Exception\MissingParam($val->getName($class));
+                throw new Exception\MissingParam('missing param ' . $val->getName($class));
             }
 
             // load lazy objects as we go
@@ -236,7 +236,7 @@ class Resolver
         foreach ($params as $key => $val) {
             // is the param missing?
             if ($val instanceof UnresolvedParam) {
-                throw new Exception\MissingParam($val->getName($class));
+                throw new Exception\MissingParam('missing param ' . $val->getName($class));
             }
             // load lazy objects as we go
             if ($val instanceof LazyInterface) {
