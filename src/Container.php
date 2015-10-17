@@ -8,8 +8,15 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Injection\Factory;
 use Aura\Di\Injection\InjectionFactory;
+use Aura\Di\Injection\Lazy;
+use Aura\Di\Injection\LazyGet;
+use Aura\Di\Injection\LazyInclude;
 use Aura\Di\Injection\LazyInterface;
+use Aura\Di\Injection\LazyNew;
+use Aura\Di\Injection\LazyRequire;
+use Aura\Di\Injection\LazyValue;
 use Closure;
 use Interop\Container\ContainerInterface;
 
