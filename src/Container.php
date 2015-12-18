@@ -469,6 +469,9 @@ class Container implements ContainerInterface
      * the configuration parameters, optionally with overrides, invoking Lazy
      * values along the way.
      *
+     * Note the that container must be locked before creating a new instance.
+     * This prevents premature resolution of params and setters.
+     *
      * @param string $class The class to instantiate.
      *
      * @param array $mergeParams An array of override parameters; the key may
@@ -489,6 +492,11 @@ class Container implements ContainerInterface
         array $mergeParams = [],
         array $mergeSetters = []
     ) {
+
+        if (! $this->locked) {
+            throw new Exception("Container must be locked first.");
+        }
+
         return $this->injectionFactory->newInstance(
             $class,
             $mergeParams,
