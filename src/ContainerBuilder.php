@@ -10,8 +10,8 @@ namespace Aura\Di;
 
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\AutoResolver;
-use Aura\Di\Resolver\Resolver;
 use Aura\Di\Resolver\Reflector;
+use Aura\Di\Resolver\Resolver;
 
 /**
  *
@@ -77,6 +77,8 @@ class ContainerBuilder
      *
      * @return Container
      *
+     * @throws Exception\SetterMethodNotFound
+     *
      */
     public function newConfiguredInstance(
         array $configClasses = [],
@@ -86,6 +88,7 @@ class ContainerBuilder
 
         $configs = [];
         foreach ($configClasses as $configClass) {
+            /** @var ContainerConfigInterface $config */
             $config = new $configClass();
             $config->define($di);
             $configs[] = $config;

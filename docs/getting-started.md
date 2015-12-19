@@ -34,11 +34,17 @@ $builder = new ContainerBuilder();
 $di = $builder->newInstance();
 ```
 
-We can then use the _Container_ to create objects for us.
+After we lock the _Container_, we can use it to create objects for us.
+
+```php
+$di->lock();
+```
+
+> N.b.: Locking the _Container_ ensures that its configuration cannot be modified once objects have been created.
 
 ## Creating Object Instances
 
-The most straightward way is to create an object through the _Container_ is via the `newInstance()` method:
+The most straightforward way is to create an object through the _Container_ (after locking it) is via the `newInstance()` method:
 
 ```
 $object = $di->newInstance('Vendor\Package\ClassName');

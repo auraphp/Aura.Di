@@ -2,7 +2,9 @@
 
 The _Container_ supports setter injection in addition to constructor injection. (These can be combined as needed.)
 
-After the _Container_ constructs a new instance of an object, we can specify that certain methods should be called with certain values immediately after instantiation by using the `$di->setter` array.  Say we have class like the following:
+After the _Container_ constructs a new instance of an object, we can specify that certain methods should be called with certain values immediately after instantiation by using the `$di->setter` array before locking it.
+
+Say we have class like the following:
 
 ```php
 namespace Vendor\Package;

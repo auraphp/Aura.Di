@@ -9,10 +9,11 @@ class Example
     // ...
 }
 
-// set the service
+// set services, then lock the container
 $di->set('service_name', $di->newInstance('Example'));
+$di->lock();
 
-// get the service
+// get a service
 $service1 = $di->get('service_name');
 $service2 = $di->get('service_name');
 

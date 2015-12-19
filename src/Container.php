@@ -8,8 +8,15 @@
  */
 namespace Aura\Di;
 
+use Aura\Di\Injection\Factory;
 use Aura\Di\Injection\InjectionFactory;
+use Aura\Di\Injection\Lazy;
+use Aura\Di\Injection\LazyGet;
+use Aura\Di\Injection\LazyInclude;
 use Aura\Di\Injection\LazyInterface;
+use Aura\Di\Injection\LazyNew;
+use Aura\Di\Injection\LazyRequire;
+use Aura\Di\Injection\LazyValue;
 use Closure;
 use Interop\Container\ContainerInterface;
 
@@ -124,7 +131,7 @@ class Container implements ContainerInterface
     public function &__get($key)
     {
         if ($this->isLocked()) {
-            throw new Exception\ContainerLocked();
+            throw new Exception\ContainerLocked('DI container is locked');
         }
 
         return $this->resolver->__get($key);
@@ -220,11 +227,11 @@ class Container implements ContainerInterface
     public function set($service, $val)
     {
         if ($this->isLocked()) {
-            throw new Exception\ContainerLocked();
+            throw new Exception\ContainerLocked('DI container is locked');
         }
 
         if (! is_object($val)) {
-            throw new Exception\ServiceNotObject($service);
+            throw new Exception\ServiceNotObject($service . ' not an object');
         }
 
         if ($val instanceof Closure) {
@@ -274,7 +281,7 @@ class Container implements ContainerInterface
     {
         // does the definition exist?
         if (! $this->has($service)) {
-            throw new Exception\ServiceNotFound($service);
+            throw new Exception\ServiceNotFound($service . ' does not exist');
         }
 
         // is it defined in this container?

@@ -2,7 +2,7 @@
 
 When we use the _Container_ to instantiate a new object, we often need to inject (i.e., set) constructor parameter values in various ways.
 
-We can define default values for constructor parameters using the `$di->params` array on the _Container_.
+We can define default values for constructor parameters using the `$di->params` array on the _Container_ before locking it.
 
 Let's look at a class that takes some constructor parameters:
 
