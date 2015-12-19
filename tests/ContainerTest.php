@@ -123,6 +123,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstanceWithDefaults()
     {
+        $this->container->lock();
         $instance = $this->container->newInstance('Aura\Di\Fake\FakeParentClass');
         $expect = 'bar';
         $actual = $instance->getFoo();
@@ -131,6 +132,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstanceWithOverride()
     {
+        $this->container->lock();
         $instance = $this->container->newInstance(
             'Aura\Di\Fake\FakeParentClass',
             ['foo' => 'dib']
@@ -213,6 +215,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewFactory()
     {
+        $this->container->lock();
         $other = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
 
         $factory = $this->container->newFactory(
@@ -241,12 +244,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstance()
     {
+        $this->container->lock();
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual);
     }
 
+    public function testNewInstanceNotLocked()
+    {
+        $this->setExpectedException('Aura\Di\Exception');
+        $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
+    }
+
     public function testNewInstanceWithLazyParam()
     {
+        $this->container->lock();
+
         $lazy = $this->container->lazy(function() {
             return new \Aura\Di\Fake\FakeOtherClass();
         });
@@ -266,6 +278,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $class = 'Aura\Di\Fake\FakeChildClass';
         $this->container->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = 'fake_value';
 
+        $this->container->lock();
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
             'foo' => 'gir',
             'zim' => new \Aura\Di\Fake\FakeOtherClass(),
@@ -278,6 +291,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $this->container->setters['Aura\Di\Fake\FakeInterface']['setFoo'] = 'initial';
         $this->container->setters['Aura\Di\Fake\FakeInterfaceClass2']['setFoo'] = 'override';
+        $this->container->lock();
 
         // "inherits" initial value from interface
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
@@ -305,6 +319,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $class = 'Aura\Di\Fake\FakeChildClass';
         $this->container->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = $lazy;
 
+        $this->container->lock();
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
             'foo' => 'gir',
             'zim' => new \Aura\Di\Fake\FakeOtherClass(),
@@ -317,12 +332,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $class = 'Aura\Di\Fake\FakeOtherClass';
         $this->container->setters['Aura\Di\Fake\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
+        $this->container->lock();
+
         $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
     }
 
     public function testNewInstanceWithPositionalParams()
     {
+        $this->container->lock();
+
         $other = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
 
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
@@ -350,12 +369,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $this->container->params['Aura\Di\Fake\FakeParentClass']['foo'] = $this->container->lazyValue('foo');
         $this->container->values['foo'] = 'bar';
+        $this->container->lock();
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeParentClass');
         $this->assertSame('bar', $actual->getFoo());
     }
 
     public function testResolveWithMissingParam()
     {
+        $this->container->lock();
         $this->setExpectedException(
             'Aura\Di\Exception\MissingParam',
             'Aura\Di\Fake\FakeResolveClass::$fake'
@@ -366,6 +387,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testResolveWithoutMissingParam()
     {
         $this->container->params['Aura\Di\Fake\FakeResolveClass']['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeParentClass');
+        $this->container->lock();
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeResolveClass');
         $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $actual);
     }
