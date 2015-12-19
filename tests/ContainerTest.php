@@ -277,26 +277,33 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testHonorsInterfacesAndOverrides()
     {
         $this->container->setters['Aura\Di\Fake\FakeInterface']['setFoo'] = 'initial';
+        $this->container->methods['Aura\Di\Fake\FakeInterface']['setMulti'] = ['init1', 'init2', 'init3'];
+
         $this->container->setters['Aura\Di\Fake\FakeInterfaceClass2']['setFoo'] = 'override';
+        $this->container->methods['Aura\Di\Fake\FakeInterfaceClass2']['setMulti'] = ['over1', 'over2', 'over3'];
 
         // "inherits" initial value from interface
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
         $this->assertSame('initial', $actual->getFoo());
+        $this->assertSame(['init1', 'init2', 'init3'], $actual->getMulti());
 
         // uses initial value "inherited" from parent
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass1');
         $this->assertSame('initial', $actual->getFoo());
+        $this->assertSame(['init1', 'init2', 'init3'], $actual->getMulti());
 
         // overrides the initial "inherited" value
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass2');
         $this->assertSame('override', $actual->getFoo());
+        $this->assertSame(['over1', 'over2', 'over3'], $actual->getMulti());
 
         // uses the "inherited" overridde value
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass3');
         $this->assertSame('override', $actual->getFoo());
+        $this->assertSame(['over1', 'over2', 'over3'], $actual->getMulti());
     }
 
-    public function testnewInstanceWithLazySetter()
+    public function testNewInstanceWithLazySetter()
     {
         $lazy = $this->container->lazy(function() {
             return new \Aura\Di\Fake\FakeOtherClass();
@@ -313,11 +320,38 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getFake());
     }
 
+    public function testNewInstanceWithLazyMethodArg()
+    {
+        $other = new \Aura\Di\Fake\FakeOtherClass();
+        $lazy = $this->container->lazy(function() use ($other) {
+            return $other;
+        });
+
+        $class = 'Aura\Di\Fake\FakeChildClass';
+        $this->container->methods['Aura\Di\Fake\FakeChildClass']['multiSet'] = [$lazy, 'arg2', 'arg3'];
+
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
+            'foo' => 'gir',
+            'zim' => new \Aura\Di\Fake\FakeOtherClass(),
+        ]);
+
+        $expect = [$other, 'arg2', 'arg3'];
+        $this->assertSame($expect, $actual->getMultiSet());
+    }
+
     public function testNewInstanceWithNonExistentSetter()
     {
         $class = 'Aura\Di\Fake\FakeOtherClass';
         $this->container->setters['Aura\Di\Fake\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
-        $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
+        $this->setExpectedException('Aura\Di\Exception\SetterNotFound');
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
+    }
+
+    public function testNewInstanceWithNonExistentMethod()
+    {
+        $class = 'Aura\Di\Fake\FakeOtherClass';
+        $this->container->methods['Aura\Di\Fake\FakeOtherClass']['setFakeNotExists'] = ['fake_value'];
+        $this->setExpectedException('Aura\Di\Exception\MethodNotFound');
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
     }
 

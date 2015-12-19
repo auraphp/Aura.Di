@@ -108,6 +108,9 @@ class Factory
         foreach ($resolve->setters as $method => $value) {
             $object->$method($value);
         }
+        foreach ($resolve->methods as $method => $args) {
+            call_user_func_array([$object, $method], $args);
+        }
         return $object;
     }
 }

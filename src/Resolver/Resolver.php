@@ -44,6 +44,16 @@ class Resolver
 
     /**
      *
+     * Arbitrary method-call definitions in the form of
+     * `$methods[$class][$method] = [$arg1, $arg2, ..., $argN]`.
+     *
+     * @var array
+     *
+     */
+    protected $methods = [];
+
+    /**
+     *
      * Arbitrary values in the form of `$values[$key] = $value`.
      *
      * @var array
@@ -119,22 +129,53 @@ class Resolver
      *
      * @return object
      *
-     * @throws Exception\SetterMethodNotFound
+     * @throws Exception\SetterNotFound
      *
      */
     public function resolve(
         $class,
         array $mergeParams = [],
-        array $mergeSetters = []
+        array $mergeSetters = [],
+        array $mergeMethods = []
     ) {
-        list($params, $setters) = $this->getUnified($class);
+        list($params, $setters, $methods) = $this->getUnified($class);
         $this->mergeParams($class, $params, $mergeParams);
         $this->mergeSetters($class, $setters, $mergeSetters);
+        $this->mergeMethods($class, $methods, $mergeMethods);
         return (object) [
             'reflection' => $this->reflector->getClass($class),
             'params' => $params,
             'setters' => $setters,
+            'methods' => $methods,
         ];
+    }
+
+    /**
+     *
+     * Merges the arbitrary method calls with overrides; also invokes Lazy values.
+     *
+     * @param string $class The methods calls are on this class.
+     *
+     * @param array $methods The class methods.
+     *
+     * @param array $mergeMethods Override with these methods.
+     *
+     * @return null
+     *
+     */
+    protected function mergeMethods($class, &$methods, array $mergeMethods = [])
+    {
+        $setters = array_merge($methods, $mergeMethods);
+        foreach ($methods as $method => $args) {
+            if (! method_exists($class, $method)) {
+                throw new Exception\MethodNotFound("$class::$method");
+            }
+            foreach ($args as $pos => $arg) {
+                if ($arg instanceof LazyInterface) {
+                    $methods[$method][$pos] = $arg();
+                }
+            }
+        }
     }
 
     /**
@@ -155,7 +196,7 @@ class Resolver
         $setters = array_merge($setters, $mergeSetters);
         foreach ($setters as $method => $value) {
             if (! method_exists($class, $method)) {
-                throw new Exception\SetterMethodNotFound("$class::$method");
+                throw new Exception\SetterNotFound("$class::$method");
             }
             if ($value instanceof LazyInterface) {
                 $setters[$method] = $value();
@@ -176,7 +217,7 @@ class Resolver
      * the value is the parameter value to use.
      *
      * @return array
-     * 
+     *
      * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
@@ -227,7 +268,7 @@ class Resolver
      * @param array $params The constructor parameters.
      *
      * @return null
-     * 
+     *
      * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
@@ -263,8 +304,8 @@ class Resolver
         }
 
         // default to an an array of two empty arrays
-        // (one for params, one for setters)
-        $spec = [[], []];
+        // (one for params, one for setters, one for methods)
+        $spec = [[], [], []];
 
         // fetch the values for parents so we can inherit them
         $parent = get_parent_class($class);
@@ -272,9 +313,10 @@ class Resolver
             $spec = $this->getUnified($parent);
         }
 
-        // stores the unified params and setters
+        // stores the unified params, setters, and methods
         $this->unified[$class][0] = $this->getUnifiedParams($class, $spec[0]);
         $this->unified[$class][1] = $this->getUnifiedSetters($class, $spec[1]);
+        $this->unified[$class][2] = $this->getUnifiedMethods($class, $spec[2]);
 
         // done, return the unified values
         return $this->unified[$class];
@@ -406,6 +448,63 @@ class Resolver
                 $unified,
                 $this->setters[$class]
             );
+        }
+
+        // done
+        return $unified;
+    }
+
+    /**
+     *
+     * Returns the unified methods for a class.
+     *
+     * Class-specific methods take precendence over trait-based methods, which
+     * take precedence over interface-based methods.
+     *
+     * @param string $class The class name to return values for.
+     *
+     * @param array $parent The parent unified methods.
+     *
+     * @return array The unified methods.
+     *
+     */
+    protected function getUnifiedMethods($class, array $parent)
+    {
+        $unified = $parent;
+
+        // look for interface methods
+        $interfaces = class_implements($class);
+        foreach ($interfaces as $interface) {
+            if (isset($this->methods[$interface])) {
+                $unified = array_merge(
+                    $this->methods[$interface],
+                    $unified
+                );
+            }
+        }
+
+        // look for trait methods
+        $traits = $this->reflector->getTraits($class);
+        foreach ($traits as $trait) {
+            if (isset($this->methods[$trait])) {
+                $unified = array_merge(
+                    $this->methods[$trait],
+                    $unified
+                );
+            }
+        }
+
+        // look for class methods
+        if (isset($this->methods[$class])) {
+            $unified = array_merge(
+                $unified,
+                $this->methods[$class]
+            );
+        }
+
+        // make sure they are all arrays
+        foreach ($unified as $method => $args) {
+            $unified[$method] = (array) $args;
         }
 
         // done

@@ -481,7 +481,7 @@ class Container implements ContainerInterface
      *
      * @return object
      *
-     * @throws Exception\SetterMethodNotFound
+     * @throws Exception\SetterNotFound
      *
      */
     public function newInstance(

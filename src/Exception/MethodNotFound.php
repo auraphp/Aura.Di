@@ -12,11 +12,11 @@ use Aura\Di\Exception;
 
 /**
  *
- * Setter method not found in target class.
+ * Arbitrary method not found in target class.
  *
  * @package Aura.Di
  *
  */
-class SetterMethodNotFound extends Exception
+class MethodNotFound extends Exception
 {
 }
