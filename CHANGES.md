@@ -1,15 +1,17 @@
-- BREAK: Rename `Aura\Di\_Config\AbstractContinerTest` to `Aura\Di\AbstractContainerConfigTest`.
+This is the second beta release of this library, and likely the last before a stable release (barring unexpected feature changes and bugfixes).
 
-- BREAK: The ContainerBuilder no longer accepts pre-built services, only config class names.
+- (BRK) _Container_ methods `newInstance()` and `get()` now lock the _Container_ automatically. (See note below.)
 
-- BREAK: Remove the `Aura\Di\Exception\ReflectionFailure` exception, throw the native `\ReflectionException` instead.
+- (CHG) `$di->params` now allows `null` as a parameter value.
 
-- BREAK: Previously, the AutoResolver would supply an empty array for array typehints, and null for non-typehinted parameters. It no longer does so; it only attempts to auto-resolve class/interface typehints.
+- (ADD) ContainerConfigInterface
 
-- CHANGE: Add .gitattributes file for export-ignore values.
+- (ADD) Better exception messages.
 
-- CHANGE: Allow PHP 5.5 as the minimum version.
+- (DOC) Add and update documentation.
 
-- ADD: Allow constructor params to be specified using position number; this is in addition to specifying by $param name. Positional params take precendence over named params, to be consistent pre-existing behavior regarding merged parameters.
+* * *
 
-- DOCS: Update documentation, add bookdown files.
+Regarding auto-locking of the _Container_ after `newInstance()` and `get()`:
+
+This prevents errors from premature unification of params/setters/values/etc. in the _Resolver_. As a result, do not use _Container_ `newInstance()` or `get()` before you are finished calling `$params`, `$setters`, `$values`, `set()`, or other methods that modify the _Container_. Use the `lazy*()` equivalents to avoid auto-locking the _Container_.
