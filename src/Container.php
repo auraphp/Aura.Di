@@ -130,7 +130,7 @@ class Container implements ContainerInterface
      */
     public function &__get($key)
     {
-        if ($this->isLocked()) {
+        if ($this->locked) {
             throw Exception::containerLocked();
         }
 
@@ -226,7 +226,7 @@ class Container implements ContainerInterface
      */
     public function set($service, $val)
     {
-        if ($this->isLocked()) {
+        if ($this->locked) {
             throw Exception::containerLocked();
         }
 
@@ -500,7 +500,7 @@ class Container implements ContainerInterface
         array $mergeSetters = []
     ) {
 
-        if (! $this->isLocked()) {
+        if (! $this->locked) {
             throw Exception::containerNotLocked();
         }
 
