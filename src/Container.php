@@ -257,6 +257,8 @@ class Container implements ContainerInterface
      */
     public function get($service)
     {
+        $this->locked = true;
+
         if (isset($this->instances[$service])) {
             return $this->instances[$service];
         }
@@ -499,11 +501,7 @@ class Container implements ContainerInterface
         array $mergeParams = [],
         array $mergeSetters = []
     ) {
-
-        if (! $this->locked) {
-            throw Exception::containerNotLocked();
-        }
-
+        $this->locked = true;
         return $this->injectionFactory->newInstance(
             $class,
             $mergeParams,

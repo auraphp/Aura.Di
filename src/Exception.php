@@ -24,11 +24,6 @@ class Exception extends \Exception implements ContainerException
         throw new Exception\ContainerLocked("Cannot modify container when locked.");
     }
 
-    static public function containerNotLocked()
-    {
-        throw new Exception\ContainerNotLocked("Container must be locked first.");
-    }
-
     static public function missingParam($class, $param)
     {
         throw new Exception\MissingParam("Param missing: {$class}::\${$param}");
@@ -44,11 +39,6 @@ class Exception extends \Exception implements ContainerException
         $type = gettype($val);
         $message = "Expected service '{$service}' to be of type 'object', got '{$type}' instead.";
         throw new Exception\ServiceNotObject($message);
-    }
-
-    static public function serviceMethodNotFound()
-    {
-        throw new Exception\ServiceMethodNotFound();
     }
 
     static public function setterMethodNotFound($class, $method)

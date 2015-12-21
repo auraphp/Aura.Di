@@ -1,5 +1,7 @@
 # Lazy Injection
 
+Unlike the `newInstance()` and `get()` methods, calling one of the `lazy*()` methods on the _Container_ will *not* lock the _Container_. Using lazy injection is the preferred and recommended way to defines object values for `$params` and `$setters`, and to define services.
+
 ## Lazy Instances
 
 Thus far, we have used `newInstance()` to create objects through the _Container_.
