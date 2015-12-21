@@ -9,7 +9,6 @@
 namespace Aura\Di;
 
 use Interop\Container\Exception\ContainerException;
-use UnexpectedValueException;
 
 /**
  *
@@ -37,13 +36,13 @@ class Exception extends \Exception implements ContainerException
 
     static public function serviceNotFound($service)
     {
-        throw new Exception\ServiceNotFound("Service '$service' is not defined.");
+        throw new Exception\ServiceNotFound("Service not defined: '{$service}'");
     }
 
     static public function serviceNotObject($service, $val)
     {
         $type = gettype($val);
-        $message = "Expected service '$service' to be of type 'object', got '$type' instead.";
+        $message = "Expected service '{$service}' to be of type 'object', got '{$type}' instead.";
         throw new Exception\ServiceNotObject($message);
     }
 
@@ -57,8 +56,8 @@ class Exception extends \Exception implements ContainerException
         throw new Exception\SetterMethodNotFound("Setter method not found: {$class}::{$method}()");
     }
 
-    static public function unexpectedValue($name)
+    static public function noSuchProperty($name)
     {
-        throw new UnexpectedValueException("Unexpected value for '$name'");
+        throw new Exception\NoSuchProperty("Property does not exist: \${$name}");
     }
 }

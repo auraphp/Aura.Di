@@ -89,7 +89,7 @@ class Resolver
      *
      * @return array
      *
-     * @throws \UnexpectedValueException
+     * @throws Exception\NoSuchProperty
      *
      */
     public function &__get($key)
@@ -97,7 +97,7 @@ class Resolver
         if (isset($this->$key)) {
             return $this->$key;
         }
-        throw Exception::unexpectedValue($key);
+        throw Exception::noSuchProperty($key);
     }
 
     /**

@@ -117,7 +117,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testMagicGetNoSuchProperty()
     {
-        $this->setExpectedException('UnexpectedValueException');
+        $this->setExpectedException('Aura\Di\Exception\NoSuchProperty');
         $actual = $this->container->no_such_property;
     }
 
