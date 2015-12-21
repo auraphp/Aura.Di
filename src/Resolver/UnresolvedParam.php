@@ -47,8 +47,8 @@ class UnresolvedParam
      * @return string
      *
      */
-    public function getName($class)
+    public function getName()
     {
-        return "{$class}::\${$this->name}";
+        return $this->name;
     }
 }

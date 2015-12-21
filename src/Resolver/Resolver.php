@@ -11,7 +11,6 @@ namespace Aura\Di\Resolver;
 use Aura\Di\Exception;
 use Aura\Di\Injection\LazyInterface;
 use ReflectionParameter;
-use UnexpectedValueException;
 
 /**
  *
@@ -98,7 +97,7 @@ class Resolver
         if (isset($this->$key)) {
             return $this->$key;
         }
-        throw new UnexpectedValueException('unexpected value for ' . $key);
+        throw Exception::unexpectedValue($key);
     }
 
     /**
@@ -155,7 +154,7 @@ class Resolver
         $setters = array_merge($setters, $mergeSetters);
         foreach ($setters as $method => $value) {
             if (! method_exists($class, $method)) {
-                throw new Exception\SetterMethodNotFound("setter method not found $class::$method");
+                throw Exception::setterMethodNotFound($class, $method);
             }
             if ($value instanceof LazyInterface) {
                 $setters[$method] = $value();
@@ -176,7 +175,7 @@ class Resolver
      * the value is the parameter value to use.
      *
      * @return array
-     * 
+     *
      * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
@@ -202,7 +201,7 @@ class Resolver
 
             // is the param missing?
             if ($val instanceof UnresolvedParam) {
-                throw new Exception\MissingParam('missing param ' . $val->getName($class));
+                throw Exception::missingParam($class, $val->getName());
             }
 
             // load lazy objects as we go
@@ -227,7 +226,7 @@ class Resolver
      * @param array $params The constructor parameters.
      *
      * @return null
-     * 
+     *
      * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
@@ -236,7 +235,7 @@ class Resolver
         foreach ($params as $key => $val) {
             // is the param missing?
             if ($val instanceof UnresolvedParam) {
-                throw new Exception\MissingParam('missing param ' . $val->getName($class));
+                throw Exception::missingParam($class, $val->getName());
             }
             // load lazy objects as we go
             if ($val instanceof LazyInterface) {

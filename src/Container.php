@@ -131,7 +131,7 @@ class Container implements ContainerInterface
     public function &__get($key)
     {
         if ($this->isLocked()) {
-            throw new Exception\ContainerLocked('DI container is locked');
+            throw Exception::containerLocked();
         }
 
         return $this->resolver->__get($key);
@@ -227,11 +227,11 @@ class Container implements ContainerInterface
     public function set($service, $val)
     {
         if ($this->isLocked()) {
-            throw new Exception\ContainerLocked('DI container is locked');
+            throw Exception::containerLocked();
         }
 
         if (! is_object($val)) {
-            throw new Exception\ServiceNotObject($service . ' not an object');
+            throw Exception::serviceNotObject($service, $val);
         }
 
         if ($val instanceof Closure) {
@@ -281,7 +281,7 @@ class Container implements ContainerInterface
     {
         // does the definition exist?
         if (! $this->has($service)) {
-            throw new Exception\ServiceNotFound($service . ' does not exist');
+            throw Exception::serviceNotFound($service);
         }
 
         // is it defined in this container?
@@ -500,8 +500,8 @@ class Container implements ContainerInterface
         array $mergeSetters = []
     ) {
 
-        if (! $this->locked) {
-            throw new Exception("Container must be locked first.");
+        if (! $this->isLocked()) {
+            throw Exception::containerNotLocked();
         }
 
         return $this->injectionFactory->newInstance(
