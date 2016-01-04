@@ -479,4 +479,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Aura\Di\Fake\FakeNullConstruct', $service);
     }
+
+    public function testAutoLockedGet()
+    {
+        $this->container->set('foo', 'Aura\Di\Fake\ParentClass');
+        $this->container->set('bar', 'Aura\Di\Fake\ChildClass');
+
+        $foo1 = $this->container->get('foo');
+        $foo2 = $this->container->get('foo');
+        $this->assertSame($foo1, $foo2);
+    }
 }

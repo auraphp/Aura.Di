@@ -9,11 +9,10 @@ class Example
     // ...
 }
 
-// set services, then lock the container
-$di->set('service_name', $di->newInstance('Example'));
-$di->lock();
+// set services as lazy; if you use newInstance() it will lock the container
+$di->set('service_name', $di->lazyNew('Example'));
 
-// get a service
+// get a service; the first get() will lock the container
 $service1 = $di->get('service_name');
 $service2 = $di->get('service_name');
 
