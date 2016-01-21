@@ -121,8 +121,6 @@ class Factory
      *
      * Returns a new InstanceFactory.
      *
-     * @param Container $container The service container.
-     *
      * @param string $class The class to create.
      *
      * @param array $params Override params for the class.
