@@ -290,8 +290,9 @@ class Container implements ContainerInterface
                 } catch (Exception $e) {
                     throw Exception::serviceNotFound($service);
                 }
+            } else {
+                throw Exception::serviceNotFound($service);
             }
-            throw Exception::serviceNotFound($service);
         }
 
         // is it defined in this container?
