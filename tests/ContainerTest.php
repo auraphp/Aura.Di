@@ -491,4 +491,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $service2 =  $container->get('Aura\Di\Fake\FakeOtherClass');
         $this->assertSame($service, $service2);
     }
+
+    public function testContainerExplicitlyRegisterServiceButCanTakeParamsDefined()
+    {
+        $container = new Container(new InjectionFactory(new AutoResolver(new Reflector())));
+
+        $container->params['Aura\Di\Fake\FakeParentClass']['foo'] = 'another';
+
+        $service =  $container->get('Aura\Di\Fake\FakeResolveClass');
+        $parent = $service->getParentClass();
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $service);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $parent);
+
+        $this->assertEquals('another', $parent->getFoo());
+    }
 }
