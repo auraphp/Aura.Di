@@ -48,6 +48,8 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
             'empty' => 'abc'
         ];
 
+        $di->lock();
+
         $instance = $di->newInstance('Aura\Di\Fake\FakeParamsClass');
 
         $this->assertInstanceOf('Aura\Di\Fake\FakeParamsClass', $instance);

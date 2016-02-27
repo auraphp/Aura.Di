@@ -21,7 +21,7 @@ class Exception extends \Exception implements ContainerException
 {
     /**
      *
-     * The container is locked and connot be modified.
+     * The container is locked and cannot be modified.
      *
      * @return Exception\ContainerLocked
      *
@@ -29,6 +29,18 @@ class Exception extends \Exception implements ContainerException
     static public function containerLocked()
     {
         throw new Exception\ContainerLocked("Cannot modify container when locked.");
+    }
+
+    /**
+     *
+     * The container is not locked and cannot get services or create instances.
+     *
+     * @return Exception\ContainerNotLocked
+     *
+     */
+    static public function containerNotLocked()
+    {
+        throw new Exception\ContainerNotLocked("Cannot get services or create new instances when not locked.");
     }
 
     /**
