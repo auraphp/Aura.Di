@@ -24,6 +24,21 @@ desirable, is beyond the scope of this document. For more information about
 
 Finally, please note that this package is intended for use as a **dependency injection** system, not as a **service locator** system. If you use it as a service locator, that's bad, and you should feel bad.
 
+### Intended Usage
+
+The intent behind Aura.Di is for it be used like so:
+
+1. Instantiate a container.
+
+2. Do **all** configuration for **all** classes and services.
+
+3. Lock the contianer so it cannot be modified further.
+
+4. Retrieve objects from the locked container.
+
+Note that calling `get()` or `newInstance()` will automatically lock the container, preventing further configuration changes. This is true *even inside configuration code*, so use the `lazy*()` methods instead while configuring the container.
+
+
 ## Container Instantiation
 
 We instantiate a _Container_ like so:
@@ -36,7 +51,7 @@ $di = $builder->newInstance();
 
 ## Creating Object Instances
 
-The most straightforward way is to create an object through the _Container_ (after locking it) is via the `newInstance()` method:
+The most straightforward way is to create an object through the _Container_ is via the `newInstance()` method:
 
 ```
 $object = $di->newInstance('Vendor\Package\ClassName');
