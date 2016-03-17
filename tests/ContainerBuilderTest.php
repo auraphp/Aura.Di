@@ -39,6 +39,38 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual->baz);
     }
 
+    public function testNewConfiguredInstanceViaObject()
+    {
+        $config_classes = [
+            new \Aura\Di\Fake\FakeLibraryConfig,
+            new \Aura\Di\Fake\FakeProjectConfig,
+        ];
+
+        $di = $this->builder->newConfiguredInstance($config_classes);
+
+        $this->assertInstanceOf('Aura\Di\Container', $di);
+
+        $expect = 'zim';
+        $actual = $di->get('library_service');
+        $this->assertSame($expect, $actual->foo);
+
+        $expect = 'gir';
+        $actual = $di->get('project_service');
+        $this->assertSame($expect, $actual->baz);
+    }
+
+    public function testInvalid()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $di = $this->builder->newConfiguredInstance([[]]);
+    }
+
+    public function testInvalidDuckType()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+        $di = $this->builder->newConfiguredInstance([(object) []]);
+    }
+
     public function testSerializeAndUnserialize()
     {
         $di = $this->builder->newInstance();

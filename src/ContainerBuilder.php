@@ -89,7 +89,7 @@ class ContainerBuilder
         $configs = [];
         foreach ($configClasses as $configClass) {
             /** @var ContainerConfigInterface $config */
-            $config = new $configClass();
+            $config = $this->getConfig($configClass);
             $config->define($di);
             $configs[] = $config;
         }
@@ -101,5 +101,31 @@ class ContainerBuilder
         }
 
         return $di;
+    }
+
+    /**
+     *
+     * Get config object from connfig class or return the object
+     *
+     * @param mixed $config name of class to instantiate
+     *
+     * @return Object
+     * @throws InvalidArgumentException if invalid config
+     *
+     * @access protected
+     */
+    protected function getConfig($config)
+    {
+        if (is_string($config)) {
+            $config = new $config;
+        }
+
+        if (! $config instanceof ContainerConfigInterface) {
+            throw new \InvalidArgumentException(
+                'Container configs must implement ContainerConfigInterface'
+            );
+        }
+
+        return $config;
     }
 }
