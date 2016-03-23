@@ -9,6 +9,7 @@
         "lazy.md",
         "factories.md",
         "config.md",
-        "auto.md"
+        "auto.md",
+        "migrating.md"
     ]
 }

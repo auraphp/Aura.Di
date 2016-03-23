@@ -44,6 +44,8 @@ on Freenode in the #auraphp channel.
 
 This package is fully documented [here](./docs/index.md).
 
+Aura.Di 2.x users may wish to read the [migrating](./docs/migrating.md) documentation.
+
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
