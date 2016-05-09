@@ -1,6 +1,6 @@
 # Container Builder and Config Classes
 
-The _ContainerBuilder_ also builds fully-configured _Container_ objects using _ContainerConfig_ classes. It works using a [two-stage configuration system](http://auraphp.com/blog/2014/04/07/two-stage-config/).
+The _ContainerBuilder_ also builds fully-configured _Container_ objects using _ContainerConfig_ classes. It works using a [two-stage configuration system](http://auraphp.com/blog/2014/04/07/two-stage-config).
 
 The two stages are "define" and "modify". In the "define" stage, the _ContainerConfig_ object defines constructor parameter values, setter method values, services, and so on. The _ContainerBuilder_ then locks the _Container_ so that these definitions cannot be changed, and begins the "modify" stage. In the "modify" stage, we may `get()` services from the _Container_ and modify them programmatically if needed.
 
@@ -51,7 +51,7 @@ Here are some example _ContainerConfig_ classes from earlier Aura packages:
 - [Aura.Router](https://github.com/auraphp/Aura.Router/blob/2.0.0/config/Common.php)
 - [Aura.View](https://github.com/auraphp/Aura.View/blob/2.0.0/config/Common.php)
 
-Alterntively, if you already have a ContainerConfig object created, you can pass it directly to the ContainerBuilder instead of a string class name:
+Alternatively, if you already have a ContainerConfig object created, you can pass it directly to the ContainerBuilder instead of a string class name:
 
 ```php
 $routerConfig = new Aura\Router\_Config\Common();
