@@ -51,7 +51,7 @@ Here are some example _ContainerConfig_ classes from earlier Aura packages:
 - [Aura.Router](https://github.com/auraphp/Aura.Router/blob/2.0.0/config/Common.php)
 - [Aura.View](https://github.com/auraphp/Aura.View/blob/2.0.0/config/Common.php)
 
-Alterntively, if you already have a ContainerConfig object created, you can pass it directly to the ContainerBuilder instead of a string class name:
+Alternatively, if you already have a ContainerConfig object created, you can pass it directly to the ContainerBuilder instead of a string class name:
 
 ```php
 $routerConfig = new Aura\Router\_Config\Common();

@@ -4,7 +4,7 @@
 
 ## Class Inheritance
 
-Each class instantiated through the _Container_ "inherits" the constrctor parameter and setter method values of its parents by default. This means we can specify a constructor parameter or setter method value on a parent class, and the child class will use it (that is, unless we set an overriding value on the child class).
+Each class instantiated through the _Container_ "inherits" the constructor parameter and setter method values of its parents by default. This means we can specify a constructor parameter or setter method value on a parent class, and the child class will use it (that is, unless we set an overriding value on the child class).
 
 Let's say we have this parent class and this child class:
 
