@@ -34,5 +34,8 @@
         "psr-4": {
             "Aura\\Di\\": "tests/"
         }
+    },
+    "provide": {
+        "container-interop/container-interop-implementation": "^1.0"
     }
 }
