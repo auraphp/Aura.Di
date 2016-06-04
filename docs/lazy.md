@@ -167,4 +167,13 @@ $di->set('service', $di->lazy([$di->lazyNew('ServiceClass'), 'methodName'],
 ));
 ```
 
+You can also pass in lazies directly as the callable.
+
+```php
+$di->set('service', $di->lazy($di->lazyNew('InvokableServiceClass'),
+    $arg1,
+    $arg2
+));
+```
+
 Beware of relying on generic Lazy calls too much; if we do, it probably means we need to separate our configuration concerns better than we are currently doing.
