@@ -196,6 +196,33 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    public function testLazyCallable()
+    {
+        $lazyCallable = $this->container->lazyCallable($this->container->lazyNew('Aura\Di\Fake\FakeInvokableClass'));
+        $callableRunner = function(callable $callable) {
+            return $callable('baz');
+        };
+
+        $this->assertInstanceOf('Aura\Di\Injection\LazyCallable', $lazyCallable);
+        $actual = $callableRunner($lazyCallable);
+        $expect = 'barbaz';
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testLazyCallableWithArrayContainingLazy()
+    {
+        $this->container->set('invokable_class', $this->container->lazyNew('Aura\Di\Fake\FakeInvokableClass', array('foo' => 'foo')));
+        $lazyCallable = $this->container->lazyCallable([$this->container->lazyGet('invokable_class'), '__invoke']);
+        $callableRunner = function(callable $callable) {
+            return $callable('bar');
+        };
+
+        $this->assertInstanceOf('Aura\Di\Injection\LazyCallable', $lazyCallable);
+        $actual = $callableRunner($lazyCallable);
+        $expect = 'foobar';
+        $this->assertSame($expect, $actual);
+    }
+
     public function testLazyGetCall()
     {
         $this->container->set(
