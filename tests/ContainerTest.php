@@ -186,6 +186,22 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazy()
     {
         $lazy = $this->container->lazy(
+            $this->container->lazyNew('Aura\Di\Fake\FakeMeldingClass'),
+            $this->container->lazyNew('Aura\Di\Fake\FakeMalleableClass', ['foo' => 'bar'])
+        );
+
+        $this->assertInstanceOf('Aura\Di\Injection\Lazy', $lazy);
+        $meldingResult = $lazy();
+        $this->assertInstanceOf('Aura\Di\Fake\FakeMalleableClass', $meldingResult);
+
+        $actual = $meldingResult->getFoo();
+        $expect = 'baz';
+        $this->assertSame($expect, $actual);
+    }
+
+    public function testLazyWithArrayContainingLazy()
+    {
+        $lazy = $this->container->lazy(
             [$this->container->lazyNew('Aura\Di\Fake\FakeParentClass'), 'mirror'],
             $this->container->lazy(function () { return 'foo'; })
         );
