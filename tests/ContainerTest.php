@@ -298,7 +298,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('override', $actual->getFoo());
     }
 
-    public function testnewInstanceWithLazySetter()
+    public function testNewInstanceWithLazySetter()
     {
         $lazy = $this->container->lazy(function() {
             return new \Aura\Di\Fake\FakeOtherClass();
