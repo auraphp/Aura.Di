@@ -125,6 +125,15 @@ $di->params['Example1']['data'] = $di->lazyInclude('/path/to/data.php');
 $di->params['Example2']['data'] = $di->lazyRequire('/path/to/data.php');
 ```
 
+## Lazy Callable
+
+Sometimes you'll be working with code that deals with callables. This code may expect to invoke the callable once, or many times. If you wanted to use a service in this situation, you can use the ``lazyCallable`` method. This will produce a callable that will lazily resolve other lazies, and ensure that all calls to the service are made appropriately.
+
+```php
+$di->params['Example']['foo'] = $di->lazyCallable($di->lazyGet('service_name'));
+$di->params['Example']['bar'] = $di->lazyCallable([$di->lazyNew('ServiceClass'), 'methodName']);
+```
+
 ## Generic Lazy Calls
 
 It may be that we have a complex bit of logic we need to execute for a value. If none of the existing `$di->lazy*()` methods meet our needs, we can wrap an anonymous function or other callable in a `lazy()` call, and the callable's return will be used as the value.
