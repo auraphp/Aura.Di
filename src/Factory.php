@@ -228,9 +228,9 @@ class Factory
      * @return LazyValue
      *
      */
-    public function newLazyValue($key)
+    public function newLazyValue($values, $key)
     {
-        return new LazyValue($this->values, $key);
+        return new LazyValue($values, $key);
     }
 
     /**

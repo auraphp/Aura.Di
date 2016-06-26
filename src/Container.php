@@ -414,9 +414,9 @@ class Container implements ContainerInterface
      * @return LazyValue
      *
      */
-    public function lazyValue($key)
+    public function lazyValue($values, $key)
     {
-        return $this->factory->newLazyValue($key);
+        return $this->factory->newLazyValue($values, $key);
     }
 
     /**
