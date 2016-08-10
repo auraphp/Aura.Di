@@ -32,7 +32,7 @@ The intent behind Aura.Di is for it be used like so:
 
 2. Do **all** configuration for **all** classes and services.
 
-3. Lock the contianer so it cannot be modified further.
+3. Lock the container so it cannot be modified further.
 
 4. Retrieve objects from the locked container.
 
