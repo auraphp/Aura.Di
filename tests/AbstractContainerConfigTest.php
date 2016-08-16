@@ -140,7 +140,7 @@ abstract class AbstractContainerConfigTest extends \PHPUnit_Framework_TestCase
      * Provides data for testNewInstance().
      *
      * @return array An array of sequential elements, where each element is
-     * itself an arra like `['ClassName', [param, param, param],
+     * itself an array like `['ClassName', [param, param, param],
      * [setter, setter, setter]]`.
      *
      */
