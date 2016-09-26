@@ -11,6 +11,7 @@ namespace Aura\Di;
 use Aura\Di\Injection\Factory;
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Injection\Lazy;
+use Aura\Di\Injection\LazyArray;
 use Aura\Di\Injection\LazyCallable;
 use Aura\Di\Injection\LazyGet;
 use Aura\Di\Injection\LazyInclude;
@@ -343,6 +344,21 @@ class Container implements ContainerInterface
         $params = func_get_args();
         array_shift($params);
         return $this->injectionFactory->newLazy($callable, $params);
+    }
+
+    /**
+     *
+     * Returns a lazy object that wraps an array that may contain
+     * (potentially lazy) callables that get invoked at calltime.
+     *
+     * @param array $callables The (potentially lazy) array of callables to invoke.
+     *
+     * @return LazyArray
+     *
+     */
+    public function lazyArray(array $callables)
+    {
+        return $this->injectionFactory->newLazyArray($callables);
     }
 
     /**

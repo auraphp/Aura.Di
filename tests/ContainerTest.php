@@ -212,6 +212,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    public function testLazyArray()
+    {
+        $lazyArray = $this->container->lazyArray([
+            $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'),
+        ]);
+
+        $this->assertInstanceOf('Aura\Di\Injection\LazyArray', $lazyArray);
+        $actual = $lazyArray();
+        $this->assertInternalType('array', $actual);
+        $this->assertArrayHasKey(0, $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual[0]);
+    }
+
     public function testLazyCallable()
     {
         $lazyCallable = $this->container->lazyCallable($this->container->lazyNew('Aura\Di\Fake\FakeInvokableClass'));
