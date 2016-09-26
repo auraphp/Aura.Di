@@ -125,6 +125,23 @@ $di->params['Example1']['data'] = $di->lazyInclude('/path/to/data.php');
 $di->params['Example2']['data'] = $di->lazyRequire('/path/to/data.php');
 ```
 
+## Lazy Array
+
+Sometimes you'll be working with code that expects an array of objects. If you want to have the objects within the array to be lazy you can use the `$di->lazyArray()` method. This will iterate through your array and resolve any lazy objects before returning the array.
+
+```php
+$di->setters['Example']['addFoos'] = $di->lazyArray([
+    $di->lazyNew('FirstFoo'),
+    $di->lazyNew('SecondFoo'),
+]);
+
+// Nesting Lazy Arrays
+$di->setters['Example']['addBars'] = $di->lazyArray([
+    $di->lazyArray(['name1', $di->lazyNew('FirstBar), 'en']),
+    $di->lazyArray(['name2', $di->lazyNew('SecondFoo'), 'es']),
+]);
+```
+
 ## Lazy Callable
 
 Sometimes you'll be working with code that deals with callables. This code may expect to invoke the callable once, or many times. If you wanted to use a service in this situation, you can use the ``lazyCallable`` method. This will produce a callable that will lazily resolve other lazies, and ensure that all calls to the service are made appropriately.
