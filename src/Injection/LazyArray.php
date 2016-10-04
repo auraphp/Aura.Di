@@ -24,7 +24,7 @@ class LazyArray implements LazyInterface
      * @var array
      *
      */
-    protected $callables;
+    protected $callables = [];
 
     /**
      *
@@ -48,11 +48,9 @@ class LazyArray implements LazyInterface
     public function __invoke()
     {
         // convert Lazy objects in the callables
-        if (is_array($this->callables)) {
-            foreach ($this->callables as $key => $val) {
-                if ($val instanceof LazyInterface) {
-                    $this->callables[$key] = $val();
-                }
+        foreach ($this->callables as $key => $val) {
+            if ($val instanceof LazyInterface) {
+                $this->callables[$key] = $val();
             }
         }
 
