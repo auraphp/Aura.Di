@@ -151,15 +151,11 @@ $di->params['Example']['foo'] = $di->lazy(function () {
 });
 ```
 
-Note that this will work with any PHP callable, such as a static method or instance method.
+Note that this will work with any PHP callable, such as a static method:
 
 ```php
 // ServiceClass::staticMethod()
 $di->set('service', $di->lazy(['ServiceClass', 'staticMethod']));
-
-// or an instance of $serviceClass->methodName()
-$instance = $di->newInstance('ServiceClass');
-$di->set('service', $di->lazy([$instance, 'methodName']));
 ```
 
 You can pass arguments to the callable like so:
