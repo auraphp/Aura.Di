@@ -1,5 +1,9 @@
-This release has one documentation addition, and one feature addition.
+This release adds three new features.
 
-- Added documentation for upgrading/migrating from 2.x to 3.x
+- (ADD) LazyInclude and LazyRequire can now recieve a LazyValue as a filename, so that the filename is not resolved until the include/require is invoked.
 
-- In ContainerBuilder::newConfiguredInstance(), added the ability to pass a ContainerConfig object instance as a config specification.
+- (ADD) Allow direct use of lazies in Lazy; cf PR #128
+
+- (ADD) Add a new LazyCallable type for injecting callable services; cf. PR #129
+
+There are also carious documentation improvements, and the package now provides (via Composer) the virtual package `container-interop-implementation`.
