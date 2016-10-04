@@ -400,6 +400,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar', $actual->getFoo());
     }
 
+    public function testLazyValueWithLazies()
+    {
+        $this->container->params['Aura\Di\Fake\FakeParentClass']['foo'] = $this->container->lazyValue('foo');
+        $this->container->values['foo'] = $this->container->lazyValue('bar');
+        $this->container->values['bar'] = 'baz';
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeParentClass');
+        $this->assertSame('baz', $actual->getFoo());
+    }
+
     public function testResolveWithMissingParam()
     {
         $this->setExpectedException(

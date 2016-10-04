@@ -105,6 +105,12 @@ $di->values['fooval'] = 'lazy value for foo';
 $di->values['barval'] = 'lazy value for bar';
 ```
 
+Lazy values can be lazy themselves:
+
+```php
+$di->values['fooval'] = $di->lazyGetCall('option_container', 'getFooOption');
+```
+
 ## Lazy Include and Require
 
 Occasionally we will need to `include` a file that returns a value, such as data file that returns a PHP array:
