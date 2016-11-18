@@ -143,7 +143,7 @@ $di->setters['Example']['addFoos'] = $di->lazyArray([
 
 // Nesting Lazy Arrays
 $di->setters['Example']['addBars'] = $di->lazyArray([
-    $di->lazyArray(['name1', $di->lazyNew('FirstBar), 'en']),
+    $di->lazyArray(['name1', $di->lazyNew('FirstBar'), 'en']),
     $di->lazyArray(['name2', $di->lazyNew('SecondFoo'), 'es']),
 ]);
 ```
