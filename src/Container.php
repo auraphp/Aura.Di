@@ -540,4 +540,15 @@ class Container implements ContainerInterface
             $mergeSetters
         );
     }
+
+    /**
+     *
+     * Returns a callable object to resolve a service or new instance of a class
+     *
+     * @return ResolutionHelper
+     */
+    public function newResolutionHelper()
+    {
+        return new ResolutionHelper($this);
+    }
 }

@@ -32,6 +32,13 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf($expect, $actual);
     }
 
+    public function testNewResolutionHelper()
+    {
+        $actual = $this->container->newResolutionHelper();
+        $expect = 'Aura\Di\ResolutionHelper';
+        $this->assertInstanceOf($expect, $actual);
+    }
+
     public function testMagicGet()
     {
         $this->container->params['foo'] = 'bar';
