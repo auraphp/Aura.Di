@@ -37,6 +37,10 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
         $expect = 'gir';
         $actual = $di->get('project_service');
         $this->assertSame($expect, $actual->baz);
+
+        $this->assertTrue($di->hasConfigured('Aura\Di\Fake\FakeLibraryConfig'));
+        $this->assertTrue($di->hasConfigured('Aura\Di\Fake\FakeProjectConfig'));
+        $this->assertFalse($di->hasConfigured('foo'));
     }
 
     public function testNewConfiguredInstanceViaObject()

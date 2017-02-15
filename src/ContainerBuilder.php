@@ -91,6 +91,7 @@ class ContainerBuilder
             /** @var ContainerConfigInterface $config */
             $config = $this->getConfig($configClass);
             $config->define($di);
+            $di->addConfigured($configClass);
             $configs[] = $config;
         }
 

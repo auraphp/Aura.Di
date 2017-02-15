@@ -100,6 +100,15 @@ class Container implements ContainerInterface
     protected $locked = false;
 
     /**
+     * An array representing the class names of ContainerConfig objects which
+     * have been processed
+     *
+     * @var array
+     * @access protected
+     */
+    protected $configured = [];
+
+    /**
      *
      * Constructor.
      *
@@ -267,6 +276,35 @@ class Container implements ContainerInterface
 
         $this->instances[$service] = $this->getServiceInstance($service);
         return $this->instances[$service];
+    }
+
+    /**
+     * Register a ContainerConfig as processed
+     *
+     * @param string $name the name of the class to registered as processed
+     *
+     * @return $this
+     *
+     * @access public
+     */
+    public function addConfigured($name)
+    {
+        $this->configured[] = $name;
+        return $this;
+    }
+
+    /**
+     * Has the named configuration been processed?
+     *
+     * @param string $name the name of the class to check
+     *
+     * @return bool
+     *
+     * @access public
+     */
+    public function hasConfigured($name)
+    {
+        return in_array($name, $this->configured);
     }
 
     /**
