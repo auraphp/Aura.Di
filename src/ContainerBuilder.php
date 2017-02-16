@@ -85,47 +85,28 @@ class ContainerBuilder
         $autoResolve = false
     ) {
         $di = $this->newInstance($autoResolve);
+        $collection = $this->newConfigCollection($configClasses);
 
-        $configs = [];
-        foreach ($configClasses as $configClass) {
-            /** @var ContainerConfigInterface $config */
-            $config = $this->getConfig($configClass);
-            $config->define($di);
-            $configs[] = $config;
-        }
-
+        $collection->define($di);
         $di->lock();
-
-        foreach ($configs as $config) {
-            $config->modify($di);
-        }
+        $collection->modify($di);
 
         return $di;
     }
 
     /**
      *
-     * Get config object from connfig class or return the object
+     * Creates a new ContainerConfig for a collection of
+     * ContainerConfigInterface classes
      *
-     * @param mixed $config name of class to instantiate
      *
-     * @return Object
-     * @throws InvalidArgumentException if invalid config
+     * @param array $configClasses A list of ContainerConfig classes to
+     * instantiate and invoke for configuring the Container.
      *
-     * @access protected
+     * @return ConfigCollection
      */
-    protected function getConfig($config)
+    protected function newConfigCollection(array $configClasses = [])
     {
-        if (is_string($config)) {
-            $config = new $config;
-        }
-
-        if (! $config instanceof ContainerConfigInterface) {
-            throw new \InvalidArgumentException(
-                'Container configs must implement ContainerConfigInterface'
-            );
-        }
-
-        return $config;
+        return new ConfigCollection($configClasses);
     }
 }
