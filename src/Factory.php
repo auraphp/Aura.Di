@@ -81,6 +81,13 @@ class Factory
     protected $auto_resolve = true;
 
     /**
+     * Throws 'MissingParam' on auto-resolve failed.
+     *
+     * @var bool
+     */
+    protected $throws_on_auto_resolve_failed = false;
+
+    /**
      *
      * Auto-resolve these typehints to these values.
      *
@@ -115,6 +122,19 @@ class Factory
     public function setAutoResolve($auto_resolve)
     {
         $this->auto_resolve = (bool) $auto_resolve;
+    }
+
+    /**
+     * Enables and disables throws error on auto-resolution failed.
+     *
+     * @param bool $throws_on_auto_resolve_failed True to enable, false to disable.
+     *
+     * @return null
+     *
+     */
+    public function setThrowsOnAutoResolveFailed($throws_on_auto_resolve_failed)
+    {
+        $this->throws_on_auto_resolve_failed = (bool) $throws_on_auto_resolve_failed;
     }
 
     /**
@@ -270,7 +290,7 @@ class Factory
         }
 
         // are there missing params? don't worry about it with auto-resolve.
-        if (! $this->auto_resolve) {
+        if (! $this->auto_resolve || $this->throws_on_auto_resolve_failed) {
             foreach ($params as $param) {
                 if ($param instanceof MissingParam) {
                     throw new Exception\MissingParam(
@@ -540,6 +560,11 @@ class Factory
         if ($rtype && $rtype->isInstantiable()) {
             // use a lazy-new-instance of the typehinted class
             return $this->newLazyNew($rtype->name);
+        }
+
+        if ( $this->throws_on_auto_resolve_failed ) {
+            // throws error on failed
+            return new MissingParam($name);
         }
 
         // use a null as a placeholder
