@@ -19,7 +19,8 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "container-interop/container-interop": "~1.0"
+        "container-interop/container-interop": "~1.0",
+        "phpunit/phpunit": "~5.7 || ~4.8"
     },
     "autoload": {
         "psr-4": {
