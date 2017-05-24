@@ -7,6 +7,7 @@ use Aura\Di\Injection\Factory;
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\Reflector;
 use Aura\Di\Resolver\Resolver;
+use Aura\Di\Resolver\AutoResolver;
 use Mouf\Picotainer\Picotainer;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
@@ -550,5 +551,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertInstanceOf('Aura\Di\Fake\FakeNullConstruct', $service);
+    }
+
+    public function testContainerExplicitlyRegisterService()
+    {
+        $container = new Container(new InjectionFactory(new AutoResolver(new Reflector())));
+        $service =  $container->get('Aura\Di\Fake\FakeOtherClass');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $service);
+
+        $service2 =  $container->get('Aura\Di\Fake\FakeOtherClass');
+        $this->assertSame($service, $service2);
     }
 }

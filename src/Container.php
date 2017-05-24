@@ -19,6 +19,7 @@ use Aura\Di\Injection\LazyInterface;
 use Aura\Di\Injection\LazyNew;
 use Aura\Di\Injection\LazyRequire;
 use Aura\Di\Injection\LazyValue;
+use Aura\Di\Resolver\AutoResolver;
 use Closure;
 use Interop\Container\ContainerInterface;
 
@@ -285,7 +286,15 @@ class Container implements ContainerInterface
     {
         // does the definition exist?
         if (! $this->has($service)) {
-            throw Exception::serviceNotFound($service);
+            if ($this->resolver instanceof AutoResolver) {
+                try {
+                    $this->services[$service] = $this->newInstance($service);
+                } catch (Exception $e) {
+                    throw Exception::serviceNotFound($service);
+                }
+            } else {
+                throw Exception::serviceNotFound($service);
+            }
         }
 
         // is it defined in this container?
