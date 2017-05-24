@@ -19,8 +19,7 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "container-interop/container-interop": "~1.0",
-        "phpunit/phpunit": "~5.7 || ~4.8"
+        "container-interop/container-interop": "~1.0"
     },
     "autoload": {
         "psr-4": {
@@ -29,7 +28,8 @@
     },
     "require-dev": {
         "mouf/picotainer": "~1.0",
-        "acclimate/container": "~1.0"
+        "acclimate/container": "~1.0",
+        "phpunit/phpunit": "~5.7 || ~4.8"
     },
     "autoload-dev": {
         "psr-4": {
