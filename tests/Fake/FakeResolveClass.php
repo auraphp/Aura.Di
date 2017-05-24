@@ -8,4 +8,9 @@ class FakeResolveClass
     {
         $this->fake = $fake;
     }
+
+    public function getParentClass()
+    {
+        return $this->fake;
+    }
 }

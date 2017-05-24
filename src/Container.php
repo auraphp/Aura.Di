@@ -19,6 +19,7 @@ use Aura\Di\Injection\LazyInterface;
 use Aura\Di\Injection\LazyNew;
 use Aura\Di\Injection\LazyRequire;
 use Aura\Di\Injection\LazyValue;
+use Aura\Di\Resolver\AutoResolver;
 use Closure;
 use Interop\Container\ContainerInterface;
 
@@ -189,7 +190,11 @@ class Container implements ContainerInterface
 
     /**
      *
-     * Does a particular service definition exist?
+     * Check whether a particular service exist
+     * a. in this container?
+     * b. on delegate container?
+     * c. or if auto wiring is turned on try to register
+     * the service based on the class name.
      *
      * @param string $service The service key to look up.
      *
@@ -202,8 +207,22 @@ class Container implements ContainerInterface
             return true;
         }
 
-        return isset($this->delegateContainer)
-            && $this->delegateContainer->has($service);
+        if (isset($this->delegateContainer)
+            && $this->delegateContainer->has($service)
+        ) {
+            return true;
+        }
+
+        if ($this->resolver instanceof AutoResolver) {
+            try {
+                $this->services[$service] = $this->newInstance($service);
+                return true;
+            } catch (Exception $e) {
+                // do nothing
+            }
+        }
+
+        return false;
     }
 
     /**
