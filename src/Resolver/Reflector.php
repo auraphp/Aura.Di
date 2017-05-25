@@ -129,13 +129,18 @@ class Reflector
             } while ($class = get_parent_class($class));
 
             // get traits from ancestor traits
-            while (list($trait) = each($traits)) {
-                foreach (class_uses($trait) as $key => $name) {
-                    $traits[$key] = $name;
-                }
+            $traitsToSearch = $traits;
+            while (!empty($traitsToSearch)) {
+                $newTraits = class_uses(array_pop($traitsToSearch));
+                $traits += $newTraits;
+                $traitsToSearch += $newTraits;
+            };
+
+            foreach ($traits as $trait) {
+                $traits += class_uses($trait);
             }
 
-            $this->traits[$class] = $traits;
+            $this->traits[$class] = array_unique($traits);
         }
 
         return $this->traits[$class];
