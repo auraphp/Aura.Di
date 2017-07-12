@@ -133,7 +133,7 @@ $di->params['Example2']['data'] = $di->lazyRequire('/path/to/data.php');
 
 ## Lazy Array
 
-Sometimes you'll be working with code that expects an array of objects. If you want to have the objects within the array to be lazy you can use the `$di->lazyArray()` method. This will iterate through your array and resolve any lazy objects before returning the array.
+Sometimes you'll be working with code that expects an array of objects. If you want the objects within the array to be lazy, you can use the `$di->lazyArray()` method. This will iterate through your array and resolve any lazy objects before returning the array.
 
 ```php
 $di->setters['Example']['addFoos'] = $di->lazyArray([
@@ -146,6 +146,24 @@ $di->setters['Example']['addBars'] = $di->lazyArray([
     $di->lazyArray(['name1', $di->lazyNew('FirstBar'), 'en']),
     $di->lazyArray(['name2', $di->lazyNew('SecondFoo'), 'es']),
 ]);
+```
+
+If you need to modify the LazyArray after you've assigned it we provide two methods (`append($value, $key = null)` and `getArrayCopy()` to help.
+
+```php
+$di->setters['Example']['addFoos'] = $di->lazyArray([]);
+
+// Append to array
+$di->setters['Example']['addFoos']->append($di->lazyNew('SecondFoo'));
+
+// Get a copy of the internal array
+$copy = $di->setters['Example']['addFoos']->getArrayCopy();
+
+// Manipulate the array
+array_unshift($copy, $di->lazyNew('FirstFoo'));
+
+// Reassign with new array
+$di->setters['Example']['addFoos'] = $di->lazyArray($copy);
 ```
 
 ## Lazy Callable

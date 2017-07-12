@@ -40,6 +40,34 @@ class LazyArray implements LazyInterface
 
     /**
      *
+     * Append a callable to the array
+     *
+     * @param mixed $callable Callable to append to array
+     *
+     */
+    public function append($callable, $key = null)
+    {
+        if (is_null($key)) {
+            $this->callables[] = $callable;
+        } else {
+            $this->callables[$key] = $callable;
+        }
+    }
+
+    /**
+     *
+     * Return the uninvoked array of callables
+     *
+     * @return array The uninvoked array of callables
+     *
+     */
+    public function getArrayCopy()
+    {
+        return $this->callables;
+    }
+
+    /**
+     *
      * Invokes the array of closures to create the instance array.
      *
      * @return array The array of objects created by the closures.

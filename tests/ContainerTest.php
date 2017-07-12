@@ -232,6 +232,39 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual[0]);
     }
 
+    public function testLazyArrayAppend()
+    {
+        $lazyArray = $this->container->lazyArray([]);
+        $lazyArray->append($this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'));
+
+        $actual = $lazyArray();
+        $this->assertInternalType('array', $actual);
+        $this->assertArrayHasKey(0, $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual[0]);
+    }
+
+    public function testLazyArrayAppendWithKey()
+    {
+        $lazyArray = $this->container->lazyArray([]);
+        $lazyArray->append($this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'), 'fake');
+
+        $actual = $lazyArray();
+        $this->assertInternalType('array', $actual);
+        $this->assertArrayHasKey('fake', $actual);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual['fake']);
+    }
+
+    public function testLazyArrayGetArrayCopy()
+    {
+        $lazyArray = $this->container->lazyArray([]);
+        $lazyArray->append($this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'), 'fake');
+
+        $copy = $lazyArray->getArrayCopy();
+        $this->assertInternalType('array', $copy);
+        $this->assertArrayHasKey('fake', $copy);
+        $this->assertInstanceOf('Aura\Di\Injection\LazyNew', $copy['fake']);
+    }
+
     public function testLazyCallable()
     {
         $lazyCallable = $this->container->lazyCallable($this->container->lazyNew('Aura\Di\Fake\FakeInvokableClass'));
