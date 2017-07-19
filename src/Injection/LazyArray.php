@@ -8,6 +8,8 @@
  */
 namespace Aura\Di\Injection;
 
+use ArrayObject;
+
 /**
  *
  * Returns the value of a callable when invoked (thereby invoking the callable).
@@ -15,74 +17,26 @@ namespace Aura\Di\Injection;
  * @package Aura.Di
  *
  */
-class LazyArray implements LazyInterface
+class LazyArray extends ArrayObject implements LazyInterface
 {
-    /**
-     *
-     * Array of callables to invoke.
-     *
-     * @var array
-     *
-     */
-    protected $callables = [];
 
     /**
      *
-     * Constructor.
+     * Invoke any LazyInterface in the array.
      *
-     * @param array $callables The callables to invoke.
-     *
-     */
-    public function __construct(array $callables)
-    {
-        $this->callables = $callables;
-    }
-
-    /**
-     *
-     * Append a callable to the array
-     *
-     * @param mixed $callable Callable to append to array
-     *
-     */
-    public function append($callable, $key = null)
-    {
-        if (is_null($key)) {
-            $this->callables[] = $callable;
-        } else {
-            $this->callables[$key] = $callable;
-        }
-    }
-
-    /**
-     *
-     * Return the uninvoked array of callables
-     *
-     * @return array The uninvoked array of callables
-     *
-     */
-    public function getArrayCopy()
-    {
-        return $this->callables;
-    }
-
-    /**
-     *
-     * Invokes the array of closures to create the instance array.
-     *
-     * @return array The array of objects created by the closures.
+     * @return array The array of potentially invoked items.
      *
      */
     public function __invoke()
     {
         // convert Lazy objects in the callables
-        foreach ($this->callables as $key => $val) {
+        foreach ($this as $key => $val) {
             if ($val instanceof LazyInterface) {
-                $this->callables[$key] = $val();
+                $this[$key] = $val();
             }
         }
 
         // return array
-        return $this->callables;
+        return $this->getArrayCopy();
     }
 }

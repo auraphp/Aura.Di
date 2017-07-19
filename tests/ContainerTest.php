@@ -246,7 +246,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazyArrayAppendWithKey()
     {
         $lazyArray = $this->container->lazyArray([]);
-        $lazyArray->append($this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'), 'fake');
+        $lazyArray['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
 
         $actual = $lazyArray();
         $this->assertInternalType('array', $actual);
@@ -257,7 +257,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLazyArrayGetArrayCopy()
     {
         $lazyArray = $this->container->lazyArray([]);
-        $lazyArray->append($this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'), 'fake');
+        $lazyArray['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
 
         $copy = $lazyArray->getArrayCopy();
         $this->assertInternalType('array', $copy);
