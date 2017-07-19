@@ -148,7 +148,7 @@ $di->setters['Example']['addBars'] = $di->lazyArray([
 ]);
 ```
 
-If you need to modify the LazyArray after you've assigned it we provide two methods (`append($value, $key = null)` and `getArrayCopy()` to help.
+LazyArray extends [ArrayObject](http://php.net/manual/en/class.arrayobject.php) so if you need to modify the LazyArray after you've assigned it you can use any of the `ArrayObject` methods.
 
 ```php
 $di->setters['Example']['addFoos'] = $di->lazyArray([]);
