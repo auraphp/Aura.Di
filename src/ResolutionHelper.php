@@ -12,7 +12,7 @@ namespace Aura\Di;
  *
  * Resolves object specifications using the DI container.
  *
- * @package aura/di
+ * @package Aura.Di
  *
  */
 class ResolutionHelper
