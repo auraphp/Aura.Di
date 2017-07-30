@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 3.4.0
+
+- (CHG) LazyArray now extends ArrayObject. PR #151.
+
 ## 3.3.0
 
 - (DOC) Update documentation. PR #140.
