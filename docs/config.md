@@ -66,9 +66,9 @@ $di = $container_builder->newConfiguredInstance([
 ```
 
 If you have a package which combines a number of disparate components that
-each provide a ContainerConfig you could bundle them together using the
-ConfigCollection class. This class takes an array of ContainerConfigs or
-ContainerConfig class names and implements ContainerConfigInterface itself.
+each provide a `ContainerConfig` you could bundle them together using the
+`ConfigCollection` class. This class takes an array of `ContainerConfig`s or
+`ContainerConfig` class names and implements `ContainerConfigInterface` itself.
 ```php
 
 namespace My\App;
