@@ -64,3 +64,39 @@ $di = $container_builder->newConfiguredInstance([
     'Aura\Web\_Config\Common',
 ]);
 ```
+
+If you have a package which combines a number of disparate components that
+each provide a `ContainerConfig` you could bundle them together using the
+`ConfigCollection` class. This class takes an array of `ContainerConfig`s or
+`ContainerConfig` class names and implements `ContainerConfigInterface` itself.
+```php
+
+namespace My\App;
+
+use Aura\Di\ConfigCollection;
+
+use My\Domain;
+use My\WebInterface;
+use My\DataSource;
+
+class Config extends ConfigCollection
+{
+    public function __construct()
+    {
+        parent::__construct(
+            [
+                Domain\Config::class,
+                WebInterface\Config::class,
+                DataSource\Config::class,
+            ]
+        );
+    }
+}
+```
+
+You can then use the Collection and it will instantiate (if necessary) and call
+the `define` and `modify` methods of each of the other ContainerConfigs.
+```php
+$di = $container_builder->newConfiguredInstance([\My\App\Config::class])
+```
+
