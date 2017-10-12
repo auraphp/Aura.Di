@@ -2,7 +2,7 @@
 
 Some developers prefer to let the _Container_ resolve dependencies on its own, without having to specify anything in a configuration file. Note that there can be unusual debugging problems inherent in tracking down the default injections, so auto-resolution may or may not be your preference.
 
-To use auto-resolution in a _Container_, build the _Container_ with `$container = $builder->newInstance($builder::AUTO_RESOLVE)`.
+To use auto-resolution in a _Container_, build the _Container_ with `$container = $builder->newInstance($builder::AUTO_RESOLVE)`. If you're using `newConfiguredInstance` to configure your dependency injector and want this functionality, you will need to pass `$builder::AUTO_RESOLVE` as the second parameter.
 
 Note that auto-resolution only works for class/interface typehints. It does not work for `array` typehints.
 
