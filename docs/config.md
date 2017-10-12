@@ -20,6 +20,8 @@ $di = $container_builder->newConfiguredInstance([
 ]);
 ```
 
+**Note:** As with the `newInstance` method of the `ContainerBuilder`, you will have to pass `$container_builder::AUTO_RESOLVE` to `newConfiguredInstance` (as the second parameter) if you want to enable auto-resolution.
+
 A configuration class looks like the following:
 
 ```php
