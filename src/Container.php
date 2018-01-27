@@ -20,7 +20,7 @@ use Aura\Di\Injection\LazyNew;
 use Aura\Di\Injection\LazyRequire;
 use Aura\Di\Injection\LazyValue;
 use Closure;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  *

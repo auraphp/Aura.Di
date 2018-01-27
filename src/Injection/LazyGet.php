@@ -9,7 +9,7 @@
 namespace Aura\Di\Injection;
 
 use Aura\Di\Container;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  *

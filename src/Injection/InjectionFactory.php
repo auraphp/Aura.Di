@@ -10,7 +10,7 @@ namespace Aura\Di\Injection;
 
 use Aura\Di\Container;
 use Aura\Di\Resolver\Resolver;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use ReflectionException;
 
 /**

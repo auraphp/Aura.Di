@@ -9,7 +9,7 @@
 namespace Aura\Di\Exception;
 
 use Aura\Di\Exception;
-use Interop\Container\Exception\NotFoundException;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  *
@@ -18,6 +18,6 @@ use Interop\Container\Exception\NotFoundException;
  * @package Aura.Di
  *
  */
-class ServiceNotFound extends Exception implements NotFoundException
+class ServiceNotFound extends Exception implements NotFoundExceptionInterface
 {
 }
