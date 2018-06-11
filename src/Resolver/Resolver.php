@@ -422,6 +422,11 @@ class Resolver
      */
     public function getExpandedParams($class, array $params)
     {
+        // Variadics are only available in PHP >= 5.6
+        if (version_compare(PHP_VERSION, '5.6') === -1) {
+            return $params;
+        }
+
         $variadicParams = [];
         foreach ($this->reflector->getParams($class) as $reflectParam) {
             $paramName = $reflectParam->getName();
@@ -431,6 +436,7 @@ class Resolver
                 break; // There can only be one
             }
         }
+
         return array_merge($params, array_values($variadicParams));
     }
 }

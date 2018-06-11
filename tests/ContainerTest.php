@@ -148,6 +148,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testNewInstanceWithVariadic()
     {
         $foo = 'bar';
@@ -168,6 +171,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testLazyNewWithVariadic()
     {
         $foo = 'bar';
