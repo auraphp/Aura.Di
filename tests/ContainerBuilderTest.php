@@ -77,7 +77,8 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 
         $di->params['Aura\Di\Fake\FakeParamsClass'] = [
             'array' => [],
-            'empty' => 'abc'
+            'empty' => 'abc',
+            'items' => [(object) ['id' => 1], (object) ['id' => 2]],
         ];
 
         $instance = $di->newInstance('Aura\Di\Fake\FakeParamsClass');

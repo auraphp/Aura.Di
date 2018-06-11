@@ -148,12 +148,37 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
+    public function testNewInstanceWithVariadic()
+    {
+        $foo = 'bar';
+        $items = [(object) ['id' => 1], (object) ['id' => 2]];
+        $instance = $this->container->newInstance(
+            'Aura\Di\Fake\FakeVariadic',
+            ['foo' => $foo, 'items' => $items]
+        );
+        $this->assertSame($foo, $instance->getFoo());
+        $this->assertSame($items, $instance->getItems());
+    }
+
     public function testLazyNew()
     {
         $lazy = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
         $this->assertInstanceOf('Aura\Di\Injection\LazyNew', $lazy);
         $foo = $lazy();
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
+    }
+
+    public function testLazyNewWithVariadic()
+    {
+        $foo = 'bar';
+        $items = [(object) ['id' => 1], (object) ['id' => 2]];
+        $lazy = $this->container->lazyNew(
+            'Aura\Di\Fake\FakeVariadic',
+            ['foo' => $foo, 'items' => $items]
+        );
+        $instance = $lazy();
+        $this->assertSame($foo, $instance->getFoo());
+        $this->assertSame($items, $instance->getItems());
     }
 
     public function testLockedMagicGet()

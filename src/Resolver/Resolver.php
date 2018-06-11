@@ -410,4 +410,27 @@ class Resolver
         // done
         return $unified;
     }
+
+    /**
+     * Expands variadic parameters onto the end of a contructor parameters array.
+     *
+     * @param type $class The class name to expand parameters for.
+     *
+     * @param array $params An array of constructor parameters and values.
+     *
+     * @return array The expanded constructor parameters.
+     */
+    public function getExpandedParams($class, array $params)
+    {
+        $variadicParams = [];
+        foreach ($this->reflector->getParams($class) as $reflectParam) {
+            $paramName = $reflectParam->getName();
+            if ($reflectParam->isVariadic() && is_array($params[$paramName])) {
+                $variadicParams = array_merge($variadicParams, $params[$paramName]);
+                unset($params[$paramName]);
+                break; // There can only be one
+            }
+        }
+        return array_merge($params, array_values($variadicParams));
+    }
 }
