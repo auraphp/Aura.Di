@@ -153,6 +153,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testNewInstanceWithVariadic()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped();
+        }
         $foo = 'bar';
         $items = [(object) ['id' => 1], (object) ['id' => 2]];
         $instance = $this->container->newInstance(
@@ -176,6 +179,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLazyNewWithVariadic()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped();
+        }
         $foo = 'bar';
         $items = [(object) ['id' => 1], (object) ['id' => 2]];
         $lazy = $this->container->lazyNew(
