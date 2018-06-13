@@ -148,12 +148,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testNewInstanceWithVariadic()
     {
-        if (defined('HHVM_VERSION')) {
+        // Variadics are only available in PHP >= 5.6, and not in HHVM
+        if (version_compare(PHP_VERSION, '5.6') === -1 || defined('HHVM_VERSION')) {
             $this->markTestSkipped();
         }
         $foo = 'bar';
@@ -174,12 +172,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testLazyNewWithVariadic()
     {
-        if (defined('HHVM_VERSION')) {
+        // Variadics are only available in PHP >= 5.6, and not in HHVM
+        if (version_compare(PHP_VERSION, '5.6') === -1 || defined('HHVM_VERSION')) {
             $this->markTestSkipped();
         }
         $foo = 'bar';
