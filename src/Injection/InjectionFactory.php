@@ -8,10 +8,8 @@
  */
 namespace Aura\Di\Injection;
 
-use Aura\Di\Container;
 use Aura\Di\Resolver\Resolver;
 use Interop\Container\ContainerInterface;
-use ReflectionException;
 
 /**
  *
@@ -74,7 +72,10 @@ class InjectionFactory
         array $setters = []
     ) {
         $resolve = $this->resolver->resolve($class, $params, $setters);
-        $object = $resolve->reflection->newInstanceArgs($resolve->params);
+
+        $expandedParams = $this->resolver->getExpandedParams($class, $resolve->params);
+        $object = $resolve->reflection->newInstanceArgs($expandedParams);
+
         foreach ($resolve->setters as $method => $value) {
             $object->$method($value);
         }
