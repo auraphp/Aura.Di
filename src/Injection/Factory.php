@@ -104,7 +104,9 @@ class Factory
             $this->setters
         );
 
-        $object = $resolve->reflection->newInstanceArgs($resolve->params);
+        $expandedParams = $this->resolver->getExpandedParams($this->class, $resolve->params);
+        $object = $resolve->reflection->newInstanceArgs($expandedParams);
+
         foreach ($resolve->setters as $method => $value) {
             $object->$method($value);
         }
