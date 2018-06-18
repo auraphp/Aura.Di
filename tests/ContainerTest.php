@@ -148,45 +148,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expect, $actual);
     }
 
-    public function testNewInstanceWithVariadic()
-    {
-        // Variadics are only available in PHP >= 5.6, and not in HHVM
-        if (version_compare(PHP_VERSION, '5.6') === -1 || defined('HHVM_VERSION')) {
-            $this->markTestSkipped();
-        }
-        $foo = 'bar';
-        $items = [(object) ['id' => 1], (object) ['id' => 2]];
-        $instance = $this->container->newInstance(
-            'Aura\Di\Fake\FakeVariadic',
-            ['foo' => $foo, 'items' => $items]
-        );
-        $this->assertSame($foo, $instance->getFoo());
-        $this->assertSame($items, $instance->getItems());
-    }
-
     public function testLazyNew()
     {
         $lazy = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
         $this->assertInstanceOf('Aura\Di\Injection\LazyNew', $lazy);
         $foo = $lazy();
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $foo);
-    }
-
-    public function testLazyNewWithVariadic()
-    {
-        // Variadics are only available in PHP >= 5.6, and not in HHVM
-        if (version_compare(PHP_VERSION, '5.6') === -1 || defined('HHVM_VERSION')) {
-            $this->markTestSkipped();
-        }
-        $foo = 'bar';
-        $items = [(object) ['id' => 1], (object) ['id' => 2]];
-        $lazy = $this->container->lazyNew(
-            'Aura\Di\Fake\FakeVariadic',
-            ['foo' => $foo, 'items' => $items]
-        );
-        $instance = $lazy();
-        $this->assertSame($foo, $instance->getFoo());
-        $this->assertSame($items, $instance->getItems());
     }
 
     public function testLockedMagicGet()
