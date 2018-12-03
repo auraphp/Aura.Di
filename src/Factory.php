@@ -617,7 +617,7 @@ class Factory
         } while ($entity = get_parent_class($entity));
 
         // get traits from ancestor traits
-        while (list($trait) = each($traits)) {
+        foreach(array_keys($traits) as $trait) {
             foreach (class_uses($trait) as $key => $name) {
                 $traits[$key] = $name;
             }
