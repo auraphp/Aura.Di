@@ -617,10 +617,23 @@ class Factory
         } while ($entity = get_parent_class($entity));
 
         // get traits from ancestor traits
-        while (list($trait) = each($traits)) {
-            foreach (class_uses($trait) as $key => $name) {
-                $traits[$key] = $name;
-            }
+        foreach(array_keys($traits) as $trait) {
+            $traits = $this->addTraitsForEntity($traits, $trait);
+        }
+
+        return $traits;
+    }
+
+    /**
+     * @param $traits
+     * @param $entity
+     * @return mixed
+     */
+    private function addTraitsForEntity(&$traits, $entity)
+    {
+        foreach (class_uses($entity) as $key => $name) {
+            $traits[$key] = $name;
+            $this->addTraitsForEntity($traits, $key);
         }
 
         return $traits;
