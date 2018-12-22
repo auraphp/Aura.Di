@@ -61,6 +61,10 @@ class LazyValue implements LazyInterface
      */
     public function __invoke()
     {
+        if (!isset($this->resolver->values[$this->key])) {
+            throw new \InvalidArgumentException('Unknown key (' . $this->key . ') in container value');
+        }
+
         $value = $this->resolver->values[$this->key];
         // convert Lazy objects
         if ($value instanceof LazyInterface) {
