@@ -48,10 +48,6 @@ class LazyInclude implements LazyInterface
      */
     public function __invoke()
     {
-        $filename = $this->file;
-        if ($filename instanceof LazyInterface) {
-            $filename = $filename->__invoke();
-        }
-        return include $filename;
+        return include $this->file;
     }
 }

@@ -48,10 +48,6 @@ class LazyRequire implements LazyInterface
      */
     public function __invoke()
     {
-        $filename = $this->file;
-        if ($filename instanceof LazyInterface) {
-            $filename = $filename->__invoke();
-        }
-        return require $filename;
+        return require $this->file;
     }
 }
