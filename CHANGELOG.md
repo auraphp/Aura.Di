@@ -3,6 +3,7 @@
 ## 4.0.0
 
 - Upgrade to PHP 7.2+ only, strict types enabled
+- Dropped HHVM support
 - Signatures of methods in ContainerConfigInterface changed.
 - LazyRequire and LazyInclude do not accept another lazy
 
