@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -23,10 +24,8 @@ class ContainerConfig implements ContainerConfigInterface
      *
      * @param Container $di The DI container.
      *
-     * @return null
-     *
      */
-    public function define(Container $di)
+    public function define(Container $di): void
     {
     }
 
@@ -36,10 +35,8 @@ class ContainerConfig implements ContainerConfigInterface
      *
      * @param Container $di The DI container.
      *
-     * @return null
-     *
      */
-    public function modify(Container $di)
+    public function modify(Container $di): void
     {
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -20,7 +21,7 @@ use Aura\Di\Injection\LazyNew;
 use Aura\Di\Injection\LazyRequire;
 use Aura\Di\Injection\LazyValue;
 use Closure;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  *
@@ -125,12 +126,12 @@ class Container implements ContainerInterface
      *
      * @param string $key The Resolver property to retrieve.
      *
-     * @return mixed
+     * @return array
      *
      * @throws Exception\ContainerLocked
      *
      */
-    public function &__get($key)
+    public function &__get($key): array
     {
         if ($this->locked) {
             throw Exception::containerLocked();
@@ -167,10 +168,10 @@ class Container implements ContainerInterface
      *
      * Locks the Container so that is it read-only.
      *
-     * @return null
+     * @return void
      *
      */
-    public function lock()
+    public function lock(): void
     {
         $this->locked = true;
     }
@@ -182,7 +183,7 @@ class Container implements ContainerInterface
      * @return bool
      *
      */
-    public function isLocked()
+    public function isLocked(): bool
     {
         return $this->locked;
     }
@@ -196,7 +197,7 @@ class Container implements ContainerInterface
      * @return bool
      *
      */
-    public function has($service)
+    public function has($service): bool
     {
         if (isset($this->services[$service])) {
             return true;
@@ -226,7 +227,7 @@ class Container implements ContainerInterface
      * @return $this
      *
      */
-    public function set($service, $val)
+    public function set(string $service, object $val): Container
     {
         if ($this->locked) {
             throw Exception::containerLocked();
@@ -257,7 +258,7 @@ class Container implements ContainerInterface
      * does not exist.
      *
      */
-    public function get($service)
+    public function get($service): object
     {
         $this->locked = true;
 
@@ -281,7 +282,7 @@ class Container implements ContainerInterface
      * does not exist.
      *
      */
-    protected function getServiceInstance($service)
+    protected function getServiceInstance(string $service): object
     {
         // does the definition exist?
         if (! $this->has($service)) {
@@ -313,7 +314,7 @@ class Container implements ContainerInterface
      * @return array
      *
      */
-    public function getInstances()
+    public function getInstances(): array
     {
         return array_keys($this->instances);
     }
@@ -325,7 +326,7 @@ class Container implements ContainerInterface
      * @return array
      *
      */
-    public function getServices()
+    public function getServices(): array
     {
         return array_keys($this->services);
     }
@@ -334,15 +335,14 @@ class Container implements ContainerInterface
      *
      * Returns a lazy object that calls a callable, optionally with arguments.
      *
-     * @param callable $callable The callable.
+     * @param callable|mixed $callable The callable.
+     *
+     * @param array $params
      *
      * @return Lazy
-     *
      */
-    public function lazy($callable)
+    public function lazy($callable, ...$params): Lazy
     {
-        $params = func_get_args();
-        array_shift($params);
         return $this->injectionFactory->newLazy($callable, $params);
     }
 
@@ -356,7 +356,7 @@ class Container implements ContainerInterface
      * @return LazyArray
      *
      */
-    public function lazyArray(array $callables)
+    public function lazyArray(array $callables): LazyArray
     {
         return $this->injectionFactory->newLazyArray($callables);
     }
@@ -371,7 +371,7 @@ class Container implements ContainerInterface
      * @return LazyCallable
      *
      */
-    public function lazyCallable($callable)
+    public function lazyCallable(callable $callable): LazyCallable
     {
         return $this->injectionFactory->newLazyCallable($callable);
     }
@@ -385,7 +385,7 @@ class Container implements ContainerInterface
      * @return LazyGet
      *
      */
-    public function lazyGet($service)
+    public function lazyGet(string $service): LazyGet
     {
         return $this->injectionFactory->newLazyGet($this, $service);
     }
@@ -399,18 +399,14 @@ class Container implements ContainerInterface
      *
      * @param string $method The method to call on the service object.
      *
-     * @param ...$params Parameters to use in the method call.
+     * @param ...$params mixed Parameters to use in the method call.
      *
      * @return Lazy
      *
      */
-    public function lazyGetCall($service, $method)
+    public function lazyGetCall(string $service, string $method, ...$params): Lazy
     {
         $callable = [$this->lazyGet($service), $method];
-
-        $params = func_get_args();
-        array_shift($params); // $service
-        array_shift($params); // $method
 
         return $this->injectionFactory->newLazy($callable, $params);
     }
@@ -432,7 +428,8 @@ class Container implements ContainerInterface
         $class,
         array $params = [],
         array $setters = []
-    ) {
+    ): LazyNew
+    {
         return $this->injectionFactory->newLazyNew($class, $params, $setters);
     }
 
@@ -445,7 +442,7 @@ class Container implements ContainerInterface
      * @return LazyRequire
      *
      */
-    public function lazyRequire($file)
+    public function lazyRequire(string $file): LazyRequire
     {
         return $this->injectionFactory->newLazyRequire($file);
     }
@@ -459,7 +456,7 @@ class Container implements ContainerInterface
      * @return LazyInclude
      *
      */
-    public function lazyInclude($file)
+    public function lazyInclude(string $file): LazyInclude
     {
         return $this->injectionFactory->newLazyInclude($file);
     }
@@ -473,7 +470,7 @@ class Container implements ContainerInterface
      * @return LazyValue
      *
      */
-    public function lazyValue($key)
+    public function lazyValue(string $key): LazyValue
     {
         return $this->injectionFactory->newLazyValue($key);
     }
@@ -493,10 +490,11 @@ class Container implements ContainerInterface
      *
      */
     public function newFactory(
-        $class,
+        string $class,
         array $params = [],
         array $setters = []
-    ) {
+    ): Factory
+    {
         return $this->injectionFactory->newFactory(
             $class,
             $params,
@@ -529,10 +527,11 @@ class Container implements ContainerInterface
      *
      */
     public function newInstance(
-        $class,
+        string $class,
         array $mergeParams = [],
         array $mergeSetters = []
-    ) {
+    ): object
+    {
         $this->locked = true;
         return $this->injectionFactory->newInstance(
             $class,
@@ -547,7 +546,7 @@ class Container implements ContainerInterface
      *
      * @return ResolutionHelper
      */
-    public function newResolutionHelper()
+    public function newResolutionHelper(): ResolutionHelper
     {
         return new ResolutionHelper($this);
     }

@@ -28,7 +28,7 @@ class AutoResolverTest extends ResolverTest
 
     public function testAutoResolveMissingParam()
     {
-        $this->setExpectedException('Aura\Di\Exception\MissingParam');
-        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass');
+        $this->expectException('Aura\Di\Exception\MissingParam');
+        $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass');
     }
 }

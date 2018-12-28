@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -33,7 +34,7 @@ class UnresolvedParam
      * @param string $name The name of the missing param.
      *
      */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         $this->name = $name;
     }
@@ -42,12 +43,10 @@ class UnresolvedParam
      *
      * Returns the name of the missing param.
      *
-     * @param string $class Prefix the param name with this class name.
-     *
      * @return string
      *
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

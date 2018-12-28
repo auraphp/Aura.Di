@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -46,7 +47,7 @@ class LazyValue implements LazyInterface
      * @param string $key The value key to retrieve.
      *
      */
-    public function __construct(Resolver $resolver, $key)
+    public function __construct(Resolver $resolver, string $key)
     {
         $this->resolver = $resolver;
         $this->key = $key;

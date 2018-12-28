@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -33,7 +34,7 @@ class LazyRequire implements LazyInterface
      * @param string|LazyInterface $file The file to require.
      *
      */
-    public function __construct($file)
+    public function __construct(string $file)
     {
         $this->file = $file;
     }
@@ -47,10 +48,6 @@ class LazyRequire implements LazyInterface
      */
     public function __invoke()
     {
-        $filename = $this->file;
-        if ($filename instanceof LazyInterface) {
-            $filename = $filename->__invoke();
-        }
-        return require $filename;
+        return require $this->file;
     }
 }

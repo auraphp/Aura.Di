@@ -8,7 +8,7 @@
  */
 namespace Aura\Di;
 
-use Aura\Di\ContainerBuilder;
+use PHPUnit\Framework\TestCase;
 
 /**
  *
@@ -18,7 +18,7 @@ use Aura\Di\ContainerBuilder;
  * @package Aura.Di
  *
  */
-abstract class AbstractContainerConfigTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractContainerConfigTest extends TestCase
 {
     /**
      *
