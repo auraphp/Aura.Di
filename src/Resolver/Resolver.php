@@ -92,7 +92,7 @@ class Resolver
      * @throws Exception\NoSuchProperty
      *
      */
-    public function &__get($key)
+    public function &__get($key): array
     {
         if (isset($this->$key)) {
             return $this->$key;
@@ -125,7 +125,8 @@ class Resolver
         $class,
         array $mergeParams = [],
         array $mergeSetters = []
-    ) {
+    ): object
+    {
         list($params, $setters) = $this->getUnified($class);
         $this->mergeParams($class, $params, $mergeParams);
         $this->mergeSetters($class, $setters, $mergeSetters);
@@ -146,10 +147,8 @@ class Resolver
      *
      * @param array $mergeSetters Override with these setters.
      *
-     * @return null
-     *
      */
-    protected function mergeSetters($class, &$setters, array $mergeSetters = [])
+    protected function mergeSetters($class, &$setters, array $mergeSetters = []): void
     {
         $setters = array_merge($setters, $mergeSetters);
         foreach ($setters as $method => $value) {
@@ -174,12 +173,10 @@ class Resolver
      * be the name *or* the numeric position of the constructor parameter, and
      * the value is the parameter value to use.
      *
-     * @return array
-     *
      * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
-    protected function mergeParams($class, &$params, array $mergeParams = [])
+    protected function mergeParams($class, &$params, array $mergeParams = []): void
     {
         if (! $mergeParams) {
             // no params to merge, micro-optimize the loop
@@ -225,12 +222,10 @@ class Resolver
      *
      * @param array $params The constructor parameters.
      *
-     * @return null
-     *
      * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
      *
      */
-    protected function mergeParamsEmpty($class, &$params)
+    protected function mergeParamsEmpty(string $class, array &$params): void
     {
         foreach ($params as $key => $val) {
             // is the param missing?
@@ -254,7 +249,7 @@ class Resolver
      * for the class, and 1 is the setter methods and values for the class.
      *
      */
-    public function getUnified($class)
+    public function getUnified(string $class): array
     {
         // have values already been unified for this class?
         if (isset($this->unified[$class])) {
@@ -290,7 +285,7 @@ class Resolver
      * @return array The unified params.
      *
      */
-    protected function getUnifiedParams($class, array $parent)
+    protected function getUnifiedParams(string $class, array $parent): array
     {
         // reflect on what params to pass, in which order
         $unified = [];
@@ -303,7 +298,6 @@ class Resolver
             );
         }
 
-        // done
         return $unified;
     }
 
@@ -320,7 +314,7 @@ class Resolver
      * @return mixed The unified param value.
      *
      */
-    protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
+    protected function getUnifiedParam(ReflectionParameter $rparam, string $class, array $parent)
     {
         $name = $rparam->getName();
         $pos = $rparam->getPosition();
@@ -373,7 +367,7 @@ class Resolver
      * @return array The unified setters.
      *
      */
-    protected function getUnifiedSetters($class, array $parent)
+    protected function getUnifiedSetters(string $class, array $parent): array
     {
         $unified = $parent;
 
@@ -407,20 +401,19 @@ class Resolver
             );
         }
 
-        // done
         return $unified;
     }
 
     /**
      * Expands variadic parameters onto the end of a contructor parameters array.
      *
-     * @param type $class The class name to expand parameters for.
+     * @param string $class The class name to expand parameters for.
      *
      * @param array $params An array of constructor parameters and values.
      *
      * @return array The expanded constructor parameters.
      */
-    public function getExpandedParams($class, array $params)
+    public function getExpandedParams(string $class, array $params): array
     {
         // Variadics are only available in PHP >= 5.6, and not in HHVM
         if (version_compare(PHP_VERSION, '5.6') === -1 || defined('HHVM_VERSION')) {

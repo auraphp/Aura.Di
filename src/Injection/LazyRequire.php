@@ -33,7 +33,7 @@ class LazyRequire implements LazyInterface
      * @param string|LazyInterface $file The file to require.
      *
      */
-    public function __construct($file)
+    public function __construct(string $file)
     {
         $this->file = $file;
     }

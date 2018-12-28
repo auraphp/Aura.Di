@@ -23,10 +23,8 @@ class ContainerConfig implements ContainerConfigInterface
      *
      * @param Container $di The DI container.
      *
-     * @return null
-     *
      */
-    public function define(Container $di)
+    public function define(Container $di): void
     {
     }
 
@@ -36,10 +34,8 @@ class ContainerConfig implements ContainerConfigInterface
      *
      * @param Container $di The DI container.
      *
-     * @return null
-     *
      */
-    public function modify(Container $di)
+    public function modify(Container $di): void
     {
     }
 }

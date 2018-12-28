@@ -33,7 +33,7 @@ class LazyInclude implements LazyInterface
      * @param string|LazyInterface $file The file to include.
      *
      */
-    public function __construct($file)
+    public function __construct(string $file)
     {
         $this->file = $file;
     }

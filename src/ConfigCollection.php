@@ -52,11 +52,11 @@ class ConfigCollection extends ContainerConfig
      *
      * @return ContainerConfigInterface
      *
-     * @throws InvalidArgumentException if invalid config
+     * @throws \InvalidArgumentException if invalid config
      *
      * @access protected
      */
-    protected function getConfig($config)
+    protected function getConfig($config): ContainerConfigInterface
     {
         if (is_string($config)) {
             $config = new $config;
@@ -78,10 +78,8 @@ class ConfigCollection extends ContainerConfig
      *
      * @param Container $di The DI container.
      *
-     * @return null
-     *
      */
-    public function define(Container $di)
+    public function define(Container $di): void
     {
         foreach ($this->configs as $config) {
             $config->define($di);
@@ -94,10 +92,8 @@ class ConfigCollection extends ContainerConfig
      *
      * @param Container $di The DI container.
      *
-     * @return null
-     *
      */
-    public function modify(Container $di)
+    public function modify(Container $di): void
     {
         foreach ($this->configs as $config) {
             $config->modify($di);

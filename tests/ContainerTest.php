@@ -3,13 +3,13 @@ namespace Aura\Di;
 
 use Acclimate\Container\CompositeContainer;
 use Aura\Di\Fake\FakeParamsClass;
-use Aura\Di\Injection\Factory;
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\Reflector;
 use Aura\Di\Resolver\Resolver;
 use Mouf\Picotainer\Picotainer;
+use PHPUnit\Framework\TestCase;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends TestCase
 {
     protected $container;
 
@@ -68,15 +68,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($actual, $again);
     }
 
-    public function testInitInvalidService()
-    {
-        $this->setExpectedException('Aura\Di\Exception\ServiceNotObject');
-        $this->container->set('foo', 'bar');
-    }
-
     public function testGetNoSuchService()
     {
-        $this->setExpectedException('Aura\Di\Exception\ServiceNotFound');
+        $this->expectException('Aura\Di\Exception\ServiceNotFound');
         $this->container->get('foo');
     }
 
@@ -124,8 +118,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testMagicGetNoSuchProperty()
     {
-        $this->setExpectedException('Aura\Di\Exception\NoSuchProperty');
-        $actual = $this->container->no_such_property;
+        $this->expectException('Aura\Di\Exception\NoSuchProperty');
+        $this->container->no_such_property;
     }
 
     public function testNewInstanceWithDefaults()
@@ -192,14 +186,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testLockedMagicGet()
     {
         $this->container->lock();
-        $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
-        $params = $this->container->params;
+        $this->expectException('Aura\Di\Exception\ContainerLocked');
+        $this->container->params;
     }
 
     public function testLockedSet()
     {
         $this->container->lock();
-        $this->setExpectedException('Aura\Di\Exception\ContainerLocked');
+        $this->expectException('Aura\Di\Exception\ContainerLocked');
         $this->container->set('foo', function() { return (object) []; });
     }
 
@@ -394,7 +388,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstanceWithSetter()
     {
-        $class = 'Aura\Di\Fake\FakeChildClass';
         $this->container->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = 'fake_value';
 
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
@@ -433,7 +426,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             return new \Aura\Di\Fake\FakeOtherClass();
         });
 
-        $class = 'Aura\Di\Fake\FakeChildClass';
         $this->container->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = $lazy;
 
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeChildClass', [
@@ -446,11 +438,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testNewInstanceWithNonExistentSetter()
     {
-        $class = 'Aura\Di\Fake\FakeOtherClass';
         $this->container->setters['Aura\Di\Fake\FakeOtherClass']['setFakeNotExists'] = 'fake_value';
 
-        $this->setExpectedException('Aura\Di\Exception\SetterMethodNotFound');
-        $actual = $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
+        $this->expectException('Aura\Di\Exception\SetterMethodNotFound');
+        $this->container->newInstance('Aura\Di\Fake\FakeOtherClass');
     }
 
     public function testNewInstanceWithPositionalParams()
@@ -497,10 +488,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testResolveWithMissingParam()
     {
-        $this->setExpectedException(
-            'Aura\Di\Exception\MissingParam',
-            'Aura\Di\Fake\FakeResolveClass::$fake'
-        );
+        $this->expectException('Aura\Di\Exception\MissingParam');
+        $this->expectExceptionMessage('Aura\Di\Fake\FakeResolveClass::$fake');
         $this->container->newInstance('Aura\Di\Fake\FakeResolveClass');
     }
 
@@ -514,7 +503,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testDependencyLookupSimple() {
 
         $picotainer = new Picotainer([
-            "foo" => function($container) {
+            "foo" => function() {
                 $obj = new \stdClass();
                 $obj->foo = "bar";
                 return $obj;

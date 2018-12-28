@@ -26,7 +26,7 @@ class Exception extends \Exception implements ContainerException
      * @return Exception\ContainerLocked
      *
      */
-    static public function containerLocked()
+    static public function containerLocked(): Exception\ContainerLocked
     {
         throw new Exception\ContainerLocked("Cannot modify container when locked.");
     }
@@ -42,7 +42,7 @@ class Exception extends \Exception implements ContainerException
      * @return Exception\MissingParam
      *
      */
-    static public function missingParam($class, $param)
+    static public function missingParam(string $class, string $param): Exception\MissingParam
     {
         throw new Exception\MissingParam("Param missing: {$class}::\${$param}");
     }
@@ -56,7 +56,7 @@ class Exception extends \Exception implements ContainerException
      * @return Exception\ServiceNotFound
      *
      */
-    static public function serviceNotFound($service)
+    static public function serviceNotFound(string $service): Exception\ServiceNotFound
     {
         throw new Exception\ServiceNotFound("Service not defined: '{$service}'");
     }
@@ -72,7 +72,7 @@ class Exception extends \Exception implements ContainerException
      * @return Exception\ServiceNotObject
      *
      */
-    static public function serviceNotObject($service, $val)
+    static public function serviceNotObject(string $service, $val): Exception\ServiceNotObject
     {
         $type = gettype($val);
         $message = "Expected service '{$service}' to be of type 'object', got '{$type}' instead.";
@@ -90,7 +90,7 @@ class Exception extends \Exception implements ContainerException
      * @return Exception\SetterMethodNotFound
      *
      */
-    static public function setterMethodNotFound($class, $method)
+    static public function setterMethodNotFound(string $class, string $method): Exception\SetterMethodNotFound
     {
         throw new Exception\SetterMethodNotFound("Setter method not found: {$class}::{$method}()");
     }
@@ -104,7 +104,7 @@ class Exception extends \Exception implements ContainerException
      * @return Exception\NoSuchProperty
      *
      */
-    static public function noSuchProperty($name)
+    static public function noSuchProperty(string $name): Exception\NoSuchProperty
     {
         throw new Exception\NoSuchProperty("Property does not exist: \${$name}");
     }

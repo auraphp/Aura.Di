@@ -8,7 +8,6 @@
  */
 namespace Aura\Di\Injection;
 
-use Aura\Di\Container;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -60,7 +59,7 @@ class LazyGet implements LazyInterface
      * @return object The object created by the closure.
      *
      */
-    public function __invoke()
+    public function __invoke(): object
     {
         return $this->container->get($this->service);
     }

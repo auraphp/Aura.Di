@@ -46,7 +46,7 @@ class LazyValue implements LazyInterface
      * @param string $key The value key to retrieve.
      *
      */
-    public function __construct(Resolver $resolver, $key)
+    public function __construct(Resolver $resolver, string $key)
     {
         $this->resolver = $resolver;
         $this->key = $key;

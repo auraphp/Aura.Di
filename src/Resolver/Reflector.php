@@ -8,7 +8,6 @@
  */
 namespace Aura\Di\Resolver;
 
-use Aura\Di\Exception;
 use ReflectionClass;
 use ReflectionException;
 
@@ -55,7 +54,7 @@ class Reflector
      * @return array
      *
      */
-    public function __sleep()
+    public function __sleep(): array
     {
         return ['traits'];
     }
@@ -71,7 +70,7 @@ class Reflector
      * @throws ReflectionException when the class does not exist.
      *
      */
-    public function getClass($class)
+    public function getClass($class): ReflectionClass
     {
         if (! isset($this->classes[$class])) {
             $this->classes[$class] = new ReflectionClass($class);
@@ -91,7 +90,7 @@ class Reflector
      * @return array
      *
      */
-    public function getParams($class)
+    public function getParams($class): array
     {
         if (! isset($this->params[$class])) {
             $this->params[$class] = [];
@@ -118,7 +117,7 @@ class Reflector
      * in the parent keys.
      *
      */
-    public function getTraits($class)
+    public function getTraits($class): array
     {
         if (! isset($this->traits[$class])) {
             $traits = [];

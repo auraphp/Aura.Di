@@ -40,7 +40,7 @@ class ContainerBuilder
      * @return Container
      *
      */
-    public function newInstance($autoResolve = false)
+    public function newInstance(bool $autoResolve = false): Container
     {
         $resolver = $this->newResolver($autoResolve);
         return new Container(new InjectionFactory($resolver));
@@ -55,7 +55,7 @@ class ContainerBuilder
      * @return Resolver
      *
      */
-    protected function newResolver($autoResolve = false)
+    protected function newResolver(bool $autoResolve = false): Resolver
     {
         if ($autoResolve) {
             return new AutoResolver(new Reflector());
@@ -82,8 +82,8 @@ class ContainerBuilder
      */
     public function newConfiguredInstance(
         array $configClasses = [],
-        $autoResolve = false
-    ) {
+        bool $autoResolve = false
+    ): Container {
         $di = $this->newInstance($autoResolve);
         $collection = $this->newConfigCollection($configClasses);
 
@@ -105,7 +105,7 @@ class ContainerBuilder
      *
      * @return ConfigCollection
      */
-    protected function newConfigCollection(array $configClasses = [])
+    protected function newConfigCollection(array $configClasses = []): ConfigCollection
     {
         return new ConfigCollection($configClasses);
     }

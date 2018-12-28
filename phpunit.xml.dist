@@ -1,9 +1,13 @@
-<phpunit bootstrap="./phpunit.php">
+<phpunit bootstrap="./phpunit.php"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd">
+
     <testsuites>
-        <testsuite>
+        <testsuite name="unit tests">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
+
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>

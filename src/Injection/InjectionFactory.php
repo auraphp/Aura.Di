@@ -48,7 +48,7 @@ class InjectionFactory
      * @return Resolver
      *
      */
-    public function getResolver()
+    public function getResolver(): Resolver
     {
         return $this->resolver;
     }
@@ -63,14 +63,15 @@ class InjectionFactory
      *
      * @param array $setters Setters for the instantiation.
      *
-     * @return mixed
+     * @return object
      *
      */
     public function newInstance(
         $class,
         array $params = [],
         array $setters = []
-    ) {
+    ): object
+    {
         $resolve = $this->resolver->resolve($class, $params, $setters);
 
         $expandedParams = $this->resolver->getExpandedParams($class, $resolve->params);
@@ -99,7 +100,8 @@ class InjectionFactory
         $class,
         array $params = [],
         array $setters = []
-    ) {
+    ): Factory
+    {
         return new Factory($this->resolver, $class, $params, $setters);
     }
 
@@ -114,7 +116,7 @@ class InjectionFactory
      * @return Lazy
      *
      */
-    public function newLazy($callable, array $params = [])
+    public function newLazy($callable, array $params = []): Lazy
     {
         return new Lazy($callable, $params);
     }
@@ -128,7 +130,7 @@ class InjectionFactory
      * @return LazyArray
      *
      */
-    public function newLazyArray(array $callables)
+    public function newLazyArray(array $callables): LazyArray
     {
         return new LazyArray($callables);
     }
@@ -142,7 +144,7 @@ class InjectionFactory
      * @return LazyCallable
      *
      */
-    public function newLazyCallable($callable)
+    public function newLazyCallable($callable): LazyCallable
     {
         return new LazyCallable($callable);
     }
@@ -158,7 +160,7 @@ class InjectionFactory
      * @return LazyGet
      *
      */
-    public function newLazyGet(ContainerInterface $container, $service)
+    public function newLazyGet(ContainerInterface $container, string $service): LazyGet
     {
         return new LazyGet($container, $service);
     }
@@ -172,7 +174,7 @@ class InjectionFactory
      * @return LazyInclude
      *
      */
-    public function newLazyInclude($file)
+    public function newLazyInclude(string $file): LazyInclude
     {
         return new LazyInclude($file);
     }
@@ -187,14 +189,15 @@ class InjectionFactory
      *
      * @param array $setters Setters for the instantiation.
      *
-     * @return Lazy
+     * @return LazyNew
      *
      */
     public function newLazyNew(
-        $class,
+        string $class,
         array $params = [],
         array $setters = []
-    ) {
+    ): LazyNew
+    {
         return new LazyNew($this->resolver, $class, $params, $setters);
     }
 
@@ -207,7 +210,7 @@ class InjectionFactory
      * @return LazyRequire
      *
      */
-    public function newLazyRequire($file)
+    public function newLazyRequire(string $file): LazyRequire
     {
         return new LazyRequire($file);
     }
@@ -221,7 +224,7 @@ class InjectionFactory
      * @return LazyValue
      *
      */
-    public function newLazyValue($key)
+    public function newLazyValue(string $key): LazyValue
     {
         return new LazyValue($this->resolver, $key);
     }

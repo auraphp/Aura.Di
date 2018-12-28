@@ -72,7 +72,7 @@ class Factory
      */
     public function __construct(
         Resolver $resolver,
-        $class,
+        string $class,
         array $params = [],
         array $setters = []
     ) {
@@ -95,7 +95,7 @@ class Factory
      * @return object
      *
      */
-    public function __invoke()
+    public function __invoke(): object
     {
         $params = array_merge($this->params, func_get_args());
         $resolve = $this->resolver->resolve(

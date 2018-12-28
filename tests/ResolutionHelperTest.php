@@ -1,9 +1,9 @@
 <?php
 namespace Aura\Di;
 
-use Aura\Di\ResolutionHelper;
+use PHPUnit\Framework\TestCase;
 
-class ResolutionHelperTest extends \PHPUnit_Framework_TestCase
+class ResolutionHelperTest extends TestCase
 {
     protected $container;
 
@@ -60,7 +60,7 @@ class ResolutionHelperTest extends \PHPUnit_Framework_TestCase
     public function testResolveStringService()
     {
         $spec   = 'foo';
-        $expect = 'return';
+        $expect = new \stdClass();
 
         $this->containerHas($spec, $expect);
 
@@ -72,7 +72,7 @@ class ResolutionHelperTest extends \PHPUnit_Framework_TestCase
     public function testResolveStringInstance()
     {
         $spec   = 'foo';
-        $expect = 'return';
+        $expect = new \stdClass();
 
         $this->containerDoesNotHave($spec, $expect);
 
@@ -86,7 +86,7 @@ class ResolutionHelperTest extends \PHPUnit_Framework_TestCase
     {
         $class  = 'foo';
         $spec   = [$class, 'bar'];
-        $return = 'return';
+        $return = new \stdClass();
         $expect = [$return, 'bar'];
 
         $this->containerHas($class, $return);
@@ -100,7 +100,7 @@ class ResolutionHelperTest extends \PHPUnit_Framework_TestCase
     {
         $class  = 'foo';
         $spec   = [$class, 'bar'];
-        $return = 'return';
+        $return = new \stdClass();
         $expect = [$return, 'bar'];
 
         $this->containerDoesNotHave($class, $return);
