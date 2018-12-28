@@ -416,11 +416,6 @@ class Resolver
      */
     public function getExpandedParams(string $class, array $params): array
     {
-        // Variadics are only available in PHP >= 5.6, and not in HHVM
-        if (version_compare(PHP_VERSION, '5.6') === -1 || defined('HHVM_VERSION')) {
-            return $params;
-        }
-
         $variadicParams = [];
         foreach ($this->reflector->getParams($class) as $reflectParam) {
             $paramName = $reflectParam->getName();
