@@ -6,6 +6,7 @@
 - Dropped HHVM support
 - Signatures of methods in ContainerConfigInterface changed.
 - LazyRequire and LazyInclude do not accept another lazy
+- Removed container interop dependency
 
 ## 3.4.0
 
