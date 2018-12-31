@@ -6,7 +6,6 @@ use Aura\Di\Fake\FakeParamsClass;
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\Reflector;
 use Aura\Di\Resolver\Resolver;
-use Mouf\Picotainer\Picotainer;
 use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
@@ -501,8 +500,7 @@ class ContainerTest extends TestCase
     }
 
     public function testDependencyLookupSimple() {
-
-        $picotainer = new Picotainer([
+        $delegateContainer = new MinimalContainer([
             "foo" => function() {
                 $obj = new \stdClass();
                 $obj->foo = "bar";
@@ -510,7 +508,7 @@ class ContainerTest extends TestCase
             }
         ]);
 
-        $auraContainer = new Container(new InjectionFactory(new Resolver(new Reflector())), $picotainer);
+        $auraContainer = new Container(new InjectionFactory(new Resolver(new Reflector())), $delegateContainer);
 
         $lazy = $auraContainer->lazyGet('foo');
 
@@ -522,7 +520,7 @@ class ContainerTest extends TestCase
         $this->assertEquals('bar', $foo->foo);
 
         $actual = $auraContainer->getDelegateContainer();
-        $this->assertSame($picotainer, $actual);
+        $this->assertSame($delegateContainer, $actual);
     }
 
     public function testDependencyLookup()
@@ -543,14 +541,17 @@ class ContainerTest extends TestCase
         $obj->foo = "bar";
         $auraContainer->set('service3', $obj);
 
-        $picotainer = new Picotainer([
-            // Let's declare service 2
-            "service2" => function($container) {
-                return new FakeParamsClass([$container->get('service3')], null);
-            },
-        ], $compositeContainer);
+        $minimalContainer = new MinimalContainer(
+            [
+                // Let's declare service 2
+                "service2" => function($container) {
+                    return new FakeParamsClass([$container->get('service3')], null);
+                },
+            ],
+            $compositeContainer
+        );
 
-        $compositeContainer->addContainer($picotainer);
+        $compositeContainer->addContainer($minimalContainer);
         $compositeContainer->addContainer($auraContainer);
 
         $service1 = $compositeContainer->get('service1');

@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 namespace Aura\Di;
 
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerExceptionInterface;
 
 /**
  *
@@ -18,7 +18,7 @@ use Interop\Container\Exception\ContainerException;
  * @package Aura.Di
  *
  */
-class Exception extends \Exception implements ContainerException
+class Exception extends \Exception implements ContainerExceptionInterface
 {
     /**
      *

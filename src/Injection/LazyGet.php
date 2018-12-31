@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 namespace Aura\Di\Injection;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  *
