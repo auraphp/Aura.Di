@@ -88,7 +88,7 @@ class Reflector
      * @param string $class Return the array of ReflectionParameter instances
      * for the constructor of this class.
      *
-     * @return array
+     * @return array|\ReflectionParameter[]
      *
      */
     public function getParams($class): array

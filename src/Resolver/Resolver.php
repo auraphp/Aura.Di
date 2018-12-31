@@ -26,6 +26,15 @@ class Resolver
 {
     /**
      *
+     * A Reflector.
+     *
+     * @var Reflector
+     *
+     */
+    protected $reflector;
+
+    /**
+     *
      * Constructor params in the form `$params[$class][$name] = $value`.
      *
      * @var array
@@ -50,15 +59,6 @@ class Resolver
      *
      */
     protected $values = [];
-
-    /**
-     *
-     * A Reflector.
-     *
-     * @var Reflector
-     *
-     */
-    protected $reflector = [];
 
     /**
      *
