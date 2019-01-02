@@ -98,6 +98,26 @@ class Exception extends \Exception implements ContainerExceptionInterface
 
     /**
      *
+     * A mutation was lazy and returned a value that is not an instanceof MutationInterface.
+     *
+     * @param mixed $value The returned value.
+     *
+     * @return Exception\SetterMethodNotFound
+     *
+     */
+    static public function mutationDoesNotImplementInterface($value): Exception\SetterMethodNotFound
+    {
+        if (\is_object($value)) {
+            $className = get_class($value);
+            throw new Exception\MutationDoesNotImplementInterface("Mutation does not implement interface: {$className}");
+        }
+
+        $typeName = \gettype($value);
+        throw new Exception\MutationDoesNotImplementInterface("Expected Mutation interface, got: {$typeName}");
+    }
+
+    /**
+     *
      * A requested property does not exist.
      *
      * @param string $name The property name.

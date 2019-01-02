@@ -4,6 +4,7 @@
         "getting-started.md",
         "constructor.md",
         "setter.md",
+        "mutations.md",
         "inheritance.md",
         "services.md",
         "lazy.md",

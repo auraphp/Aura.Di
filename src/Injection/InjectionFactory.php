@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 namespace Aura\Di\Injection;
 
+use Aura\Di\Exception;
 use Aura\Di\Resolver\Resolver;
 use Psr\Container\ContainerInterface;
 
@@ -81,6 +82,20 @@ class InjectionFactory
         foreach ($resolve->setters as $method => $value) {
             $object->$method($value);
         }
+
+        /** @var MutationInterface $mutation */
+        foreach ($resolve->mutations as $mutation) {
+            if ($mutation instanceof LazyInterface) {
+                $mutation = $mutation();
+            }
+
+            if ($mutation instanceof MutationInterface === false) {
+                throw Exception::mutationDoesNotImplementInterface($mutation);
+            }
+
+            $object = $mutation($object);
+        }
+
         return $object;
     }
 
