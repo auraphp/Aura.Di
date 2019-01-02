@@ -122,6 +122,30 @@ class ContainerBuilderTest extends TestCase
         $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
     }
 
+    public function testSerializeAndUnserializeServices()
+    {
+        $di = $this->builder->newInstance();
+
+        $di->params['Aura\Di\Fake\FakeResolveClass'] = [
+            'fake' => $di->lazyNew(FakeParentClass::class),
+        ];
+
+        $di->set('fake', $di->lazyNew('Aura\Di\Fake\FakeResolveClass'));
+
+        $instance = $di->get('fake');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+
+        $serialized = serialize($di);
+        $unserialized = unserialize($serialized);
+
+        $instance = $unserialized->get('fake');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+    }
+
     public function testSerializeAndUnserializeLazyCallable()
     {
         $di = $this->builder->newInstance();
