@@ -50,7 +50,7 @@ class AutoResolver extends Resolver
         $unified = parent::getUnifiedParam($rparam, $class, $parent);
 
         // already resolved?
-        if (! $unified instanceof UnresolvedParam) {
+        if (! $unified instanceof UnresolvedParam && $unified !== null) {
             return $unified;
         }
 
@@ -58,6 +58,10 @@ class AutoResolver extends Resolver
         $rtype = $rparam->getClass();
         if ($rtype && isset($this->types[$rtype->name])) {
             return $this->types[$rtype->name];
+        }
+
+        if ($rparam->isOptional() && $rparam->getDefaultValue() === $unified) {
+            return $unified;
         }
 
         // use a lazy-new-instance of the typehinted class?

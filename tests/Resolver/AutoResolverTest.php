@@ -1,6 +1,9 @@
 <?php
 namespace Aura\Di\Resolver;
 
+use Aura\Di\Container;
+use Aura\Di\Fake\FakeInterfaceClass;
+use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Injection\LazyNew;
 
 class AutoResolverTest extends ResolverTest
@@ -30,5 +33,25 @@ class AutoResolverTest extends ResolverTest
     {
         $this->expectException('Aura\Di\Exception\MissingParam');
         $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass');
+    }
+
+    public function testContainerConstructorWithDefaultParamAndTypedInjection()
+    {
+        $container = new Container(new InjectionFactory(new AutoResolver(new Reflector())));
+
+        $container->types['Aura\Di\Fake\FakeInterfaceClass'] = new FakeInterfaceClass();
+
+        $actual = $container->newInstance('Aura\Di\Fake\FakeClassWithDefaultParamInConstructor');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeInterfaceClass', $actual->fake);
+    }
+
+    public function testContainerConstructorWithDefaultParamAndNoTypedInjection()
+    {
+        $container = new Container(new InjectionFactory(new AutoResolver(new Reflector())));
+
+        $actual = $container->newInstance('Aura\Di\Fake\FakeClassWithDefaultParamInConstructor');
+
+        $this->assertNull($actual->fake);
     }
 }
