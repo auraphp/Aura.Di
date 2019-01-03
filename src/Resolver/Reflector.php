@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -8,7 +9,6 @@
  */
 namespace Aura\Di\Resolver;
 
-use Aura\Di\Exception;
 use ReflectionClass;
 use ReflectionException;
 
@@ -55,7 +55,7 @@ class Reflector
      * @return array
      *
      */
-    public function __sleep()
+    public function __sleep(): array
     {
         return ['traits'];
     }
@@ -71,7 +71,7 @@ class Reflector
      * @throws ReflectionException when the class does not exist.
      *
      */
-    public function getClass($class)
+    public function getClass($class): ReflectionClass
     {
         if (! isset($this->classes[$class])) {
             $this->classes[$class] = new ReflectionClass($class);
@@ -88,10 +88,10 @@ class Reflector
      * @param string $class Return the array of ReflectionParameter instances
      * for the constructor of this class.
      *
-     * @return array
+     * @return array|\ReflectionParameter[]
      *
      */
-    public function getParams($class)
+    public function getParams($class): array
     {
         if (! isset($this->params[$class])) {
             $this->params[$class] = [];
@@ -118,7 +118,7 @@ class Reflector
      * in the parent keys.
      *
      */
-    public function getTraits($class)
+    public function getTraits($class): array
     {
         if (! isset($this->traits[$class])) {
             $traits = [];

@@ -1,7 +1,9 @@
 <?php
 namespace Aura\Di;
 
-class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ContainerBuilderTest extends TestCase
 {
     protected $builder;
 
@@ -61,14 +63,14 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalid()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        $di = $this->builder->newConfiguredInstance([[]]);
+        $this->expectException('InvalidArgumentException');
+        $this->builder->newConfiguredInstance([[]]);
     }
 
     public function testInvalidDuckType()
     {
-        $this->setExpectedException('InvalidArgumentException');
-        $di = $this->builder->newConfiguredInstance([(object) []]);
+        $this->expectException('InvalidArgumentException');
+        $this->builder->newConfiguredInstance([(object) []]);
     }
 
     public function testSerializeAndUnserialize()

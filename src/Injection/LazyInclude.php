@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -33,7 +34,7 @@ class LazyInclude implements LazyInterface
      * @param string|LazyInterface $file The file to include.
      *
      */
-    public function __construct($file)
+    public function __construct(string $file)
     {
         $this->file = $file;
     }
@@ -47,10 +48,6 @@ class LazyInclude implements LazyInterface
      */
     public function __invoke()
     {
-        $filename = $this->file;
-        if ($filename instanceof LazyInterface) {
-            $filename = $filename->__invoke();
-        }
-        return include $filename;
+        return include $this->file;
     }
 }

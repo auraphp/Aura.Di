@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  *
  * This file is part of Aura for PHP.
@@ -44,7 +45,7 @@ class AutoResolver extends Resolver
      * @return mixed The auto-resolved param value, or UnresolvedParam.
      *
      */
-    protected function getUnifiedParam(ReflectionParameter $rparam, $class, $parent)
+    protected function getUnifiedParam(ReflectionParameter $rparam, string $class, array $parent)
     {
         $unified = parent::getUnifiedParam($rparam, $class, $parent);
 

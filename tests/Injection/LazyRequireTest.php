@@ -1,16 +1,14 @@
 <?php
 namespace Aura\Di\Injection;
 
-class LazyRequireTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class LazyRequireTest extends TestCase
 {
     public function test__invoke()
     {
         $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'lazy_array.php';
-        $lazyValueStub = $this->getMockBuilder('Aura\Di\Injection\LazyInterface')
-            ->getMock();
-        $lazyValueStub->method('__invoke')
-             ->willReturn($file);
-        $lazyInclude = new LazyRequire($lazyValueStub);
+        $lazyInclude = new LazyRequire($file);
         $actual = $lazyInclude->__invoke();
         $expected = ['foo' => 'bar'];
         $this->assertSame($expected, $actual);
