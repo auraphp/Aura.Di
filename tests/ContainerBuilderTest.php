@@ -1,10 +1,14 @@
 <?php
 namespace Aura\Di;
 
+use Aura\Di\Fake\FakeParentClass;
 use PHPUnit\Framework\TestCase;
 
 class ContainerBuilderTest extends TestCase
 {
+    /**
+     * @var ContainerBuilder
+     */
     protected $builder;
 
     protected function setUp()
@@ -94,5 +98,70 @@ class ContainerBuilderTest extends TestCase
         ]);
 
         $this->assertInstanceOf('Aura\Di\Fake\FakeParamsClass', $instance);
+    }
+
+    public function testSerializeAndUnserializeLazy()
+    {
+        $di = $this->builder->newInstance();
+
+        $di->params['Aura\Di\Fake\FakeResolveClass'] = [
+            'fake' => $di->lazyNew(FakeParentClass::class),
+        ];
+
+        $instance = $di->newInstance('Aura\Di\Fake\FakeResolveClass');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+
+        $serialized = serialize($di);
+        $unserialized = unserialize($serialized);
+
+        $instance = $unserialized->newInstance('Aura\Di\Fake\FakeResolveClass');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+    }
+
+    public function testSerializeAndUnserializeServices()
+    {
+        $di = $this->builder->newInstance();
+
+        $di->params['Aura\Di\Fake\FakeResolveClass'] = [
+            'fake' => $di->lazyNew(FakeParentClass::class),
+        ];
+
+        $di->set('fake', $di->lazyNew('Aura\Di\Fake\FakeResolveClass'));
+
+        $instance = $di->get('fake');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+
+        $serialized = serialize($di);
+        $unserialized = unserialize($serialized);
+
+        $instance = $unserialized->get('fake');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+    }
+
+    public function testSerializeAndUnserializeLazyCallable()
+    {
+        $di = $this->builder->newInstance();
+
+        $di->params['Aura\Di\Fake\FakeResolveClass'] = [
+            'fake' => $di->lazy(function () {
+                return new FakeParentClass();
+            }),
+        ];
+
+        $instance = $di->newInstance('Aura\Di\Fake\FakeResolveClass');
+
+        $this->assertInstanceOf('Aura\Di\Fake\FakeResolveClass', $instance);
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $instance->fake);
+
+        $this->expectException(\Exception::class);
+        serialize($di);
     }
 }

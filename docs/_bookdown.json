@@ -10,6 +10,7 @@
         "factories.md",
         "config.md",
         "auto.md",
+        "serializing.md",
         "migrating.md"
     ]
 }
