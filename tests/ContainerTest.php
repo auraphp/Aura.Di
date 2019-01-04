@@ -607,4 +607,18 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf('Aura\Di\Fake\FakeNullConstruct', $service);
     }
+
+    public function testContainerDefaultParamsForChildClass()
+    {
+        $container = new Container(new InjectionFactory(new Resolver(new Reflector())));
+
+        $actual = $container->newInstance('Aura\Di\Fake\FakeClassWithDefaultParam');
+
+        $this->assertSame(1, $actual->first);
+        $this->assertSame(2, $actual->second);
+
+        $actual = $container->newInstance('Aura\Di\Fake\FakeChildClassWithDefaultParam');
+        $this->assertSame(1, $actual->first);
+        $this->assertSame(3, $actual->second);
+    }
 }
