@@ -43,6 +43,14 @@ Or lazy, like so.
 $di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class);
 ```
 
+Just like with any other class, you inject params to the mutation class.
+
+```php
+$di->params[ExampleMutation::class]['argX'] = $di->lazyGet('service');
+$di->params[ExampleMutation::class]['argY'] = $di;
+$di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class);
+```
+
 This also allows you to create new instances of immutable objects.
 
 > N.b.: If you try to access `$mutations` after calling `newInstance()` (or after locking the _Container_ using the `lock()` method) the _Container_ will throw an exception. This is to prevent modifying the params after objects have been created. Thus, be sure to set up all mutations for all objects before creating an object.
