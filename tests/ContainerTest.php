@@ -2,7 +2,9 @@
 namespace Aura\Di;
 
 use Acclimate\Container\CompositeContainer;
-use Aura\Di\Fake\FakeMutationFakeInterfaceClass;
+use Aura\Di\Fake\FakeMutationClass;
+use Aura\Di\Fake\FakeMutationWithDependencyClass;
+use Aura\Di\Fake\FakeOtherClass;
 use Aura\Di\Fake\FakeParamsClass;
 use Aura\Di\Injection\InjectionFactory;
 use Aura\Di\Resolver\Reflector;
@@ -404,7 +406,7 @@ class ContainerTest extends TestCase
 
     public function testNewInstanceWithMutation()
     {
-        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = new FakeMutationFakeInterfaceClass('mutated');
+        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = new FakeMutationClass('mutated');
 
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
 
@@ -413,13 +415,24 @@ class ContainerTest extends TestCase
 
     public function testNewInstanceWithLazyMutation()
     {
-        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = $this->container->lazyNew(FakeMutationFakeInterfaceClass::class, [
+        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = $this->container->lazyNew(FakeMutationClass::class, [
             'fooValue' => 'mutated'
         ]);
 
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
 
         $this->assertSame('mutated', $actual->getFoo());
+    }
+
+    public function testNewInstanceWithLazyMutationInjectContainer()
+    {
+        $this->container->params['Aura\Di\Fake\FakeMutationWithDependencyClass']['container'] = $this->container;
+        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = $this->container->lazyNew(FakeMutationWithDependencyClass::class);
+        $this->container->set('service', $this->container->lazyNew(FakeOtherClass::class));
+
+        $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
+
+        $this->assertInstanceOf(FakeOtherClass::class, $actual->getFoo());
     }
 
     public function testHonorsSettersInterfacesAndOverrides()
@@ -446,8 +459,8 @@ class ContainerTest extends TestCase
 
     public function testHonorsMutationInterfacesAndOverrides()
     {
-        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = new FakeMutationFakeInterfaceClass('one');
-        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass2'][] = new FakeMutationFakeInterfaceClass('two');
+        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass'][] = new FakeMutationClass('one');
+        $this->container->mutations['Aura\Di\Fake\FakeInterfaceClass2'][] = new FakeMutationClass('two');
 
         $actual = $this->container->newInstance('Aura\Di\Fake\FakeInterfaceClass');
         $this->assertSame('one', $actual->getFoo());

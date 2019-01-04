@@ -3,7 +3,7 @@ namespace Aura\Di\Fake;
 
 use Aura\Di\Injection\MutationInterface;
 
-class FakeMutationFakeInterfaceClass implements MutationInterface
+class FakeMutationClass implements MutationInterface
 {
     private $fooValue;
 
