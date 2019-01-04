@@ -15,9 +15,9 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
     public function testReadsConstructorDefaults()
     {
-        $expect = ['foo' => 'bar'];
+        $expect = ['foo' => new DefaultValueParam('foo', 'bar')];
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\Fake\FakeParentClass');
-        $this->assertSame($expect, $actual_params);
+        $this->assertEquals($expect, $actual_params);
     }
 
     public function testTwiceForMerge()
@@ -30,12 +30,12 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
     public function testHonorsParentParams()
     {
         $expect = [
-            'foo' => 'bar',
-            'zim' => null,
+            'foo' => new DefaultValueParam('foo', 'bar'),
+            'zim' => new DefaultValueParam('zim', null),
         ];
 
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
-        $this->assertSame($expect, $actual_params);
+        $this->assertEquals($expect, $actual_params);
     }
 
     public function testHonorsExplicitParams()
@@ -53,11 +53,11 @@ class ResolverTest extends \PHPUnit_Framework_TestCase
 
         $expect = [
             'foo' => 'dib',
-            'zim' => null,
+            'zim' => new DefaultValueParam('zim', null),
         ];
 
         list($actual_params, $actual_setter) = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
-        $this->assertSame($expect, $actual_params);
+        $this->assertEquals($expect, $actual_params);
 
         // for test coverage of the mock class
         $child = new \Aura\Di\Fake\FakeChildClass('bar', new \Aura\Di\Fake\FakeOtherClass);
