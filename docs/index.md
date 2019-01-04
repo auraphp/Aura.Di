@@ -9,4 +9,5 @@
 7. [Factories](factories.md)
 8. [Container Configuration](config.md)
 9. [Auto-Resolution](auto.md)
-10. [Migrating from 2.x to 3.x](migrating.md)
+10. [Serializing](serializing.md)
+11. [Migrating from 2.x to 3.x](migrating.md)
