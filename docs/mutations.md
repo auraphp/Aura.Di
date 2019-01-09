@@ -1,7 +1,7 @@
 # Mutate object after instantion
 
 The _Container_ supports objects to be mutated after it is constructed. This is especially useful when you have separate
-container configs that both need to modify the object that will be constructed. Use cases could be adding routes to a
+container configs that both need to define the object that will be constructed. Use cases could be adding routes to a
 router from multiple configs or adding commands to a console application object.
 
 After the _Container_ constructs a new instance of an object, you can specify which other objects will mutate the 
