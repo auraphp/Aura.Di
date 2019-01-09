@@ -5,7 +5,7 @@ container configs that both need to define the object that will be constructed. 
 router from multiple configs or adding commands to a console application object.
 
 After the _Container_ constructs a new instance of an object, you can specify which other objects will mutate the 
-original object before locking it.
+original object before locking the container.
 
 Say we have classes like the following:
 
