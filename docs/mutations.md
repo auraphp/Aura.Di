@@ -44,6 +44,23 @@ $di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class
 Just like with any other class, you inject params to the mutation class.
 
 ```php
+class ExampleMutation implements MutationInterface
+{
+    private $argX, $argxY;
+    
+    public function __construct ($argX, $argY) {
+        $this->argX = $argX;
+        $this->argY = $argy;
+    }
+    
+    public function __invoke(object $object): object
+    {
+        $object->setFoo($this->argX);
+        $object->setBaz($this->argY);
+        return $object;
+    }
+}
+
 $di->params[ExampleMutation::class]['argX'] = $di->lazyGet('service');
 $di->params[ExampleMutation::class]['argY'] = $di;
 $di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class);
