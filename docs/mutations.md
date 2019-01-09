@@ -1,8 +1,11 @@
 # Mutate object after instantion
 
-The _Container_ supports objects to be mutated after it is constructed.
+The _Container_ supports objects to be mutated after it is constructed. This is especially useful when you have separate
+container configs that both need to modify the object that will be constructed. Use cases could be adding routes to a
+router from multiple configs or adding commands to a console application object.
 
-After the _Container_ constructs a new instance of an object, you can specify which other objects will mutate the original object before locking it.
+After the _Container_ constructs a new instance of an object, you can specify which other objects will mutate the 
+original object before locking it.
 
 Say we have classes like the following:
 
@@ -23,7 +26,7 @@ class Example
 
 class ExampleMutation implements MutationInterface
 {
-    public function mutate(object $object): object
+    public function __invoke(object $object): object
     {
         $object->setFoo('mutated');
         return $object;
@@ -31,16 +34,11 @@ class ExampleMutation implements MutationInterface
 }
 ```
 
-We can specify that it should be mutated after construction like so:
+We can specify that it should be mutated after construction. We can instantiate the mutation directly or lazy.
 
 ```php
-$di->mutations['Vendor\Package\Example'][] = new ExampleMutation();
-```
-
-Or lazy, like so.
-
-```php
-$di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class);
+$di->mutations['Vendor\Package\Example'][] = new ExampleMutation(); // direct
+$di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class); // lazy
 ```
 
 Just like with any other class, you inject params to the mutation class.
@@ -51,6 +49,20 @@ $di->params[ExampleMutation::class]['argY'] = $di;
 $di->mutations['Vendor\Package\Example'][] = $di->lazyNew(ExampleMutation::class);
 ```
 
+When the mutation calls methods on an immutable object, you can return the new object.
+
+```php
+class RegisterRoutesMutation implements MutationInterface
+{
+    public function __invoke(object $object): object
+    {
+        $object = $object->withRoute(new Vendor\Router\Route('/contact', 'abc'));
+        $object = $object->withRoute(new Vendor\Router\Route('/hello_world', 'xyz'));
+        return $object;
+    }
+}
+```
+ 
 This also allows you to create new instances of immutable objects.
 
-> N.b.: If you try to access `$mutations` after calling `newInstance()` (or after locking the _Container_ using the `lock()` method) the _Container_ will throw an exception. This is to prevent modifying the params after objects have been created. Thus, be sure to set up all mutations for all objects before creating an object.
+> N.b.: If you try to access `$di->mutations` after calling `newInstance()` (or after locking the _Container_ using the `lock()` method) the _Container_ will throw an exception. This is to prevent modifying the params after objects have been created. Thus, be sure to set up all mutations for all objects before creating an object.
