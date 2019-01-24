@@ -53,6 +53,15 @@ class Resolver
 
     /**
      *
+     * Setter definitions in the form of `$mutations[$class][] = $value`.
+     *
+     * @var array
+     *
+     */
+    protected $mutations = [];
+
+    /**
+     *
      * Arbitrary values in the form of `$values[$key] = $value`.
      *
      * @var array
@@ -117,6 +126,8 @@ class Resolver
      * name of the setter method to call and the value is the value to be
      * passed to the setter method.
      *
+     * @param array $mergeMutations An array of additional mutations.
+     *
      * @return object
      *
      * @throws Exception\SetterMethodNotFound
@@ -125,16 +136,19 @@ class Resolver
     public function resolve(
         $class,
         array $mergeParams = [],
-        array $mergeSetters = []
+        array $mergeSetters = [],
+        array $mergeMutations = []
     ): object
     {
-        list($params, $setters) = $this->getUnified($class);
+        [$params, $setters, $mutations] = $this->getUnified($class);
         $this->mergeParams($class, $params, $mergeParams);
         $this->mergeSetters($class, $setters, $mergeSetters);
+        $this->mergeMutations($mutations, $mergeMutations);
         return (object) [
             'reflection' => $this->reflector->getClass($class),
             'params' => $params,
             'setters' => $setters,
+            'mutations' => $mutations,
         ];
     }
 
@@ -160,6 +174,20 @@ class Resolver
                 $setters[$method] = $value();
             }
         }
+    }
+
+    /**
+     *
+     * Merges the setters with overrides; also invokes Lazy values.
+     *
+     * @param array $mutations The class mutations.
+     *
+     * @param array $mergeMutates Additional mutations.
+     *
+     */
+    protected function mergeMutations(&$mutations, array $mergeMutates = []): void
+    {
+        $mutations = array_merge($mutations, $mergeMutates);
     }
 
     /**
@@ -257,9 +285,9 @@ class Resolver
             return $this->unified[$class];
         }
 
-        // default to an an array of two empty arrays
-        // (one for params, one for setters)
-        $spec = [[], []];
+        // default to an an array of three empty arrays
+        // (one for params, one for setters, one for mutations)
+        $spec = [[], [], []];
 
         // fetch the values for parents so we can inherit them
         $parent = get_parent_class($class);
@@ -270,6 +298,7 @@ class Resolver
         // stores the unified params and setters
         $this->unified[$class][0] = $this->getUnifiedParams($class, $spec[0]);
         $this->unified[$class][1] = $this->getUnifiedSetters($class, $spec[1]);
+        $this->unified[$class][2] = $this->getUnifiedMutations($class, $spec[2]);
 
         // done, return the unified values
         return $this->unified[$class];
@@ -360,6 +389,56 @@ class Resolver
 
         // param is missing
         return new UnresolvedParam($name);
+    }
+
+    /**
+     *
+     * Returns the unified mutations for a class.
+     *
+     * Class-specific mutations are executed last before trait-based mutations and before interface-based mutations.
+     *
+     * @param string $class The class name to return values for.
+     *
+     * @param array $parent The parent unified setters.
+     *
+     * @return array The unified mutations.
+     *
+     */
+    protected function getUnifiedMutations(string $class, array $parent): array
+    {
+        $unified = $parent;
+
+        // look for interface mutations
+        $interfaces = class_implements($class);
+        foreach ($interfaces as $interface) {
+            if (isset($this->mutations[$interface])) {
+                $unified = array_merge(
+                    $this->mutations[$interface],
+                    $unified
+                );
+            }
+        }
+
+        // look for trait mutations
+        $traits = $this->reflector->getTraits($class);
+        foreach ($traits as $trait) {
+            if (isset($this->mutations[$trait])) {
+                $unified = array_merge(
+                    $this->mutations[$trait],
+                    $unified
+                );
+            }
+        }
+
+        // look for class mutations
+        if (isset($this->mutations[$class])) {
+            $unified = array_merge(
+                $unified,
+                $this->mutations[$class]
+            );
+        }
+
+        return $unified;
     }
 
     /**

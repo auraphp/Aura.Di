@@ -33,6 +33,8 @@ use Psr\Container\ContainerInterface;
  *
  * @property array $setters A reference to the Resolver $setters.
  *
+ * @property array $mutations A reference to the Resolver $mutates.
+ *
  * @property array $types A reference to the Resolver $types.
  *
  * @property array $values A reference to the Resolver $values.

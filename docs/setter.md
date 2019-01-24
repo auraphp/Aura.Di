@@ -26,6 +26,6 @@ We can specify that, by default, the `setFoo()` method should be called with a s
 $di->setters['Vendor\Package\Example']['setFoo'] = 'foo_value';
 ```
 
-Note also that this works only with explicitly-defined setter methods. Setter methods that exist only via magic `__call()` will not be honored.
+Note also that this works only with explicitly-defined setter methods. Setter methods that exist only via magic `__call()` will not be honored. Use _mutations_ if you want to call magic methods. 
 
 > N.b.: If you try to access `$setters` after calling `newInstance()` (or after locking the _Container_ using the `lock()` method) the _Container_ will throw an exception. This is to prevent modifying the params after objects have been created. Thus, be sure to set up all params for all objects before creating an object.
