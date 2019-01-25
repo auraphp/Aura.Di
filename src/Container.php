@@ -20,6 +20,7 @@ use Aura\Di\Injection\LazyInterface;
 use Aura\Di\Injection\LazyNew;
 use Aura\Di\Injection\LazyRequire;
 use Aura\Di\Injection\LazyValue;
+use Aura\Di\Resolver\Blueprint;
 use Closure;
 use Psr\Container\ContainerInterface;
 
@@ -525,8 +526,6 @@ class Container implements ContainerInterface
      *
      * @return object
      *
-     * @throws Exception\SetterMethodNotFound
-     *
      */
     public function newInstance(
         string $class,
@@ -536,9 +535,11 @@ class Container implements ContainerInterface
     {
         $this->locked = true;
         return $this->injectionFactory->newInstance(
-            $class,
-            $mergeParams,
-            $mergeSetters
+            new Blueprint(
+                $class,
+                $mergeParams,
+                $mergeSetters
+            )
         );
     }
 

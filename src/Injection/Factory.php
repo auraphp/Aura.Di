@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 namespace Aura\Di\Injection;
 
-use Aura\Di\Exception;
+use Aura\Di\Resolver\Blueprint;
 use Aura\Di\Resolver\Resolver;
 
 /**
@@ -34,30 +34,21 @@ class Factory
 
     /**
      *
-     * The class to create.
-     *
-     * @var string
-     *
-     */
-    protected $class;
-
-    /**
-     *
      * Override params for the class.
      *
-     * @var array
+     * @var Blueprint
      *
      */
-    protected $params;
+    protected $blueprint;
 
     /**
      *
-     * Override setters for the class.
+     * Blueprints that are only used within the context of this factory.
      *
-     * @var array
+     * @var array|Blueprint[]
      *
      */
-    protected $setters;
+    protected $contextualBlueprints = [];
 
     /**
      *
@@ -65,23 +56,25 @@ class Factory
      *
      * @param Resolver $resolver A Resolver to provide class-creation specifics.
      *
-     * @param string $class The class to create.
-     *
-     * @param array $params Override params for the class.
-     *
-     * @param array $setters Override setters for the class.
-     *
+     * @param Blueprint $blueprint
      */
     public function __construct(
         Resolver $resolver,
-        string $class,
-        array $params = [],
-        array $setters = []
+        Blueprint $blueprint
     ) {
         $this->resolver = $resolver;
-        $this->class = $class;
-        $this->params = $params;
-        $this->setters = $setters;
+        $this->blueprint = $blueprint;
+    }
+
+    /**
+     * @param Blueprint $contextualBlueprint
+     * @return Factory
+     */
+    public function withContext(Blueprint $contextualBlueprint): self
+    {
+        $clone = clone $this;
+        $clone->contextualBlueprints[] = $contextualBlueprint;
+        return $clone;
     }
 
     /**
@@ -94,38 +87,14 @@ class Factory
      * factory can make its own, using sequential params in a function; then
      * the factory call can be replaced by a call to this Factory.
      *
+     * @param array $params
      * @return object
-     *
      */
-    public function __invoke(): object
+    public function __invoke(...$params): object
     {
-        $params = array_merge($this->params, func_get_args());
-        $resolve = $this->resolver->resolve(
-            $this->class,
-            $params,
-            $this->setters
+        return $this->resolver->resolve(
+            $this->blueprint->withParams($params),
+            $this->contextualBlueprints
         );
-
-        $expandedParams = $this->resolver->getExpandedParams($this->class, $resolve->params);
-        $object = $resolve->reflection->newInstanceArgs($expandedParams);
-
-        foreach ($resolve->setters as $method => $value) {
-            $object->$method($value);
-        }
-
-        /** @var MutationInterface $mutation */
-        foreach ($resolve->mutations as $mutation) {
-            if ($mutation instanceof LazyInterface) {
-                $mutation = $mutation();
-            }
-
-            if ($mutation instanceof MutationInterface === false) {
-                throw Exception::mutationDoesNotImplementInterface($mutation);
-            }
-
-            $object = $mutation($object);
-        }
-
-        return $object;
     }
 }

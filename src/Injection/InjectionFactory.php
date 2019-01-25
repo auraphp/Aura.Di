@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 namespace Aura\Di\Injection;
 
-use Aura\Di\Exception;
+use Aura\Di\Resolver\Blueprint;
 use Aura\Di\Resolver\Resolver;
 use Psr\Container\ContainerInterface;
 
@@ -59,44 +59,14 @@ class InjectionFactory
      *
      * Returns a new class instance.
      *
-     * @param string $class The class to instantiate.
-     *
-     * @param array $params Params for the instantiation.
-     *
-     * @param array $setters Setters for the instantiation.
+     * @param Blueprint $blueprint The blueprint to instantiate.
      *
      * @return object
      *
      */
-    public function newInstance(
-        $class,
-        array $params = [],
-        array $setters = []
-    ): object
+    public function newInstance(Blueprint $blueprint): object
     {
-        $resolve = $this->resolver->resolve($class, $params, $setters);
-
-        $expandedParams = $this->resolver->getExpandedParams($class, $resolve->params);
-        $object = $resolve->reflection->newInstanceArgs($expandedParams);
-
-        foreach ($resolve->setters as $method => $value) {
-            $object->$method($value);
-        }
-
-        /** @var MutationInterface $mutation */
-        foreach ($resolve->mutations as $mutation) {
-            if ($mutation instanceof LazyInterface) {
-                $mutation = $mutation();
-            }
-
-            if ($mutation instanceof MutationInterface === false) {
-                throw Exception::mutationDoesNotImplementInterface($mutation);
-            }
-
-            $object = $mutation($object);
-        }
-
-        return $object;
+        return $this->resolver->resolve($blueprint);
     }
 
     /**
@@ -118,7 +88,7 @@ class InjectionFactory
         array $setters = []
     ): Factory
     {
-        return new Factory($this->resolver, $class, $params, $setters);
+        return new Factory($this->resolver, new Blueprint($class, $params, $setters));
     }
 
     /**
@@ -214,7 +184,7 @@ class InjectionFactory
         array $setters = []
     ): LazyNew
     {
-        return new LazyNew($this->resolver, $class, $params, $setters);
+        return new LazyNew($this->resolver, new Blueprint($class, $params, $setters));
     }
 
     /**

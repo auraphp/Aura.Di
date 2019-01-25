@@ -8,6 +8,9 @@ use Aura\Di\Injection\LazyNew;
 
 class AutoResolverTest extends ResolverTest
 {
+    /**
+     * @var AutoResolver
+     */
     protected $resolver;
 
     protected function setUp()
@@ -18,21 +21,25 @@ class AutoResolverTest extends ResolverTest
 
     public function testMissingParam()
     {
-        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $actual->params['fake']);
+        $actual = $this->resolver->resolve(new Blueprint('Aura\Di\Fake\FakeResolveClass'));
+        $this->assertInstanceOf('Aura\Di\Fake\FakeParentClass', $actual->fake);
     }
 
     public function testAutoResolveExplicit()
     {
-        $this->resolver->types['Aura\Di\Fake\FakeParentClass'] = new LazyNew($this->resolver, 'Aura\Di\Fake\FakeChildClass');
-        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeResolveClass');
-        $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual->params['fake']);
+        $this->resolver->types['Aura\Di\Fake\FakeParentClass'] = new LazyNew(
+            $this->resolver,
+            new Blueprint('Aura\Di\Fake\FakeChildClass')
+        );
+
+        $actual = $this->resolver->resolve(new Blueprint('Aura\Di\Fake\FakeResolveClass'));
+        $this->assertInstanceOf('Aura\Di\Fake\FakeChildClass', $actual->fake);
     }
 
     public function testAutoResolveMissingParam()
     {
         $this->expectException('Aura\Di\Exception\MissingParam');
-        $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass');
+        $this->resolver->resolve(new Blueprint('Aura\Di\Fake\FakeParamsClass'));
     }
 
     public function testContainerConstructorWithDefaultParamAndTypedInjection()
