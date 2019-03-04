@@ -1,5 +1,8 @@
 # Migrating
 
+This document helps to upgrade users moving from 3.x to 4.x. Below you can also (still) find the upgrade guide for
+people upgrading from 2.x to 3.x.
+
 ## Migrating from 3.x to 4.x
 
 Aura.Di 4.x is largely similar to 3.x, but there are some backwards-compatibility breaks, as well as some new features.
