@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 class ResolverTest extends TestCase
 {
+    /**
+     * @var Resolver
+     */
     protected $resolver;
 
     protected function setUp()
@@ -17,8 +20,8 @@ class ResolverTest extends TestCase
     public function testReadsConstructorDefaults()
     {
         $expect = ['foo' => new DefaultValueParam('foo', 'bar')];
-        [$actual_params, ] = $this->resolver->getUnified('Aura\Di\Fake\FakeParentClass');
-        $this->assertEquals($expect, $actual_params);
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeParentClass');
+        $this->assertEquals($expect, $blueprint->getParams());
     }
 
     public function testTwiceForMerge()
@@ -35,8 +38,8 @@ class ResolverTest extends TestCase
             'zim' => new DefaultValueParam('zim', null),
         ];
 
-        [$actual_params, ] = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
-        $this->assertEquals($expect, $actual_params);
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
+        $this->assertEquals($expect, $blueprint->getParams());
     }
 
     public function testHonorsExplicitParams()
@@ -44,8 +47,8 @@ class ResolverTest extends TestCase
         $this->resolver->params['Aura\Di\Fake\FakeParentClass'] = ['foo' => 'zim'];
 
         $expect = ['foo' => 'zim'];
-        [$actual_params, ] = $this->resolver->getUnified('Aura\Di\Fake\FakeParentClass');
-        $this->assertSame($expect, $actual_params);
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeParentClass');
+        $this->assertSame($expect, $blueprint->getParams());
     }
 
     public function testHonorsExplicitParentParams()
@@ -57,8 +60,8 @@ class ResolverTest extends TestCase
             'zim' => new DefaultValueParam('zim', null),
         ];
 
-        [$actual_params, ] = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
-        $this->assertEquals($expect, $actual_params);
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
+        $this->assertEquals($expect, $blueprint->getParams());
 
         // for test coverage of the mock class
         $child = new \Aura\Di\Fake\FakeChildClass('bar', new \Aura\Di\Fake\FakeOtherClass);
@@ -68,9 +71,9 @@ class ResolverTest extends TestCase
     {
         $this->resolver->setters['Aura\Di\Fake\FakeParentClass']['setFake'] = 'fake1';
 
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
         $expect = ['setFake' => 'fake1'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
 
     }
 
@@ -79,44 +82,44 @@ class ResolverTest extends TestCase
         $this->resolver->setters['Aura\Di\Fake\FakeParentClass']['setFake'] = 'fake1';
         $this->resolver->setters['Aura\Di\Fake\FakeChildClass']['setFake'] = 'fake2';
 
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeChildClass');
         $expect = ['setFake' => 'fake2'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
     }
 
     public function testHonorsTraitSetter()
     {
         $this->resolver->setters['Aura\Di\Fake\FakeTrait']['setFake'] = 'fake1';
 
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
         $expect = ['setFake' => 'fake1'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
     }
 
     public function testHonorsChildTraitSetter()
     {
         $this->resolver->setters['Aura\Di\Fake\FakeChildTrait']['setChildFake'] = 'fake1';
 
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
         $expect = ['setChildFake' => 'fake1'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
     }
 
     public function testHonorsGrandChildTraitSetter()
     {
         $this->resolver->setters['Aura\Di\Fake\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
 
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
         $expect = ['setGrandchildFake' => 'fake1'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
     }
 
     public function testHonorsParentClassTraits()
     {
         $this->resolver->setters['Aura\Di\Fake\FakeGrandchildTrait']['setGrandchildFake'] = 'fake1';
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithParentTrait');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithParentTrait');
         $expect = ['setGrandchildFake' => 'fake1'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
     }
 
     public function testHonorsOverrideTraitSetter()
@@ -126,15 +129,15 @@ class ResolverTest extends TestCase
         $this->resolver->setters['Aura\Di\Fake\FakeClassWithTrait']['setFake'] = 'fake3';
         $this->resolver->setters['Aura\Di\Fake\FakeClassWithTrait']['setChildFake'] = 'fake4';
 
-        [, $actual_setter] = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
+        $blueprint = $this->resolver->getUnified('Aura\Di\Fake\FakeClassWithTrait');
         $expect = ['setChildFake' => 'fake4', 'setFake' => 'fake3'];
-        $this->assertSame($expect, $actual_setter);
+        $this->assertSame($expect, $blueprint->getSetters());
     }
 
     public function testReflectionOnMissingClass()
     {
         $this->expectException('ReflectionException');
-        $this->resolver->resolve('NoSuchClass');
+        $this->resolver->resolve(new Blueprint('NoSuchClass'));
     }
 
     public function testHonorsLazyParams()
@@ -142,23 +145,26 @@ class ResolverTest extends TestCase
         $this->resolver->params['Aura\Di\Fake\FakeParentClass']['foo'] = new Lazy(function () {
             return new \Aura\Di\Fake\FakeOtherClass();
         });
-        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeParentClass');
-        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->params['foo']);
+        $actual = $this->resolver->resolve(new Blueprint('Aura\Di\Fake\FakeParentClass'));
+        $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual->getFoo());
     }
 
     public function testMissingParam()
     {
         $this->expectException('Aura\Di\Exception\MissingParam');
         $this->expectExceptionMessage('Aura\Di\Fake\FakeResolveClass::$fake');
-        $this->resolver->resolve('Aura\Di\Fake\FakeResolveClass');
+        $this->resolver->resolve(new Blueprint('Aura\Di\Fake\FakeResolveClass'));
     }
 
     public function testUnresolvedParamAfterMergeParams()
     {
         $this->expectException('Aura\Di\Exception\MissingParam');
-        $this->resolver->resolve('Aura\Di\Fake\FakeParamsClass', [
-            'noSuchParam' => 'foo'
-        ]);
+        $this->resolver->resolve(
+            new Blueprint(
+                'Aura\Di\Fake\FakeParamsClass',
+                ['noSuchParam' => 'foo']
+            )
+        );
     }
 
     public function testPositionalParams()
@@ -166,11 +172,11 @@ class ResolverTest extends TestCase
         $this->resolver->params['Aura\Di\Fake\FakeParentClass'][0] = 'val0';
         $this->resolver->params['Aura\Di\Fake\FakeChildClass'][1] = 'val1';
 
-        $actual = $this->resolver->resolve('Aura\Di\Fake\FakeChildClass');
+        $actual = $this->resolver->resolve(new Blueprint('Aura\Di\Fake\FakeChildClass'));
         $expect = [
             'foo' => 'val0',
             'zim' => 'val1',
         ];
-        $this->assertSame($expect, $actual->params);
+        $this->assertSame($expect, ['foo' => $actual->getFoo(), 'zim' => $actual->getZim()]);
     }
 }

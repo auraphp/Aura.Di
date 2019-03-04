@@ -1,6 +1,7 @@
 <?php
 namespace Aura\Di\Injection;
 
+use Aura\Di\Resolver\Blueprint;
 use Aura\Di\Resolver\Resolver;
 use Aura\Di\Resolver\Reflector;
 use PHPUnit\Framework\TestCase;
@@ -22,13 +23,13 @@ class FactoryTest extends TestCase
         array $params = [],
         array $setters = []
     ) {
-        return new Factory($this->resolver, $class, $params, $setters);
+        return new Factory($this->resolver, new Blueprint($class, $params, $setters));
     }
 
     public function test__invoke()
     {
         $factory = new InjectionFactory(new Resolver(new Reflector()));
-        $other = $factory->newInstance('Aura\Di\Fake\FakeOtherClass');
+        $other = $factory->newInstance(new Blueprint('Aura\Di\Fake\FakeOtherClass'));
 
         $factory = $this->newFactory(
             'Aura\Di\Fake\FakeChildClass',

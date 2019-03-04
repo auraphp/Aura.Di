@@ -7,6 +7,7 @@ use Aura\Di\Fake\FakeMutationWithDependencyClass;
 use Aura\Di\Fake\FakeOtherClass;
 use Aura\Di\Fake\FakeParamsClass;
 use Aura\Di\Injection\InjectionFactory;
+use Aura\Di\Resolver\Blueprint;
 use Aura\Di\Resolver\Reflector;
 use Aura\Di\Resolver\Resolver;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -676,5 +677,23 @@ class ContainerTest extends TestCase
         $actual = $container->newInstance('Aura\Di\Fake\FakeChildClassWithDefaultParam');
         $this->assertSame(1, $actual->first);
         $this->assertSame(3, $actual->second);
+    }
+
+    public function testContextualParams()
+    {
+        $this->container->params['Aura\Di\Fake\FakeClassNeedsContextA']['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeClassNeedsContextB');
+        $this->container->params['Aura\Di\Fake\FakeClassNeedsContextB']['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeClassNeedsContextC');
+        $this->container->params['Aura\Di\Fake\FakeClassNeedsContextC']['fake'] = '1';
+
+        $lazy = $this->container->lazyNew('Aura\Di\Fake\FakeClassNeedsContextC');
+        $this->assertSame('1', $lazy()->fake);
+
+        $lazy = $this->container->lazyNew('Aura\Di\Fake\FakeClassNeedsContextA')
+            ->withContext(new Blueprint('Aura\Di\Fake\FakeClassNeedsContextC', ['fake' => '2']));
+
+        $this->assertSame('2', $lazy()->fake->fake->fake);
+
+        $lazy = $this->container->lazyNew('Aura\Di\Fake\FakeClassNeedsContextC');
+        $this->assertSame('1', $lazy()->fake);
     }
 }

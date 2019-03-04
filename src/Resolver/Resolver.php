@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Aura\Di\Resolver;
 
 use Aura\Di\Exception;
-use Aura\Di\Injection\LazyInterface;
 use ReflectionParameter;
 
 /**
@@ -20,6 +19,16 @@ use ReflectionParameter;
  * configuration.
  *
  * @package Aura.Di
+ *
+ * @property array $params
+ *
+ * @property array $setters
+ *
+ * @property array $mutations
+ *
+ * @property array $types
+ *
+ * @property array $values
  *
  */
 class Resolver
@@ -74,7 +83,7 @@ class Resolver
      * Constructor params and setter definitions, unified across class
      * defaults, inheritance hierarchies, and configuration.
      *
-     * @var array
+     * @var array|Blueprint[]
      *
      */
     protected $unified = [];
@@ -116,156 +125,68 @@ class Resolver
      * the configuration parameters, optionally with overrides, invoking Lazy
      * values along the way.
      *
-     * @param string $class The class to instantiate.
+     * @param Blueprint $blueprint The blueprint to be resolved containing
+     * its overrides for this specific case.
      *
-     * @param array $mergeParams An array of override parameters; the key may
-     * be the name *or* the numeric position of the constructor parameter, and
-     * the value is the parameter value to use.
-     *
-     * @param array $mergeSetters An array of override setters; the key is the
-     * name of the setter method to call and the value is the value to be
-     * passed to the setter method.
-     *
-     * @param array $mergeMutations An array of additional mutations.
+     * @param array $contextualBlueprints
      *
      * @return object
-     *
-     * @throws Exception\SetterMethodNotFound
-     *
      */
-    public function resolve(
-        $class,
-        array $mergeParams = [],
-        array $mergeSetters = [],
-        array $mergeMutations = []
-    ): object
+    public function resolve(Blueprint $blueprint, array $contextualBlueprints = []): object
     {
-        [$params, $setters, $mutations] = $this->getUnified($class);
-        $this->mergeParams($class, $params, $mergeParams);
-        $this->mergeSetters($class, $setters, $mergeSetters);
-        $this->mergeMutations($mutations, $mergeMutations);
-        return (object) [
-            'reflection' => $this->reflector->getClass($class),
-            'params' => $params,
-            'setters' => $setters,
-            'mutations' => $mutations,
-        ];
-    }
-
-    /**
-     *
-     * Merges the setters with overrides; also invokes Lazy values.
-     *
-     * @param string $class The setters are on this class.
-     *
-     * @param array $setters The class setters.
-     *
-     * @param array $mergeSetters Override with these setters.
-     *
-     */
-    protected function mergeSetters($class, &$setters, array $mergeSetters = []): void
-    {
-        $setters = array_merge($setters, $mergeSetters);
-        foreach ($setters as $method => $value) {
-            if (! method_exists($class, $method)) {
-                throw Exception::setterMethodNotFound($class, $method);
-            }
-            if ($value instanceof LazyInterface) {
-                $setters[$method] = $value();
-            }
-        }
-    }
-
-    /**
-     *
-     * Merges the setters with overrides; also invokes Lazy values.
-     *
-     * @param array $mutations The class mutations.
-     *
-     * @param array $mergeMutates Additional mutations.
-     *
-     */
-    protected function mergeMutations(&$mutations, array $mergeMutates = []): void
-    {
-        $mutations = array_merge($mutations, $mergeMutates);
-    }
-
-    /**
-     *
-     * Merges the params with overides; also invokes Lazy values.
-     *
-     * @param string $class The params are on this class.
-     *
-     * @param array $params The constructor parameters.
-     *
-     * @param array $mergeParams An array of override parameters; the key may
-     * be the name *or* the numeric position of the constructor parameter, and
-     * the value is the parameter value to use.
-     *
-     * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
-     *
-     */
-    protected function mergeParams($class, &$params, array $mergeParams = []): void
-    {
-        if (! $mergeParams) {
-            // no params to merge, micro-optimize the loop
-            $this->mergeParamsEmpty($class, $params);
-            return;
+        if ($contextualBlueprints === []) {
+            return call_user_func(
+                $this->expandParams($this->getUnified($blueprint->getClassName())->merge($blueprint)),
+                $this->reflector->getClass($blueprint->getClassName())
+            );
         }
 
-        $pos = 0;
-        foreach ($params as $key => $val) {
+        $remember = new self($this->reflector);
 
-            // positional overrides take precedence over named overrides
-            if (array_key_exists($pos, $mergeParams)) {
-                // positional override
-                $val = $mergeParams[$pos];
-            } elseif (array_key_exists($key, $mergeParams)) {
-                // named override
-                $val = $mergeParams[$key];
-            }
+        foreach ($contextualBlueprints as $contextualBlueprint) {
+            $className = $contextualBlueprint->getClassName();
 
-            // is the param missing?
-            if ($val instanceof UnresolvedParam) {
-                throw Exception::missingParam($class, $val->getName());
-            }
+            $remember->params[$className] = $this->params[$className] ?? [];
+            $remember->setters[$className] = $this->setters[$className] ?? [];
+            $remember->mutations[$className] = $this->mutations[$className] ?? [];
 
-            // load lazy objects as we go
-            if ($val instanceof LazyInterface) {
-                $val = $val();
-            }
+            $this->params[$className] = \array_merge(
+                $this->params[$className] ?? [],
+                $contextualBlueprint->getParams()
+            );
 
-            // retain the merged value
-            $params[$key] = $val;
+            $this->setters[$className] = \array_merge(
+                $this->setters[$className] ?? [],
+                $contextualBlueprint->getSetters()
+            );
 
-            // next position
-            $pos += 1;
+            $this->setters[$className] = \array_merge(
+                $this->setters[$className] ?? [],
+                $contextualBlueprint->getMutations()
+            );
+
+            unset($this->unified[$className]);
         }
-    }
 
-    /**
-     *
-     * Load the Lazy values in params when the mergeParams are empty.
-     *
-     * @param string $class The params are on this class.
-     *
-     * @param array $params The constructor parameters.
-     *
-     * @throws \Aura\Di\Exception\MissingParam if a constructor param is missing.
-     *
-     */
-    protected function mergeParamsEmpty(string $class, array &$params): void
-    {
-        foreach ($params as $key => $val) {
-            // is the param missing?
-            if ($val instanceof UnresolvedParam) {
-                throw Exception::missingParam($class, $val->getName());
-            }
-            // load lazy objects as we go
-            if ($val instanceof LazyInterface) {
-                $params[$key] = $val();
+        $resolved = call_user_func(
+            $this->expandParams($this->getUnified($blueprint->getClassName())->merge($blueprint)),
+            $this->reflector->getClass($blueprint->getClassName())
+        );
+
+        foreach ($contextualBlueprints as $contextualBlueprint) {
+            $className = $contextualBlueprint->getClassName();
+            $this->params[$className] = $remember->params[$className] ?? [];
+            $this->setters[$className] = $remember->setters[$className] ?? [];
+            $this->mutations[$className] = $remember->mutations[$className] ?? [];
+
+            if (isset($remember->unified[$className])) {
+                $this->unified[$className] = $remember->unified[$className];
+            } else {
+                unset($this->unified[$className]);
             }
         }
+
+        return $resolved;
     }
 
     /**
@@ -274,31 +195,31 @@ class Resolver
      *
      * @param string $class The class name to return values for.
      *
-     * @return array An array with two elements; 0 is the constructor params
-     * for the class, and 1 is the setter methods and values for the class.
+     * @return Blueprint A blueprint how to construct an object
      *
      */
-    public function getUnified(string $class): array
+    public function getUnified(string $class): Blueprint
     {
         // have values already been unified for this class?
         if (isset($this->unified[$class])) {
             return $this->unified[$class];
         }
 
-        // default to an an array of three empty arrays
-        // (one for params, one for setters, one for mutations)
-        $spec = [[], [], []];
-
         // fetch the values for parents so we can inherit them
         $parent = get_parent_class($class);
         if ($parent) {
             $spec = $this->getUnified($parent);
+        } else {
+            $spec = new Blueprint($class);
         }
 
         // stores the unified params and setters
-        $this->unified[$class][0] = $this->getUnifiedParams($class, $spec[0]);
-        $this->unified[$class][1] = $this->getUnifiedSetters($class, $spec[1]);
-        $this->unified[$class][2] = $this->getUnifiedMutations($class, $spec[2]);
+        $this->unified[$class] = new Blueprint(
+            $class,
+            $this->getUnifiedParams($class, $spec->getParams()),
+            $this->getUnifiedSetters($class, $spec->getSetters()),
+            $this->getUnifiedMutations($class, $spec->getMutations())
+        );
 
         // done, return the unified values
         return $this->unified[$class];
@@ -495,14 +416,15 @@ class Resolver
     /**
      * Expands variadic parameters onto the end of a contructor parameters array.
      *
-     * @param string $class The class name to expand parameters for.
+     * @param Blueprint $blueprint The blueprint to expand parameters for.
      *
-     * @param array $params An array of constructor parameters and values.
-     *
-     * @return array The expanded constructor parameters.
+     * @return Blueprint The blueprint with expanded constructor parameters.
      */
-    public function getExpandedParams(string $class, array $params): array
+    protected function expandParams(Blueprint $blueprint): Blueprint
     {
+        $class = $blueprint->getClassName();
+        $params = $blueprint->getParams();
+
         $variadicParams = [];
         foreach ($this->reflector->getParams($class) as $reflectParam) {
             $paramName = $reflectParam->getName();
@@ -517,6 +439,6 @@ class Resolver
             }
         }
 
-        return array_merge($params, array_values($variadicParams));
+        return $blueprint->replaceParams(array_merge($params, array_values($variadicParams)));
     }
 }
