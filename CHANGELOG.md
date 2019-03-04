@@ -2,11 +2,17 @@
 
 ## 4.0.0
 
-- Upgrade to PHP 7.2+ only, strict types enabled
-- Dropped HHVM support
-- Signatures of methods in ContainerConfigInterface changed.
-- LazyRequire and LazyInclude do not accept another lazy
-- Removed container interop dependency
+- (CHG) Upgrade to PHP 7.2+ only, strict types enabled
+
+- (CHG) Dropped HHVM support
+
+- (CHG) Signatures of methods in ContainerConfigInterface changed.
+
+- (CHG) LazyRequire and LazyInclude do not accept another lazy
+
+- (CHG) Removed container interop dependency
+
+- (ADD) Contextual parameters
 
 ## 3.4.0
 
