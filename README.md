@@ -30,7 +30,7 @@ To run the unit tests at the command line, issue `composer install` and then
 `phpunit` at the package root. This requires [Composer][] to be available as
 `composer`, and [PHPUnit][] to be available as `phpunit`.
 
-This package attempts to comply with [PSR-1][], [PSR-2][], and [PSR-4][]. If
+This package attempts to comply with [PSR-1][], [PSR-2][], [PSR-4][] and [PSR-11][]. If
 you notice compliance oversights, please send a patch via pull request.
 
 ## Community
@@ -48,6 +48,7 @@ Aura.Di 2.x and 3.x users may wish to read the [migrating](./docs/migrating.md) 
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
+[PSR-11]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-11-container.md
 [Composer]: http://getcomposer.org/
 [PHPUnit]: http://phpunit.de/
 [Google Group]: http://groups.google.com/group/auraphp
