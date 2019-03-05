@@ -7,7 +7,7 @@ people upgrading from 2.x to 3.x.
 
 Aura.Di 4.x is largely similar to 3.x, but there are some backwards-compatibility breaks, as well as some new features.
 
-### Drop PHP 7.1 and lower, no HHVM
+### Dropped PHP 7.1 and lower, no HHVM
 
 Make you use the correct PHP version. This library uses the object type-hint and therefore requires PHP 7.2+. The
 support for HHVM is dropped.
@@ -15,8 +15,8 @@ support for HHVM is dropped.
 ### Type-hinting
 
 All classes are now using type hinting for method arguments and return types, including the `void` return type. This 
-means if you have extended or implementedr one of the library classes in your code, you will have to update the 
-signatures of your extended methods to match the new signatures.
+means if you have extended or implemented one of the library classes in your code, you will have to update the 
+signatures of your extended/implemented methods to match the new signatures.
 
 For most users this involves only updating classes implementing the `ContainerConfigInterface`.
 
