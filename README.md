@@ -13,7 +13,7 @@ Alternatively, [download a release][], or clone this repository, then map the
 ## Dependencies
 
 This package requires PHP 7.2 or later. We recommend using the latest available version of PHP as a matter of
-principle. If you are interested in using this package for older PHP versions, use version 3.x for PHP5.5+.
+principle. If you are interested in using this package for older PHP versions, use version 3.x for PHP 5.5+.
 
 Aura library packages may sometimes depend on external interfaces, but never on
 external implementations. This allows compliance with community standards
@@ -43,7 +43,7 @@ on Freenode in the #auraphp channel.
 
 This package is fully documented [here](./docs/index.md).
 
-Aura.Di 2.x users may wish to read the [migrating](./docs/migrating.md) documentation.
+Aura.Di 2.x and 3.x users may wish to read the [migrating](./docs/migrating.md) documentation.
 
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
