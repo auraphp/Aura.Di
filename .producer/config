@@ -3,7 +3,7 @@ package = Aura.Di
 
 ; commands to use for phpunit and phpdoc
 [commands]
-phpunit = /vendor/bin/phpunit
+phpunit = ./vendor/bin/phpunit
 
 ; names for support files
 [files]
