@@ -12,7 +12,11 @@
 
 - (CHG) Removed container interop dependency
 
+- (CHG) Removed unsupported community channels
+
 - (ADD) Contextual parameters
+
+- (ADD) Producer
 
 ## 3.4.0
 
