@@ -1,0 +1,15 @@
+; custom @package docblock value
+package = Aura.Di
+
+; commands to use for phpunit and phpdoc
+[commands]
+phpunit = /vendor/bin/phpunit
+
+; names for support files
+[files]
+changes = CHANGELOG.md
+contributing = CONTRIBUTING.md
+license = LICENSE
+phpunit = phpunit.xml.dist
+readme = README.md
+
