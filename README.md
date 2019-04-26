@@ -36,8 +36,7 @@ you notice compliance oversights, please send a patch via pull request.
 ## Community
 
 To ask questions, provide feedback, or otherwise communicate with other Aura
-users, please join our [Google Group][], follow [@auraphp][], or chat with us
-on Freenode in the #auraphp channel.
+users, please join our [Google Group][].
 
 ## Documentation
 
@@ -52,7 +51,6 @@ Aura.Di 2.x and 3.x users may wish to read the [migrating](./docs/migrating.md) 
 [Composer]: http://getcomposer.org/
 [PHPUnit]: http://phpunit.de/
 [Google Group]: http://groups.google.com/group/auraphp
-[@auraphp]: http://twitter.com/auraphp
 [download a release]: https://github.com/auraphp/Aura.Di/releases
 [aura/di]: https://packagist.org/packages/aura/di
 [composer.json]: ./composer.json
