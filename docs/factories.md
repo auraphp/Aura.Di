@@ -41,7 +41,7 @@ Note that the arguments passed to the factory `__invoke()` method will be passed
 Do not feel limited by the _Factory_ implementation. We can create and inject factory objects of our own if we like. The _Factory_ returned by the `$di->newFactory()` method is an occasional convenience, nothing more.
 
 ## Broader Instantiation
-Sometimes you may want to more broadly leverage a configured containers ability
+Sometimes you may want to more broadly leverage a configured container's ability
 to instantiate objects in your classes, for example in some kind of service
 locator. The `ResolutionHelper` provides a callable object which takes a
 "specification" as a parameter and will retrieve a service if the container has
@@ -56,7 +56,7 @@ instance.
 $helper = $di->newResolutionHelper();
 
 $foo = $helper(\My\Foo::class);
-// will return service named "My\Foo" if on is named as such
+// will return service named "My\Foo" if one is named as such
 // or else a new instance of "My\Foo"
 
 $fooBar = $helper([\My\Foo::class, 'bar']);
