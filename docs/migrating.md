@@ -20,6 +20,10 @@ signatures of your extended/implemented methods to match the new signatures.
 
 For most users this involves only updating classes implementing the `ContainerConfigInterface`.
 
+### newInstance
+
+`Aura\Di\Injection\InjectionFactory::newInstance()` now requires an instance of `Aura\Di\Resolver\Blueprint` to be passed as the parameter, instead of the former classname, parameter array and setter array.
+
 ### Container Interop
 
 From version 4.x the library will implement the official container standard interface (PSR 11) instead of the
