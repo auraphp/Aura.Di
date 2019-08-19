@@ -9,7 +9,7 @@ Aura.Di 4.x is largely similar to 3.x, but there are some backwards-compatibilit
 
 ### Dropped PHP 7.1 and lower, no HHVM
 
-Make you use the correct PHP version. This library uses the object type-hint and therefore requires PHP 7.2+. The
+Make sure you use the correct PHP version. This library uses the object type-hint and therefore requires PHP 7.2+. The
 support for HHVM is dropped.
 
 ### Type-hinting
