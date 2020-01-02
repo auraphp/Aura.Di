@@ -1,0 +1,59 @@
+name: Testing Suite
+on: [push, pull_request]
+
+jobs:
+  run:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        operating-system: [ubuntu-latest]
+        # operating-system: [ubuntu-latest, windows-latest, macOS-latest]
+        php-versions: ['7.3', '7.4']
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@1.5.2
+        with:
+          php-version: '${{ matrix.php-versions }}'
+          extension-csv: apcu, mbstring, xdebug
+          ini-values-csv: apc.enable_cli=1, apc.enabled=1
+          coverage: xdebug
+          pecl: true
+
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v1 #https://github.com/shivammathur/setup-php
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, dom, zip
+          coverage: xdebug #optional
+
+      - name: Show PHP Version
+        run: php -v
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+
+      - name: Run Unit Tests
+        run: ./vendor/bin/phpunit --coverage-clover=./resources/coverage.xml
+
+      - name: Upload Unit Coverage to Scrutinizer
+        run: php ./bin/ocular.phar code-coverage:upload --format=php-clover ./resources/coverage.xml
