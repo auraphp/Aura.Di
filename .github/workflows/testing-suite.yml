@@ -49,4 +49,6 @@ jobs:
         run: ./vendor/bin/phpunit --coverage-clover=./resources/coverage.xml
 
       - name: Upload Unit Coverage to Scrutinizer
-        run: php ./bin/ocular.phar code-coverage:upload --format=php-clover ./resources/coverage.xml
+        run: |
+          wget https://scrutinizer-ci.com/ocular.phar
+          php ocular.phar code-coverage:upload --format=php-clover  ./resources/coverage.xml
