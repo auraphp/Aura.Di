@@ -1,10 +1,5 @@
 # Aura.Di
 
-[![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat-square)](https://github.com/php-pds/skeleton)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/niden/Aura.Di/badges/quality-score.png?b=pds-standard)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/?branch=pds-standard)
-[![Code Coverage](https://scrutinizer-ci.com/g/niden/Aura.Di/badges/coverage.png?b=pds-standard)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/?branch=pds-standard)
-[![Build Status](https://scrutinizer-ci.com/g/niden/Aura.Di/badges/build.png?b=pds-standard)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/build-status/pds-standard)
-
 A serializable dependency injection container with constructor and setter injection, interface and trait awareness, configuration inheritance, and much more.
 
 ## Installation and Autoloading
@@ -27,6 +22,7 @@ without compromising flexibility. For specifics, please examine the package
 
 ## Quality
 
+[![PDS Skeleton](https://img.shields.io/badge/pds-skeleton-blue.svg?style=flat-square)](https://github.com/php-pds/skeleton)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?b=4.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
 [![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?b=4.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
 [![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=4.x)](https://travis-ci.org/auraphp/Aura.Di)
