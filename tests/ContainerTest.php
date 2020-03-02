@@ -261,7 +261,7 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf('Aura\Di\Injection\LazyArray', $lazyArray);
         $actual = $lazyArray();
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertArrayHasKey(0, $actual);
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual[0]);
     }
@@ -272,7 +272,7 @@ class ContainerTest extends TestCase
         $lazyArray->append($this->container->lazyNew('Aura\Di\Fake\FakeOtherClass'));
 
         $actual = $lazyArray();
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertArrayHasKey(0, $actual);
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual[0]);
     }
@@ -283,7 +283,7 @@ class ContainerTest extends TestCase
         $lazyArray['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
 
         $actual = $lazyArray();
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertArrayHasKey('fake', $actual);
         $this->assertInstanceOf('Aura\Di\Fake\FakeOtherClass', $actual['fake']);
     }
@@ -294,7 +294,7 @@ class ContainerTest extends TestCase
         $lazyArray['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeOtherClass');
 
         $copy = $lazyArray->getArrayCopy();
-        $this->assertInternalType('array', $copy);
+        $this->assertIsArray($copy);
         $this->assertArrayHasKey('fake', $copy);
         $this->assertInstanceOf('Aura\Di\Injection\LazyNew', $copy['fake']);
     }
