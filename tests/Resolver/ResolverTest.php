@@ -11,7 +11,7 @@ class ResolverTest extends TestCase
      */
     protected $resolver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->resolver = new Resolver(new Reflector());
