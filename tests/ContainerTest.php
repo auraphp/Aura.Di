@@ -20,14 +20,14 @@ class ContainerTest extends TestCase
      */
     protected $container;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $builder = new ContainerBuilder;
         $this->container = $builder->newInstance();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

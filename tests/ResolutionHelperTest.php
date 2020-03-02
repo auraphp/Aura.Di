@@ -9,7 +9,7 @@ class ResolutionHelperTest extends TestCase
 
     protected $helper;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->container = $this->getMockBuilder(Container::class)
