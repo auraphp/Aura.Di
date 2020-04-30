@@ -1,15 +1,15 @@
 # Contextual Injection
 
-There are scenario's in which it is possible that you want to change the injecting object based on the object that is
-being constructed. This is called contextual injection. There are two solutions to this problem. By giving two examples
-it becomes clear in which case which solution is preferable to a problem.
+There are scenarios in which you may want to change the injecting object based on the object that is
+being constructed. This is called contextual injection. There are two solutions to this problem. The following two examples
+should make clear which solution is preferable for a problem.
 
 ## Example: four levels deep
 
 An example could be a logger class that you inject into a database connection class. If the 
-connection class is injected to an console application class, you want to inject a plain text logger. In case the 
-connection is injected to a web application class, you may want to inject a redis logger. The connection class itself 
-requires a config class, that on its turn requires the logger class.
+connection class is injected to a console application class, you want to inject a plain text logger. In case the 
+connection is injected to a web application class, you may want to inject a Redis logger. The connection class itself 
+requires a config class, that in its turn requires the logger class.
 
 ### Solution 1: pass overwriting params to the `lazyNew` method.
 
@@ -35,7 +35,7 @@ This solution also works with `newInstance`.
 
 ## Solution 2: contextual parameters
 
-To this problem is also another solution. You can pass a `withContext` to the `lazyNew` method for the database 
+For this problem there is also another solution. You can pass a `withContext` to the `lazyNew` method for the database 
 connection injection into the web application class.
 
 ```php
@@ -55,13 +55,13 @@ $di->params['Vendor\Package\WebApplication']['config'] = $di->lazyNew('Vendor\Pa
     ]));
 ```
 
-This solution does not work `newInstance`.
+This solution does not work with `newInstance`.
 
 ## Example, five levels deep
 
 The latter solution becomes more preferable to the former when the context of the dependency tree becomes 
 larger and larger, because in the latter solution one does not need to know the complete dependency tree. This is clear 
-in the following scenario. Suppose the console and the web application both require the redis logger, but with 
+in the following scenario. Suppose the console and the web application both require the Redis logger, but with 
 different parameters (e.g. different host name).
 
 Then we can have the following two solutions.
@@ -89,7 +89,7 @@ $di->params['Vendor\Package\WebApplication']['config'] = $di->lazyNew('Vendor\Pa
 ]);
 ```
 
-As becomes very clear here, the overwriting context of the web application requires to the define the complete tree to 
+As becomes very clear here, the overwriting context of the web application requires defining the complete tree to 
 the change the username, password and host parameters.
 
 ### Solution based on contextual params
