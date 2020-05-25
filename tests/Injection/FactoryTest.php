@@ -12,7 +12,7 @@ class FactoryTest extends TestCase
 
     protected $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->resolver = new Resolver(new Reflector());

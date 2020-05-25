@@ -36,7 +36,7 @@ abstract class AbstractContainerConfigTest extends TestCase
      * @return null
      *
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $builder = new ContainerBuilder();
         $this->di = $builder->newConfiguredInstance(
