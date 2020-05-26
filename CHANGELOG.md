@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.1.0
+
+- (CHG) Support 7.4
+
 ## 4.0.0
 
 - (CHG) Upgrade to PHP 7.2+ only, strict types enabled
