@@ -2,7 +2,7 @@
 
 ## 4.1.0
 
-- (CHG) Support 7.4
+- (ADD) Support 7.4
 
 ## 4.0.0
 
