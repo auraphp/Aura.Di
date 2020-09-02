@@ -5,7 +5,10 @@ A serializable dependency injection container with constructor and setter inject
 ## Installation and Autoloading
 
 This package is installable and PSR-4 autoloadable via Composer as
-[aura/di][].
+[aura/di][]:
+```
+composer require aura/di
+```
 
 Alternatively, [download a release][], or clone this repository, then map the
 `Aura\Di\` namespace to the package `src/` directory.
