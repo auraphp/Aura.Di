@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Aura\Di\Resolver;
 
 use Aura\Di\Injection\LazyNew;
+use ReflectionClass;
+use ReflectionException;
 use ReflectionParameter;
 
 /**
@@ -56,8 +58,18 @@ class AutoResolver extends Resolver
             return $unified;
         }
 
-        // use an explicit auto-resolution?
-        $rtype = $rparam->getClass();
+        try {
+            $rtype = $rparam->getType()
+                ? new ReflectionClass($rparam->getType()->getName())
+                : null ;
+        } catch (ReflectionException $re) {
+            if (str_ends_with($re->getMessage(), 'does not exist')) {
+                $rtype = null;
+            } else {
+                throw $re;
+            }
+        }
+
         if ($rtype && isset($this->types[$rtype->name])) {
             return $this->types[$rtype->name];
         }
