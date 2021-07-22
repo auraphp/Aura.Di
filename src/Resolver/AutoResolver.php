@@ -63,7 +63,12 @@ class AutoResolver extends Resolver
                 ? new ReflectionClass($rparam->getType()->getName())
                 : null ;
         } catch (ReflectionException $re) {
-            if (str_ends_with($re->getMessage(), 'does not exist')) {
+            if (0 === substr_compare(
+                $re->getMessage(),
+                'does not exist',
+                -\strlen('does not exist')
+            )
+            ) {
                 $rtype = null;
             } else {
                 throw $re;
