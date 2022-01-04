@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 4.2.1
+
+- (CHG) Allow both v1 and v2 of psr/container
+
 ## 4.2.0
 
 - (CHG) Upgrade to PHP 7.4+ and PHP 8.0
