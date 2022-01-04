@@ -11,6 +11,8 @@ namespace Aura\Di\Resolver;
 
 use Aura\Di\Exception;
 use ReflectionParameter;
+use function class_exists;
+use function get_parent_class;
 
 /**
  *
@@ -206,7 +208,7 @@ class Resolver
         }
 
         // fetch the values for parents so we can inherit them
-        $parent = get_parent_class($class);
+        $parent = class_exists($class) ? get_parent_class($class) : null;
         if ($parent) {
             $spec = $this->getUnified($parent);
         } else {

@@ -33,7 +33,7 @@ class MinimalContainer implements ContainerInterface
         throw new class extends \UnexpectedValueException implements NotFoundExceptionInterface {};
     }
 
-    public function has($id)
+    public function has($id): bool
     {
         return isset($this->collection[$id]);
     }

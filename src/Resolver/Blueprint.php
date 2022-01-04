@@ -13,6 +13,7 @@ use Aura\Di\Exception;
 use Aura\Di\Injection\LazyInterface;
 use Aura\Di\Injection\MutationInterface;
 use ReflectionClass;
+use function array_values;
 
 final class Blueprint
 {
@@ -96,7 +97,7 @@ final class Blueprint
 
                     return $val;
                 },
-                $this->params
+                array_values($this->params)
             )
         );
 

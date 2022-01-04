@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 5.0.0
+
+- (CHG) Upgrade to PHP 7.4+ and PHP 8.0
+- (CHG) Upgrade psr/container to ^2.0
+- (CHG) Upgrade phpunit to ^9.5
+- (CHG) Resolver now checks if class exists before calling get_parent_class
+- (CHG) Wrapped ReflectionClass calls in a try catch
+- (CHG) Removed acclimate/container.
+- (ADD) Replace acclimate/container with CompositeContainer
+
 ## 4.1.0
 
 - (ADD) Support 7.4

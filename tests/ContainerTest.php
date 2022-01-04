@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Di;
 
-use Acclimate\Container\CompositeContainer;
+use Aura\Di\CompositeContainer;
 use Aura\Di\Fake\FakeMutationClass;
 use Aura\Di\Fake\FakeMutationWithDependencyClass;
 use Aura\Di\Fake\FakeOtherClass;
