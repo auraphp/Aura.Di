@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 5.0.0
+## 4.2.0
 
 - (CHG) Upgrade to PHP 7.4+ and PHP 8.0
 - (CHG) Upgrade psr/container to ^2.0
