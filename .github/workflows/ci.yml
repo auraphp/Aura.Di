@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lowest-version-tests:
+    name: Build lowest version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: bcmath, gmp, intl, dom, mbstring
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: composer update --prefer-stable --prefer-dist --no-interaction --no-progress --no-suggest --prefer-lowest --classmap-authoritative
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit
+
+  tests:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.0']
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: composer install --classmap-authoritative
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit
