@@ -15,7 +15,7 @@ Alternatively, [download a release][], or clone this repository, then map the
 
 ## Dependencies
 
-This package requires PHP 7.2 or later. We recommend using the latest available version of PHP as a matter of
+This package requires PHP 7.4 or later. We recommend using the latest available version of PHP as a matter of
 principle. If you are interested in using this package for older PHP versions, use version 3.x for PHP 5.5+.
 
 Aura library packages may sometimes depend on external interfaces, but never on
@@ -27,7 +27,7 @@ without compromising flexibility. For specifics, please examine the package
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/quality-score.png?b=4.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
 [![Code Coverage](https://scrutinizer-ci.com/g/auraphp/Aura.Di/badges/coverage.png?b=4.x)](https://scrutinizer-ci.com/g/auraphp/Aura.Di/)
-[![Build Status](https://travis-ci.org/auraphp/Aura.Di.png?branch=4.x)](https://travis-ci.org/auraphp/Aura.Di)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/auraphp/Aura.Di/CI?style=flat-square)
 
 To run the unit tests at the command line, issue `composer install` and then
 `phpunit` at the package root. This requires [Composer][] to be available as
