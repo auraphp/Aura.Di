@@ -15,7 +15,7 @@ Alternatively, [download a release][], or clone this repository, then map the
 
 ## Dependencies
 
-This package requires PHP 7.4 or later. We recommend using the latest available version of PHP as a matter of
+This package requires PHP 7.2 or later. We recommend using the latest available version of PHP as a matter of
 principle. If you are interested in using this package for older PHP versions, use version 3.x for PHP 5.5+.
 
 Aura library packages may sometimes depend on external interfaces, but never on

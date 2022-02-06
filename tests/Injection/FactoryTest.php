@@ -4,7 +4,7 @@ namespace Aura\Di\Injection;
 use Aura\Di\Resolver\Blueprint;
 use Aura\Di\Resolver\Resolver;
 use Aura\Di\Resolver\Reflector;
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class FactoryTest extends TestCase
 {
@@ -12,9 +12,9 @@ class FactoryTest extends TestCase
 
     protected $config;
 
-    protected function setUp(): void
+    protected function set_up()
     {
-        parent::setUp();
+        parent::set_up();
         $this->resolver = new Resolver(new Reflector());
     }
 

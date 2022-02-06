@@ -8,7 +8,7 @@
  */
 namespace Aura\Di;
 
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 /**
  *
@@ -36,7 +36,7 @@ abstract class AbstractContainerConfigTest extends TestCase
      * @return null
      *
      */
-    protected function setUp(): void
+    protected function set_up()
     {
         $builder = new ContainerBuilder();
         $this->di = $builder->newConfiguredInstance(
