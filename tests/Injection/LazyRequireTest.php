@@ -1,7 +1,7 @@
 <?php
 namespace Aura\Di\Injection;
 
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class LazyRequireTest extends TestCase
 {

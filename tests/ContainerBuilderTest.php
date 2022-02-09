@@ -2,7 +2,7 @@
 namespace Aura\Di;
 
 use Aura\Di\Fake\FakeParentClass;
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class ContainerBuilderTest extends TestCase
 {
@@ -11,9 +11,9 @@ class ContainerBuilderTest extends TestCase
      */
     protected $builder;
 
-    protected function setUp(): void
+    protected function set_up()
     {
-        parent::setUp();
+        parent::set_up();
         $this->builder = new ContainerBuilder();
     }
 

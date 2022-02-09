@@ -2,7 +2,7 @@
 namespace Aura\Di\Resolver;
 
 use Aura\Di\Injection\Lazy;
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class ResolverTest extends TestCase
 {
@@ -11,9 +11,9 @@ class ResolverTest extends TestCase
      */
     protected $resolver;
 
-    protected function setUp(): void
+    protected function set_up()
     {
-        parent::setUp();
+        parent::set_up();
         $this->resolver = new Resolver(new Reflector());
     }
 

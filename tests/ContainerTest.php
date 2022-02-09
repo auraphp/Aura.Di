@@ -11,7 +11,7 @@ use Aura\Di\Resolver\Blueprint;
 use Aura\Di\Resolver\Reflector;
 use Aura\Di\Resolver\Resolver;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
 class ContainerTest extends TestCase
 {
@@ -20,9 +20,9 @@ class ContainerTest extends TestCase
      */
     protected $container;
 
-    protected function setUp(): void
+    protected function set_up()
     {
-        parent::setUp();
+        parent::set_up();
         $builder = new ContainerBuilder;
         $this->container = $builder->newInstance();
     }
