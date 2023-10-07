@@ -2,7 +2,7 @@
 
 The _Container_ supports setter serialization. It is only possible to serialize containers that do not contain any closures.
 
-Say we the following:
+Say we have the following:
 
 ```php
 $di->params[VendorClass::class] = [
