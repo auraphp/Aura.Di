@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 5.0.9
+
+- (CHG) Fix yielding attributes when a class has a non-existent attribute (e.g. from an external not-installed library).
+
 ## 5.0.8
 
 - (CHG) Missing scanning root package.
