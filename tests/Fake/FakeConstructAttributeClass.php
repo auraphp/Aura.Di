@@ -4,8 +4,10 @@ namespace Aura\Di\Fake;
 use Aura\Di\Attribute\Instance;
 use Aura\Di\Attribute\Service;
 use Aura\Di\Attribute\Value;
+use NotInstalled\External\Library\Attribute as NotInstalledAttrtibute;
 
 #[FakeWorkerAttribute(3)]
+#[NotInstalledAttrtibute]
 class FakeConstructAttributeClass
 {
     private FakeInterface $fakeService;

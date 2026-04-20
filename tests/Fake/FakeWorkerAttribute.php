@@ -7,9 +7,11 @@ use Aura\Di\ClassScanner\AttributeConfigInterface;
 use Aura\Di\ClassScanner\AttributeSpecification;
 use Aura\Di\ClassScanner\ClassSpecification;
 use Aura\Di\Container;
+use NotInstalled\External\Library\Attribute as NotInstalledAttrtibute;
 
 #[\Attribute]
 #[AttributeConfigFor(FakeWorkerAttribute::class)]
+#[NotInstalledAttrtibute]
 #[BlueprintNamespace(__NAMESPACE__)]
 class FakeWorkerAttribute implements AttributeConfigInterface
 {

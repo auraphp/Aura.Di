@@ -232,12 +232,15 @@ class Reflector
         array $targetConfig = []
     ): Generator
     {
-        $instance = $attribute->newInstance();
-        yield new AttributeSpecification(
-            $instance,
-            $className,
-            $targetMethod,
-            $targetConfig
-        );
+        try {
+            $instance = $attribute->newInstance();
+            yield new AttributeSpecification(
+                $instance,
+                $className,
+                $targetMethod,
+                $targetConfig
+            );
+        } catch (Error) {
+        }
     }
 }
