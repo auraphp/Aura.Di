@@ -55,4 +55,12 @@ class AutoResolverTest extends ResolverTest
         $actual = $container->newInstance('Aura\Di\Fake\FakeClassWithDefaultParamInConstructor');
         $this->assertNull($actual->fake);
     }
+
+    public function testContainerUnionTypes()
+    {
+        $container = new Container(new AutoResolver(new Reflector()));
+        $container->newInstance('Aura\Di\Fake\FakeChildClassWithUnionTypeParam');
+
+        $this->addToAssertionCount(1);
+    }
 }
