@@ -705,6 +705,16 @@ class ContainerTest extends TestCase
         $this->assertSame(3, $actual->second);
     }
 
+    public function testContainerUnionTypes()
+    {
+        $container = new Container(new Resolver(new Reflector()));
+        $container->params['Aura\Di\Fake\FakeChildClassWithUnionTypeParam'][] = '2026-06-16 12:00:00';
+
+        $actual = $container->newInstance('Aura\Di\Fake\FakeChildClassWithUnionTypeParam');
+
+        $this->assertSame('2026-06-16 12:00:00', $actual->moment->format('Y-m-d H:i:s'));
+    }
+
     public function testContextualParams()
     {
         $this->container->params['Aura\Di\Fake\FakeClassNeedsContextA']['fake'] = $this->container->lazyNew('Aura\Di\Fake\FakeClassNeedsContextB');
