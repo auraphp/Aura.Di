@@ -14,6 +14,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionUnionType;
 
 /**
  *
@@ -59,19 +60,22 @@ class AutoResolver extends Resolver
             return $unified;
         }
 
+        $rtype = null;
+
         try {
-            $rtype = $rparam->getType() instanceof ReflectionNamedType
-                ? new ReflectionClass($rparam->getType()->getName())
-                : null ;
+            $paramType = $rparam->getType();
+            if ($paramType instanceof ReflectionNamedType) {
+                $rtype = new ReflectionClass($paramType->getName());
+            } elseif ($paramType instanceof ReflectionUnionType) {
+                foreach ($paramType->getTypes() as $individualType) {
+                    if ($individualType instanceof ReflectionNamedType) {
+                        $rtype = new ReflectionClass($individualType->getName());
+                        break;
+                    }
+                }
+            }
         } catch (ReflectionException $re) {
-            if (0 === substr_compare(
-                $re->getMessage(),
-                'does not exist',
-                -\strlen('does not exist')
-            )
-            ) {
-                $rtype = null;
-            } else {
+            if (0 !== substr_compare($re->getMessage(), 'does not exist', -\strlen('does not exist'))) {
                 throw $re;
             }
         }
