@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 5.0.10
+
+- (CHG) Fix auto resolver not resolving union type.
+
 ## 5.0.9
 
 - (ADD) Testing PHP 8.4 and 8.5 in CI.
