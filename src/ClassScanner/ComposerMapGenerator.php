@@ -45,9 +45,11 @@ final class ComposerMapGenerator implements MapGeneratorInterface
 
     private function convertToClassMap(ClassMap $classMap, array $composerMap): ClassMap
     {
+        $basePath = \str_replace('\\', '/', $this->basePath);
         foreach ($composerMap as $class => $path) {
-            if ($this->basePath !== '' && \str_starts_with($path, $this->basePath)) {
-                $path = \substr($path, \strlen($this->basePath));
+            $path = \str_replace('\\', '/', $path);
+            if ($basePath !== '' && \str_starts_with($path, $basePath)) {
+                $path = \substr($path, \strlen($basePath));
             }
 
             try {
@@ -66,9 +68,11 @@ final class ComposerMapGenerator implements MapGeneratorInterface
         $skip = [];
 
         $shouldFullGenerate = false;
+        $basePath = \str_replace('\\', '/', $this->basePath);
         foreach ($updatedFiles as $index => $updatedFile) {
-            if ($this->basePath !== '' && \str_starts_with($updatedFile, $this->basePath)) {
-                $checkFile = \substr($updatedFile, \strlen($this->basePath));
+            $normalizedFile = \str_replace('\\', '/', $updatedFile);
+            if ($basePath !== '' && \str_starts_with($normalizedFile, $basePath)) {
+                $checkFile = \substr($normalizedFile, \strlen($basePath));
 
                 if (!\is_file($updatedFile)) {
                     $deleted[] = $checkFile;
@@ -77,6 +81,8 @@ final class ComposerMapGenerator implements MapGeneratorInterface
                 }
 
                 $updatedFiles[$index] = $checkFile;
+            } else {
+                $updatedFiles[$index] = $normalizedFile;
             }
         }
 
@@ -86,7 +92,7 @@ final class ComposerMapGenerator implements MapGeneratorInterface
 
         foreach ($classMap->getFiles() as $file) {
             if (!\in_array($file, $updatedFiles, true)) {
-                $skip[$this->basePath . $file] = true;
+                $skip[\str_replace('\\', '/', $this->basePath . $file)] = true;
             }
         }
 
