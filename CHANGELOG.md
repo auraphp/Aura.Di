@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 5.0.11
+
+- (CHG) Fix invalid composer.json reference, we are proving psr/container-implementation ^2.0
+
 ## 5.0.10
 
 - (CHG) Fix auto resolver not resolving union type.
