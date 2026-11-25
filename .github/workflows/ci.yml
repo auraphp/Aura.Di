@@ -32,6 +32,25 @@ jobs:
         with:
           cli-args: --format=php-clover coverage.clover
 
+  windows-tests:
+    name: Build on Windows (PHP 8.5)
+    runs-on: windows-latest
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: composer install --classmap-authoritative
+
+      - name: Run tests
+        run: composer test
+
   tests:
     name: Build
     runs-on: ubuntu-latest
